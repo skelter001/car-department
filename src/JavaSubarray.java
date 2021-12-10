@@ -26,17 +26,6 @@ public class JavaSubarray {
             }
         }
 
-        // another solution
-        long count2 = IntStream.range(0, values.size())
-                .mapToLong(start -> IntStream.range(start, values.size())
-                        .boxed()
-                        .map(end -> values.subList(start, end + 1))
-                        .filter(list -> list.stream().mapToInt(i -> i).sum() < 0)
-                        .count()
-                ).sum();
-
-        System.out.println(count2);
-        //
 
         System.out.println(count);
     }
