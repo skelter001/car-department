@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -11,17 +12,16 @@ public class JavaAnagrams {
     static boolean isAnagram(String a, String b) {
         char[] firstStringChars = a.toLowerCase().toCharArray();
         char[] secondStringChars = b.toLowerCase().toCharArray();
-        java.util.Arrays.sort(firstStringChars);
-        java.util.Arrays.sort(secondStringChars);
-        return java.util.Arrays.equals(firstStringChars, secondStringChars);
+        Arrays.sort(firstStringChars);
+        Arrays.sort(secondStringChars);
+        return Arrays.equals(firstStringChars, secondStringChars);
     }
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
-        String a = scan.next();
-        String b = scan.next();
+        String firstString = scan.next();
+        String secondString = scan.next();
         scan.close();
-        boolean ret = isAnagram(a, b);
-        System.out.println( (ret) ? "Anagrams" : "Not Anagrams" );
+        System.out.println( isAnagram(firstString, secondString) ? "Anagrams" : "Not Anagrams" );
     }
 }

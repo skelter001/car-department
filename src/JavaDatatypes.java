@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -19,12 +20,11 @@ class JavaDatatypes {
                 if (x >= Integer.MIN_VALUE && x <= Integer.MAX_VALUE)
                     System.out.println("* int");
                 System.out.println("* long");
-            } catch (Exception e) {
+            } catch (InputMismatchException ime) {
                 System.out.println(sc.next() + " can't be fitted anywhere.");
-            } finally {
-                sc.close();
             }
         }
+        sc.close();
     }
 }
 

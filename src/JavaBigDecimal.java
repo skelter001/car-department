@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -11,22 +12,22 @@ public class JavaBigDecimal {
     public static void main(String[] args) {
         //Input
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        String[] s = new String[n + 2];
-        for (int i = 0; i < n; i++) {
-            s[i] = sc.next();
+        int digitsAmount = sc.nextInt();
+        String[] digits = new String[digitsAmount];
+        for (int i = 0; i < digitsAmount; i++) {
+            digits[i] = sc.next();
         }
         sc.close();
 
-        List<String> values = new ArrayList<>(Arrays.asList(s));
-        values.removeIf(Objects::isNull);
-        values.sort(Comparator.comparingDouble(Double::parseDouble).reversed());
+        List<String> values = Arrays.asList(digits);
+        Comparator<String> comparator = Comparator.comparing(BigDecimal::new);
+        values.sort(comparator.reversed());
 
-        s = values.toArray(new String[0]);
+        digits = values.toArray(new String[0]);
 
         //Output
-        for (int i = 0; i < n; i++) {
-            System.out.println(s[i]);
+        for (int i = 0; i < digitsAmount; i++) {
+            System.out.println(digits[i]);
         }
     }
 }
