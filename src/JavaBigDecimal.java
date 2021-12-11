@@ -14,23 +14,16 @@ public class JavaBigDecimal {
         //Input
         Scanner sc = new Scanner(System.in);
         int digitsAmount = sc.nextInt();
-        String[] digits = new String[digitsAmount + 2];
+        List<String> digits = new ArrayList<>();
         for (int i = 0; i < digitsAmount; i++) {
-            digits[i] = sc.next();
+            digits.add(sc.next());
         }
         sc.close();
-
-        List<String> values = Arrays.stream(digits)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
         Comparator<String> comparator = Comparator.comparing(BigDecimal::new);
-        values.sort(comparator.reversed());
-
-        digits = values.toArray(new String[0]);
+        digits.sort(comparator.reversed());
 
         //Output
-        for (int i = 0; i < digitsAmount; i++) {
-            System.out.println(digits[i]);
-        }
+        String ans = String.join("\n", digits);
+        System.out.println(ans);
     }
 }

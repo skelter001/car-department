@@ -12,8 +12,9 @@ public class JavaSubarray {
 
         int amount = sc.nextInt();
         List<Integer> values = new ArrayList<>();
-        for (int i = 0; i < amount; ++i)
+        for (int i = 0; i < amount; ++i) {
             values.add(sc.nextInt());
+        }
 
         int sum;
         int count = 0;
@@ -21,11 +22,11 @@ public class JavaSubarray {
             sum = 0;
             for (int j = i; j < values.size(); ++j) {
                 sum += values.get(j);
-                if (sum < 0)
+                if (sum < 0) {
                     ++count;
+                }
             }
         }
-
 
         System.out.println(count);
     }
