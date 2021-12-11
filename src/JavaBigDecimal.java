@@ -15,8 +15,8 @@ public class JavaBigDecimal {
             digits.add(sc.next());
         }
         sc.close();
-        Comparator<String> comparator = Comparator.comparing(BigDecimal::new);
-        digits.sort(comparator.reversed());
+
+        digits.sort(Comparator.<String, BigDecimal>comparing(BigDecimal::new).reversed());
 
         //Output
         String ans = String.join("\n", digits);
