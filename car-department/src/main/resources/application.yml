@@ -1,0 +1,18 @@
+server:
+  port: ${PORT:8080}
+  tomcat:
+    threads:
+      max: 20
+
+spring:
+  application:
+    name: car-department
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  liquidbase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+data.jdbc.json-support: postgres
