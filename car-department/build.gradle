@@ -13,14 +13,14 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
     implementation 'io.swagger:swagger-annotations:1.6.3'
     implementation 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.liquibase:liquibase-core'
-    //implementation 'org.hibernate:hibernate-core'
+    implementation 'org.hibernate:hibernate-core'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
