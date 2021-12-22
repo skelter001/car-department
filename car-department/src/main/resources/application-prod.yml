@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: car-department
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/car_department_database
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:password}
