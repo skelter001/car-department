@@ -1,0 +1,17 @@
+version: '3'
+services:
+  database:
+    image: "postgres:14"
+    container_name: car_department
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: car_department_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+    restart: always
+
+volumes:
+  database-data:
