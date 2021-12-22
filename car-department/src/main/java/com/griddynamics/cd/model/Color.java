@@ -1,19 +1,11 @@
 package com.griddynamics.cd.model;
 
-import com.griddynamics.cd.entity.ColorEntity;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
-@AllArgsConstructor
-public enum Color {
-    BLACK(0),
-    RED(1),
-    GREY(2),
-    WHITE(3);
-
-
-    private Integer colorValue;
-
-    public ColorEntity toEntity() {
-        return ColorEntity.valueOf(this.name());
-    }
+@Value
+@Builder
+public class Color {
+    Long id;
+    String colorName;
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +23,7 @@ public class CarController {
 
     private final CarService carService;
 
-    @GetMapping("/")
+    @GetMapping({"/", ""})
     @Operation(
             summary = "Get all cars",
             responses = {
@@ -35,7 +36,6 @@ public class CarController {
         return carService.getAllCars();
     }
 
-    // FIXME: 12/19/21 cannot find declaration
     @GetMapping("/{carId}")
     @Operation(
             summary = "Get car by id",
@@ -62,7 +62,7 @@ public class CarController {
         return carService.getAllCarsByEmployeeId(employeeId);
     }
 
-    @PostMapping("/")
+    @PostMapping({"/", ""})
     @Operation(
             summary = "Save car model",
             responses = {
@@ -71,7 +71,7 @@ public class CarController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public void saveCar(Car car) {
+    public void saveCar(@RequestBody Car car) {
         carService.saveCar(car);
     }
 

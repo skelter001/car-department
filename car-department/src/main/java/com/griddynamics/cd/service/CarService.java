@@ -15,7 +15,8 @@ import java.util.stream.StreamSupport;
 @AllArgsConstructor
 public class CarService {
 
-    private CarRepository carRepository;
+    private final CarRepository carRepository;
+    private final ColorService colorService;
 
     public List<Car> getAllCars() {
         return StreamSupport.stream(carRepository.findAll().spliterator(), false)
@@ -47,7 +48,8 @@ public class CarService {
                 .manufacturer(entity.getManufacturer())
                 .model(entity.getModel())
                 .vinNumber(entity.getVinNumber())
-                .color(entity.getColor().toModel())
+                .color(colorService.getColorById(entity.getColorId()))
+                .employeeId(entity.getEmployeeId())
                 .build();
     }
 
@@ -57,7 +59,7 @@ public class CarService {
                 .manufacturer(car.getManufacturer())
                 .model(car.getModel())
                 .vinNumber(car.getVinNumber())
-                .color(car.getColor().toEntity())
+                .colorId(car.getColor().getId())
                 .employeeId(car.getEmployeeId())
                 .build();
     }

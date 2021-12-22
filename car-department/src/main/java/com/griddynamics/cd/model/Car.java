@@ -1,17 +1,15 @@
 package com.griddynamics.cd.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 
-@AllArgsConstructor
-@Getter
+@Value
 @Builder
 public class Car {
-    private Long id;
-    private String manufacturer;
-    private String model;
-    private String vinNumber;
-    private Color color;
-    private Long employeeId;
+    Long id;
+    String manufacturer;
+    String model;
+    String vinNumber;
+    Color color;
+    Long employeeId;
 }

@@ -1,21 +1,25 @@
 package com.griddynamics.cd.entity;
 
-import com.griddynamics.cd.model.Color;
 import lombok.AllArgsConstructor;
-import org.springframework.data.relational.core.mapping.Table;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Table("color")
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "color")
+@NoArgsConstructor
 @AllArgsConstructor
-public enum ColorEntity {
-    BLACK(0),
-    RED(1),
-    GREY(2),
-    WHITE(3);
-
-
-    private Integer colorValue;
-
-    public Color toModel() {
-        return Color.valueOf(this.name());
-    }
+@Builder
+@Getter
+public class ColorEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String colorName;
 }
