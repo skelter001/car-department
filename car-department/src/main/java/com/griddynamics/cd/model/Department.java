@@ -1,20 +1,18 @@
 package com.griddynamics.cd.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 
 import java.util.List;
 
-@AllArgsConstructor
-@Getter
+@Value
 @Builder
 public class Department {
-    private Long id;
-    private String name;
-    private List<String> sales;
-    private String support;
-    private String email;
-    private String description;
-    private List<Employee> employees;
+    Long id;
+    String name;
+    String support;
+    String email;
+    String description;
+    List<Sale> sales;
+    List<Employee> employees;
 }

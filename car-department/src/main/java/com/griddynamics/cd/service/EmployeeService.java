@@ -3,7 +3,6 @@ package com.griddynamics.cd.service;
 import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.exception.NoEmployeesWithSuchIdException;
 import com.griddynamics.cd.model.Employee;
-import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ import java.util.stream.StreamSupport;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final CarRepository carRepository;
     private final CarService carService;
 
     public List<Employee> getAllEmployees() {
@@ -55,6 +53,7 @@ public class EmployeeService {
                 .birthday(entity.getBirthday())
                 .address(entity.getAddress())
                 .phoneNumber(entity.getPhoneNumber())
+                .departmentId(entity.getDepartmentId())
                 .cars(carService.getAllCarsByEmployeeId(entity.getId()))
                 .build();
     }
@@ -66,6 +65,7 @@ public class EmployeeService {
                 .birthday(employee.getBirthday())
                 .address(employee.getAddress())
                 .phoneNumber(employee.getPhoneNumber())
+                .departmentId(employee.getDepartmentId())
                 .build();
     }
 }

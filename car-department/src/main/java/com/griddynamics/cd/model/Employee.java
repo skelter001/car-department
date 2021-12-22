@@ -1,21 +1,20 @@
 package com.griddynamics.cd.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@AllArgsConstructor
+@Value
 @Builder
-@Getter
 public class Employee {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private LocalDate birthday;
-    private String address;
-    private String phoneNumber;
-    private List<Car> cars;
+    Long id;
+    String firstName;
+    String lastName;
+    LocalDate birthday;
+    String address;
+    String phoneNumber;
+    Long departmentId;
+    List<Car> cars;
 }
