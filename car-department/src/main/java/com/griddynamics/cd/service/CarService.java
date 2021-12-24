@@ -24,7 +24,7 @@ public class CarService {
                 .collect(Collectors.toList());
     }
 
-    public Car getCarById(long carId) {
+    public Car getCarById(Long carId) {
         return mapCarEntityToCarModel(carRepository.findById(carId).orElseThrow(() -> new NoCarWithSuchIdException(carId)));
     }
 
@@ -38,29 +38,29 @@ public class CarService {
         carRepository.save(mapCarModelToCarEntity(car));
     }
 
-    public void deleteCar(long carId) {
+    public void deleteCar(Long carId) {
         carRepository.deleteById(carId);
     }
 
-    private Car mapCarEntityToCarModel(CarEntity entity) {
+    public Car mapCarEntityToCarModel(CarEntity entity) {
         return Car.builder()
                 .id(entity.getId())
                 .manufacturer(entity.getManufacturer())
                 .model(entity.getModel())
                 .vinNumber(entity.getVinNumber())
-                .color(colorService.getColorById(entity.getColorId()))
+                .color(colorService.mapColorEntityToColorModel(entity.getColor()))
                 .employeeId(entity.getEmployeeId())
                 .build();
     }
 
-    private CarEntity mapCarModelToCarEntity(Car car) {
+    public CarEntity mapCarModelToCarEntity(Car car) {
         return CarEntity.builder()
                 .id(car.getId())
                 .manufacturer(car.getManufacturer())
                 .model(car.getModel())
                 .vinNumber(car.getVinNumber())
-                .colorId(car.getColor().getId())
                 .employeeId(car.getEmployeeId())
+                .color(colorService.mapColorModelToColorModel(car.getColor()))
                 .build();
     }
 }

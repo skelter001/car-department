@@ -25,14 +25,14 @@ public class ColorService {
         colorRepository.deleteById(id);
     }
 
-    private Color mapColorEntityToColorModel(ColorEntity entity) {
+    public Color mapColorEntityToColorModel(ColorEntity entity) {
         return Color.builder()
                 .id(entity.getId())
                 .colorName(entity.getColorName())
                 .build();
     }
 
-    private ColorEntity mapColorModelToColorModel(Color color) {
+    public ColorEntity mapColorModelToColorModel(Color color) {
         return ColorEntity.builder()
                 .id(color.getId())
                 .colorName(color.getColorName())

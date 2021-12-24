@@ -30,7 +30,7 @@ public class SaleService {
         saleRepository.deleteById(id);
     }
 
-    private SaleEntity mapModelToEntity(Sale sale) {
+    public SaleEntity mapModelToEntity(Sale sale) {
         return SaleEntity.builder()
                 .id(sale.getId())
                 .totalPrice(sale.getTotalPrice())
@@ -39,7 +39,7 @@ public class SaleService {
                 .build();
     }
 
-    private Sale mapEntityToModel(SaleEntity entity) {
+    public Sale mapEntityToModel(SaleEntity entity) {
         return Sale.builder()
                 .id(entity.getId())
                 .totalPrice(entity.getTotalPrice())

@@ -17,6 +17,7 @@ public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final EmployeeService employeeService;
+    private final SaleService saleService;
 
     public List<Department> getAllDepartments() {
         return StreamSupport.stream(departmentRepository.findAll().spliterator(), false)
@@ -41,10 +42,10 @@ public class DepartmentService {
         return Department.builder()
                 .id(entity.getId())
                 .name(entity.getName())
-                //.sales(entity.getSales())
                 .support(entity.getSupport())
                 .email(entity.getEmail())
                 .description(entity.getDescription())
+                .sales(saleService.getSalesByDepartmentId(entity.getId()))
                 .employees(employeeService.getAllEmployeesByDepartmentId(entity.getId()))
                 .build();
     }
@@ -53,7 +54,12 @@ public class DepartmentService {
         return DepartmentEntity.builder()
                 .id(department.getId())
                 .name(department.getName())
-                //.sales(department.getSales())
+                .sales(department.getSales().stream()
+                        .map(saleService::mapModelToEntity)
+                        .collect(Collectors.toList()))
+                .employees(department.getEmployees().stream()
+                        .map(employeeService::mapEmployeeModelToEmployeeEntity)
+                        .collect(Collectors.toList()))
                 .support(department.getSupport())
                 .email(department.getEmail())
                 .description(department.getDescription())

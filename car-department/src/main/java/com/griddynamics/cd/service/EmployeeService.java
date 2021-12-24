@@ -45,7 +45,7 @@ public class EmployeeService {
         employeeRepository.deleteById(employeeId);
     }
 
-    private Employee mapEmployeeEntityToEmployeeModel(EmployeeEntity entity) {
+    public Employee mapEmployeeEntityToEmployeeModel(EmployeeEntity entity) {
         return Employee.builder()
                 .id(entity.getId())
                 .firstName(entity.getFirstName())
@@ -53,12 +53,12 @@ public class EmployeeService {
                 .birthday(entity.getBirthday())
                 .address(entity.getAddress())
                 .phoneNumber(entity.getPhoneNumber())
-                .departmentId(entity.getDepartmentId())
                 .cars(carService.getAllCarsByEmployeeId(entity.getId()))
+                .departmentId(entity.getDepartmentId())
                 .build();
     }
 
-    private EmployeeEntity mapEmployeeModelToEmployeeEntity(Employee employee) {
+    public EmployeeEntity mapEmployeeModelToEmployeeEntity(Employee employee) {
         return EmployeeEntity.builder()
                 .firstName(employee.getFirstName())
                 .lastName(employee.getLastName())
@@ -66,6 +66,9 @@ public class EmployeeService {
                 .address(employee.getAddress())
                 .phoneNumber(employee.getPhoneNumber())
                 .departmentId(employee.getDepartmentId())
+                .cars(carService.getAllCarsByEmployeeId(employee.getId()).stream()
+                        .map(carService::mapCarModelToCarEntity)
+                        .collect(Collectors.toList()))
                 .build();
     }
 }
