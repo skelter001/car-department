@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "sale")
@@ -20,8 +21,9 @@ import javax.persistence.Table;
 public class SaleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    Integer totalPrice;
-    String info;
-    Long departmentId;
+    private Long id;
+    private Integer totalPrice;
+    private String info;
+    @NotNull
+    private Long departmentId;
 }
