@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -66,7 +67,8 @@ public class EmployeeService {
                 .address(employee.getAddress())
                 .phoneNumber(employee.getPhoneNumber())
                 .departmentId(employee.getDepartmentId())
-                .cars(carService.getAllCarsByEmployeeId(employee.getId()).stream()
+                .cars(carService.getAllCarsByEmployeeId(Optional.ofNullable(employee.getId())
+                                .orElse(0L)).stream()
                         .map(carService::mapCarModelToCarEntity)
                         .collect(Collectors.toList()))
                 .build();

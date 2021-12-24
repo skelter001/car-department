@@ -59,12 +59,14 @@
             <column name="color_id" type="BIGINT"/>
             <column name="car_id" type="BIGINT"/>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="car_id"
+        <addForeignKeyConstraint onUpdate="CASCADE"
+                                 baseColumnNames="car_id"
                                  baseTableName="car"
                                  constraintName="FK_CAR_ON_CAR"
                                  referencedColumnNames="id"
                                  referencedTableName="employee"/>
-        <addForeignKeyConstraint baseColumnNames="color_id"
+        <addForeignKeyConstraint onUpdate="CASCADE"
+                                 baseColumnNames="color_id"
                                  baseTableName="car"
                                  constraintName="FK_CAR_ON_COLOR"
                                  referencedColumnNames="id"
@@ -85,7 +87,8 @@
                                  baseTableName="sale"
                                  constraintName="FK_SALE_ON_SALE"
                                  referencedColumnNames="id"
-                                 referencedTableName="department"/>
+                                 referencedTableName="department"
+        />
 
     </changeSet>
 </databaseChangeLog>
