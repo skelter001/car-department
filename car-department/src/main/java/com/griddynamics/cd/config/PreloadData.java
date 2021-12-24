@@ -96,15 +96,13 @@ public class PreloadData implements CommandLineRunner {
                         .build()
         );
 
-
-
         carRepository.save(
                 CarEntity.builder()
                         .id(2L)
                         .manufacturer("manufacturer1")
                         .model("a1")
                         .vinNumber("vinNumber1")
-                        .colorId(1L)
+                        .color(ColorEntity.builder().colorName("grey").build())
                         .employeeId(1L)
                         .build()
         );
@@ -115,7 +113,7 @@ public class PreloadData implements CommandLineRunner {
                         .manufacturer("manufacturer1")
                         .model("a2")
                         .vinNumber("vinNumber2")
-                        .colorId(2L)
+                        .color(ColorEntity.builder().colorName("black").build())
                         .employeeId(1L)
                         .build()
         );
@@ -126,7 +124,7 @@ public class PreloadData implements CommandLineRunner {
                         .manufacturer("manufacturer1")
                         .model("a2")
                         .vinNumber("vinNumber2")
-                        .colorId(1L)
+                        .color(ColorEntity.builder().colorName("red").build())
                         .employeeId(2L)
                         .build()
         );
