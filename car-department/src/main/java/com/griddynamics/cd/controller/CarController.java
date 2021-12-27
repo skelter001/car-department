@@ -23,7 +23,7 @@ public class CarController {
 
     private final CarService carService;
 
-    @GetMapping({"/", ""})
+    @GetMapping
     @Operation(
             summary = "Get all cars",
             responses = {
@@ -62,7 +62,7 @@ public class CarController {
         return carService.getAllCarsByEmployeeId(employeeId);
     }
 
-    @PostMapping({"/", ""})
+    @PostMapping
     @Operation(
             summary = "Save car model",
             responses = {

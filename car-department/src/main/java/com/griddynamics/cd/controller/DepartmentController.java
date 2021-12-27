@@ -23,7 +23,7 @@ public class DepartmentController {
 
     private final DepartmentService departmentService;
 
-    @GetMapping({"/", ""})
+    @GetMapping
     @Operation(
             summary = "Get all departments",
             responses = {
@@ -49,7 +49,7 @@ public class DepartmentController {
         return departmentService.getDepartmentById(departmentId);
     }
 
-    @PostMapping({"/", ""})
+    @PostMapping
     @Operation(
             summary = "Save department model",
             responses = {

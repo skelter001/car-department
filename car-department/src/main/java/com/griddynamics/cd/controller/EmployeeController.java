@@ -23,7 +23,7 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @GetMapping({"/", ""})
+    @GetMapping
     @Operation(
             summary = "Get all employees",
             responses = {
@@ -62,7 +62,7 @@ public class EmployeeController {
         return employeeService.getAllEmployeesByDepartmentId(departmentId);
     }
 
-    @PostMapping({"/", ""})
+    @PostMapping
     @Operation(
             summary = "Save employee model",
             responses = {
