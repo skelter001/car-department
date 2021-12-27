@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.NonFinal;
 
+import javax.validation.constraints.Email;
 import java.util.List;
 
 @Value
@@ -18,6 +19,7 @@ public class Department {
     Long id;
     String name;
     String support;
+    @Email(message = "Email should be valid")
     String email;
     String description;
     List<Sale> sales;

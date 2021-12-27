@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
 import java.util.List;
 
 @Entity
@@ -28,7 +27,6 @@ public class DepartmentEntity {
     private Long id;
     private String name;
     private String support;
-    @Email
     private String email;
     private String description;
     @OneToMany(cascade = CascadeType.ALL)
