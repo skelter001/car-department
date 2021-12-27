@@ -27,8 +27,8 @@ public class EmployeeService {
 
     public Employee getById(Long employeeId) {
         return mapEmployeeEntityToEmployeeModel(
-                employeeRepository.findById(employeeId).orElseThrow(
-                        () -> new NoEmployeesWithSuchIdException(employeeId))
+                employeeRepository.findById(employeeId)
+                        .orElseThrow(() -> new NoEmployeesWithSuchIdException(employeeId))
         );
     }
 

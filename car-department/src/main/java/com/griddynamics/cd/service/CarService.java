@@ -25,7 +25,10 @@ public class CarService {
     }
 
     public Car getCarById(Long carId) {
-        return mapCarEntityToCarModel(carRepository.findById(carId).orElseThrow(() -> new NoCarWithSuchIdException(carId)));
+        return mapCarEntityToCarModel(
+                carRepository.findById(carId)
+                        .orElseThrow(() -> new NoCarWithSuchIdException(carId))
+        );
     }
 
     public List<Car> getAllCarsByEmployeeId(long employeeId) {

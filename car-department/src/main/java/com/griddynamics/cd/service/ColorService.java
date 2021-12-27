@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class ColorService {
+
     private final ColorRepository colorRepository;
 
     public Color getColorById(Long id) {
