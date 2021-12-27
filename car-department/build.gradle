@@ -1,6 +1,4 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.6'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
 
@@ -12,20 +10,41 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    springBootVersion = "2.5.6"
+    junitJupiterVersion = "5.7.2"
+    swaggerVersion = "1.6.3"
+    springDocVersion = "1.5.12"
+    javaxVersion = "2.2"
+    lombokVersion = "1.18.16"
+}
+
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compileOnly 'javax.persistence:javax.persistence-api:2.2'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
-    implementation 'io.swagger:swagger-annotations:1.6.3'
-    implementation 'org.postgresql:postgresql'
-    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'org.liquibase:liquibase-core'
-    implementation 'org.hibernate:hibernate-core'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    implementation (
+            "org.springframework.boot:spring-boot-starter-web:$springBootVersion",
+            "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion",
+            "org.springdoc:springdoc-openapi-ui:$springDocVersion",
+            "io.swagger:swagger-annotations:$swaggerVersion",
+            'org.postgresql:postgresql',
+            'org.hibernate:hibernate-core'
+    )
+    compileOnly (
+            "javax.persistence:javax.persistence-api:$javaxVersion",
+            "org.projectlombok:lombok:$lombokVersion"
+    )
+    runtimeOnly(
+            'com.h2database:h2',
+            'org.liquibase:liquibase-core'
+    )
+    annotationProcessor (
+            "org.projectlombok:lombok:$lombokVersion"
+    )
+    testImplementation (
+            "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    )
+    testRuntimeOnly (
+            "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+    )
 }
 
 test {
