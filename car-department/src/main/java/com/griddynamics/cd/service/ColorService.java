@@ -1,11 +1,12 @@
 package com.griddynamics.cd.service;
 
 import com.griddynamics.cd.entity.ColorEntity;
-import com.griddynamics.cd.exception.NoColorWithSuchIdException;
 import com.griddynamics.cd.model.Color;
 import com.griddynamics.cd.repository.ColorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityNotFoundException;
 
 @Service
 @AllArgsConstructor
@@ -15,7 +16,8 @@ public class ColorService {
 
     public Color getColorById(Long id) {
         return mapColorEntityToColorModel(colorRepository.findById(id)
-                .orElseThrow(() -> new NoColorWithSuchIdException(id)));
+                .orElseThrow(() -> new EntityNotFoundException("Color with " + id + " id was not found"))
+        );
     }
 
     public void saveColor(Color color) {

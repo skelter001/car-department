@@ -1,12 +1,12 @@
 package com.griddynamics.cd.service;
 
 import com.griddynamics.cd.entity.DepartmentEntity;
-import com.griddynamics.cd.exception.NoDepartmentWithSuchIdException;
 import com.griddynamics.cd.model.Department;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -24,17 +24,18 @@ public class DepartmentService {
                 .collect(Collectors.toList());
     }
 
-    public Department getDepartmentById(Long id) {
-        return mapDepartmentEntityToDepartmentModel(departmentRepository.findById(id)
-                .orElseThrow(() -> new NoDepartmentWithSuchIdException(id)));
+    public Department getDepartmentById(Long departmentId) {
+        return mapDepartmentEntityToDepartmentModel(departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new EntityNotFoundException("Department with " + departmentId + " id was not found"))
+        );
     }
 
     public void saveDepartment(Department department) {
         departmentRepository.save(mapDepartmentModelToDepartmentEntity(department));
     }
 
-    public void deleteDepartment(Long id) {
-        departmentRepository.deleteById(id);
+    public void deleteDepartment(Long departmentId) {
+        departmentRepository.deleteById(departmentId);
     }
 
     private Department mapDepartmentEntityToDepartmentModel(DepartmentEntity entity) {

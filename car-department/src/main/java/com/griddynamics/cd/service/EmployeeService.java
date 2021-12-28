@@ -1,12 +1,12 @@
 package com.griddynamics.cd.service;
 
 import com.griddynamics.cd.entity.EmployeeEntity;
-import com.griddynamics.cd.exception.NoEmployeesWithSuchIdException;
 import com.griddynamics.cd.model.Employee;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ public class EmployeeService {
     public Employee getById(Long employeeId) {
         return mapEmployeeEntityToEmployeeModel(
                 employeeRepository.findById(employeeId)
-                        .orElseThrow(() -> new NoEmployeesWithSuchIdException(employeeId))
+                        .orElseThrow(() -> new EntityNotFoundException("Employee with " + employeeId + " id was not found"))
         );
     }
 

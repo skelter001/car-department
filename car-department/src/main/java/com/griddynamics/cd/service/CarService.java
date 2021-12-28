@@ -1,12 +1,12 @@
 package com.griddynamics.cd.service;
 
 import com.griddynamics.cd.entity.CarEntity;
-import com.griddynamics.cd.exception.NoCarWithSuchIdException;
 import com.griddynamics.cd.model.Car;
 import com.griddynamics.cd.repository.CarRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -27,7 +27,7 @@ public class CarService {
     public Car getCarById(Long carId) {
         return mapCarEntityToCarModel(
                 carRepository.findById(carId)
-                        .orElseThrow(() -> new NoCarWithSuchIdException(carId))
+                        .orElseThrow(() -> new EntityNotFoundException("Car with " + carId + " id was not found"))
         );
     }
 
