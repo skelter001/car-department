@@ -4,21 +4,22 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Value;
 import lombok.experimental.NonFinal;
 
-@Value
+@Data
 @Builder
 @AllArgsConstructor
 public class Car {
     @NonFinal
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    Long id;
-    String manufacturer;
-    String model;
-    String vinNumber;
-    Color color;
-    Long employeeId;
+    private Long id;
+    private String manufacturer;
+    private String model;
+    private String vinNumber;
+    private Color color;
+    private Long employeeId;
 
     @JsonCreator
     public Car(@JsonProperty("manufacturer") String manufacturer,

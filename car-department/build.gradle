@@ -16,7 +16,11 @@ ext {
     swaggerVersion = "1.6.3"
     springDocVersion = "1.5.12"
     javaxVersion = "2.2"
-    lombokVersion = "1.18.16"
+    lombokVersion = "1.18.20"
+    postgresqlVersion = "42.3.1"
+    h2databaseVersion = "1.3.148"
+    liquibaseVersion = "4.6.2"
+    hibernateVersion = "5.6.3.Final"
 }
 
 dependencies {
@@ -25,16 +29,16 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion",
             "org.springdoc:springdoc-openapi-ui:$springDocVersion",
             "io.swagger:swagger-annotations:$swaggerVersion",
-            'org.postgresql:postgresql',
-            'org.hibernate:hibernate-core'
+            "org.postgresql:postgresql:$postgresqlVersion",
+            "org.hibernate:hibernate-core:$hibernateVersion"
     )
     compileOnly (
             "javax.persistence:javax.persistence-api:$javaxVersion",
             "org.projectlombok:lombok:$lombokVersion"
     )
     runtimeOnly(
-            'com.h2database:h2',
-            'org.liquibase:liquibase-core'
+            "com.h2database:h2:$h2databaseVersion",
+            "org.liquibase:liquibase-core:$liquibaseVersion"
     )
     annotationProcessor (
             "org.projectlombok:lombok:$lombokVersion"

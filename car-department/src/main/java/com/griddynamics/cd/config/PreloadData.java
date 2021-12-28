@@ -4,12 +4,10 @@ import com.griddynamics.cd.entity.CarEntity;
 import com.griddynamics.cd.entity.ColorEntity;
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
-import com.griddynamics.cd.entity.SaleEntity;
 import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.ColorRepository;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
-import com.griddynamics.cd.repository.SaleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +23,6 @@ public class PreloadData implements CommandLineRunner {
     private final CarRepository carRepository;
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
-    private final SaleRepository saleRepository;
     private final ColorRepository colorRepository;
 
     @Override
@@ -34,7 +31,6 @@ public class PreloadData implements CommandLineRunner {
         departmentRepository.save(
                 DepartmentEntity.builder()
                         .name("Department 1")
-                        .support("support 1")
                         .email("test@department1.com")
                         .description("Some description of this department")
                         .build()
@@ -51,24 +47,6 @@ public class PreloadData implements CommandLineRunner {
                 ColorEntity.builder()
                         .id(2L)
                         .colorName("GREY")
-                        .build()
-        );
-
-        saleRepository.save(
-                SaleEntity.builder()
-                        .id(1L)
-                        .totalPrice(123)
-                        .info("Some info about sale")
-                        .departmentId(1L)
-                        .build()
-        );
-
-        saleRepository.save(
-                SaleEntity.builder()
-                        .id(2L)
-                        .totalPrice(321)
-                        .info("Some info about sale")
-                        .departmentId(1L)
                         .build()
         );
 

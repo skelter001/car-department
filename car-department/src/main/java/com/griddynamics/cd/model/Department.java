@@ -4,39 +4,37 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Value;
 import lombok.experimental.NonFinal;
 
 import javax.validation.constraints.Email;
 import java.util.List;
 
-@Value
+@Data
 @Builder
 @AllArgsConstructor
 public class Department {
     @NonFinal
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    Long id;
-    String name;
-    String support;
+    private Long id;
+    private String name;
     @Email(message = "Email should be valid")
-    String email;
-    String description;
-    List<Sale> sales;
-    List<Employee> employees;
+    private String email;
+    private String description;
+    private DepartmentType departmentType;
+    private List<Employee> employees;
 
     @JsonCreator
     public Department(@JsonProperty("name") String name,
-                      @JsonProperty("support") String support,
                       @JsonProperty("email") String email,
                       @JsonProperty("description") String description,
-                      @JsonProperty("sales") List<Sale> sales,
+                      @JsonProperty("departmentType") DepartmentType departmentType,
                       @JsonProperty("employees") List<Employee> employees) {
         this.name = name;
-        this.support = support;
         this.email = email;
         this.description = description;
-        this.sales = sales;
+        this.departmentType = departmentType;
         this.employees = employees;
     }
 }

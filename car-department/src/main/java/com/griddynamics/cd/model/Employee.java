@@ -4,26 +4,27 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Value;
 import lombok.experimental.NonFinal;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Value
+@Data
 @Builder
 @AllArgsConstructor
 public class Employee {
     @NonFinal
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    Long id;
-    String firstName;
-    String lastName;
-    LocalDate birthday;
-    String address;
-    String phoneNumber;
-    Long departmentId;
-    List<Car> cars;
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthday;
+    private String address;
+    private String phoneNumber;
+    private Long departmentId;
+    private List<Car> cars;
 
     @JsonCreator
     public Employee(@JsonProperty("firstName") String firstName,
