@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/employees")
+@RequestMapping
 @AllArgsConstructor
 public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @GetMapping
+    @GetMapping("/employees")
     @Operation(
             summary = "Get all employees",
             responses = {
@@ -36,7 +36,7 @@ public class EmployeeController {
         return employeeService.getAllEmployees();
     }
 
-    @GetMapping("/{employeeId}")
+    @GetMapping("/employees/{employeeId}")
     @Operation(
             summary = "Get employee by id",
             responses = {
@@ -49,7 +49,7 @@ public class EmployeeController {
         return employeeService.getById(employeeId);
     }
 
-    @GetMapping("/department/{departmentId}")
+    @GetMapping("/department/{departmentId}/employees")
     @Operation(
             summary = "Get all employees from specific department by id",
             responses = {
@@ -62,7 +62,7 @@ public class EmployeeController {
         return employeeService.getAllEmployeesByDepartmentId(departmentId);
     }
 
-    @PostMapping
+    @PostMapping("/employees")
     @Operation(
             summary = "Save employee model",
             responses = {
@@ -75,7 +75,7 @@ public class EmployeeController {
         employeeService.saveEmployee(employee);
     }
 
-    @DeleteMapping("/{employeeId}")
+    @DeleteMapping("/employees/{employeeId}")
     @Operation(
             summary = "Delete employee by id",
             responses = {

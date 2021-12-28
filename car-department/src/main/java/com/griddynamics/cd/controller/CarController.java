@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cars")
+@RequestMapping
 @AllArgsConstructor
 public class CarController {
 
     private final CarService carService;
 
-    @GetMapping
+    @GetMapping("/cars")
     @Operation(
             summary = "Get all cars",
             responses = {
@@ -36,7 +36,7 @@ public class CarController {
         return carService.getAllCars();
     }
 
-    @GetMapping("/{carId}")
+    @GetMapping("/cars/{carId}")
     @Operation(
             summary = "Get car by id",
             responses = {
@@ -49,7 +49,7 @@ public class CarController {
         return carService.getCarById(carId);
     }
 
-    @GetMapping("/employee/{employeeId}")
+    @GetMapping("/employee/{employeeId}/cars")
     @Operation(
             summary = "Get all cars from the specific employee",
             responses = {
@@ -62,7 +62,7 @@ public class CarController {
         return carService.getAllCarsByEmployeeId(employeeId);
     }
 
-    @PostMapping
+    @PostMapping("/cars")
     @Operation(
             summary = "Save car model",
             responses = {
@@ -75,7 +75,7 @@ public class CarController {
         carService.saveCar(car);
     }
 
-    @DeleteMapping("/{carId}")
+    @DeleteMapping("/cars/{carId}")
     @Operation(
             summary = "Delete car by id",
             responses = {
