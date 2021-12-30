@@ -1,7 +1,8 @@
 package com.griddynamics.cd.service;
 
-import com.griddynamics.cd.entity.CarEntity;
+import com.griddynamics.cd.mapper.CarMapper;
 import com.griddynamics.cd.model.Car;
+import com.griddynamics.cd.model.CarRequest;
 import com.griddynamics.cd.repository.CarRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,16 +17,16 @@ import java.util.stream.StreamSupport;
 public class CarService {
 
     private final CarRepository carRepository;
-    private final ColorService colorService;
+    private final CarMapper carMapper;
 
     public List<Car> getAllCars() {
         return StreamSupport.stream(carRepository.findAll().spliterator(), false)
-                .map(this::mapCarEntityToCarModel)
+                .map(carMapper::toCarModel)
                 .collect(Collectors.toList());
     }
 
     public Car getCarById(Long carId) {
-        return mapCarEntityToCarModel(
+        return carMapper.toCarModel(
                 carRepository.findById(carId)
                         .orElseThrow(() -> new EntityNotFoundException("Car with " + carId + " id was not found"))
         );
@@ -33,37 +34,18 @@ public class CarService {
 
     public List<Car> getAllCarsByEmployeeId(long employeeId) {
         return carRepository.findAllCarsByEmployeeId(employeeId).stream()
-                .map(this::mapCarEntityToCarModel)
+                .map(carMapper::toCarModel)
                 .collect(Collectors.toList());
     }
 
-    public void saveCar(Car car) {
-        carRepository.save(mapCarModelToCarEntity(car));
+    public Car saveCar(CarRequest car) {
+        return carMapper.toCarModel(
+                carRepository.save(
+                        carMapper.toCarEntity(car))
+        );
     }
 
     public void deleteCar(Long carId) {
         carRepository.deleteById(carId);
-    }
-
-    public Car mapCarEntityToCarModel(CarEntity entity) {
-        return Car.builder()
-                .id(entity.getId())
-                .manufacturer(entity.getManufacturer())
-                .model(entity.getModel())
-                .vinNumber(entity.getVinNumber())
-                .color(colorService.mapColorEntityToColorModel(entity.getColor()))
-                .employeeId(entity.getEmployeeId())
-                .build();
-    }
-
-    public CarEntity mapCarModelToCarEntity(Car car) {
-        return CarEntity.builder()
-                .id(car.getId())
-                .manufacturer(car.getManufacturer())
-                .model(car.getModel())
-                .vinNumber(car.getVinNumber())
-                .employeeId(car.getEmployeeId())
-                .color(colorService.mapColorModelToColorModel(car.getColor()))
-                .build();
     }
 }
