@@ -1,14 +1,14 @@
 package com.griddynamics.cd.service;
 
-import com.griddynamics.cd.entity.EmployeeEntity;
+import com.griddynamics.cd.mapper.EmployeeMapper;
 import com.griddynamics.cd.model.Employee;
+import com.griddynamics.cd.model.EmployeeRequest;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -17,16 +17,17 @@ import java.util.stream.StreamSupport;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final EmployeeMapper employeeMapper;
     private final CarService carService;
 
     public List<Employee> getAllEmployees() {
         return StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
-                .map(this::mapEmployeeEntityToEmployeeModel)
+                .map(employeeMapper::toEmployeeModel)
                 .collect(Collectors.toList());
     }
 
-    public Employee getById(Long employeeId) {
-        return mapEmployeeEntityToEmployeeModel(
+    public Employee getEmployeeById(Long employeeId) {
+        return employeeMapper.toEmployeeModel(
                 employeeRepository.findById(employeeId)
                         .orElseThrow(() -> new EntityNotFoundException("Employee with " + employeeId + " id was not found"))
         );
@@ -34,43 +35,29 @@ public class EmployeeService {
 
     public List<Employee> getAllEmployeesByDepartmentId(Long departmentId) {
         return employeeRepository.findAllEmployeesByDepartmentId(departmentId).stream()
-                .map(this::mapEmployeeEntityToEmployeeModel)
+                .map(employeeMapper::toEmployeeModel)
                 .collect(Collectors.toList());
     }
 
-    public void saveEmployee(Employee employee) {
-        employeeRepository.save(mapEmployeeModelToEmployeeEntity(employee));
+    public Employee saveEmployee(EmployeeRequest employeeRequest) {
+        return employeeMapper.toEmployeeModel(
+                employeeRepository.save(
+                        employeeMapper.toEmployeeEntity(employeeRequest))
+        );
+    }
+
+    public Employee addCarToEmployeeById(Long employeeId, Long carId) {
+        Employee employee = getEmployeeById(employeeId);
+
+        employee.getCars().add(carService.getCarById(carId));
+
+        return employeeMapper.toEmployeeModel(
+                employeeRepository.save(
+                        employeeMapper.toEmployeeEntity(employee))
+        );
     }
 
     public void deleteEmployee(Long employeeId) {
         employeeRepository.deleteById(employeeId);
-    }
-
-    public Employee mapEmployeeEntityToEmployeeModel(EmployeeEntity entity) {
-        return Employee.builder()
-                .id(entity.getId())
-                .firstName(entity.getFirstName())
-                .lastName(entity.getLastName())
-                .birthday(entity.getBirthday())
-                .address(entity.getAddress())
-                .phoneNumber(entity.getPhoneNumber())
-                .cars(carService.getAllCarsByEmployeeId(entity.getId()))
-                .departmentId(entity.getDepartmentId())
-                .build();
-    }
-
-    public EmployeeEntity mapEmployeeModelToEmployeeEntity(Employee employee) {
-        return EmployeeEntity.builder()
-                .firstName(employee.getFirstName())
-                .lastName(employee.getLastName())
-                .birthday(employee.getBirthday())
-                .address(employee.getAddress())
-                .phoneNumber(employee.getPhoneNumber())
-                .departmentId(employee.getDepartmentId())
-                .cars(carService.getAllCarsByEmployeeId(Optional.ofNullable(employee.getId())
-                                .orElse(0L)).stream()
-                        .map(carService::mapCarModelToCarEntity)
-                        .collect(Collectors.toList()))
-                .build();
     }
 }
