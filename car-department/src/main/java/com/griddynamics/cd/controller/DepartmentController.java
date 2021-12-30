@@ -54,8 +54,22 @@ public class DepartmentController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public void saveDepartment(@RequestBody Department department) {
-        departmentService.saveDepartment(department);
+    public Department saveDepartment(@RequestBody @Valid DepartmentRequest departmentRequest) {
+        return departmentService.saveDepartment(departmentRequest);
+    }
+
+    @PutMapping("/{departmentId}/employees")
+    @Operation(
+            summary = "Add employee to department",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            }
+    )
+    public Department addEmployeeToDepartment(@PathVariable Long departmentId,
+                                              @RequestBody Long employeeId) {
+        return departmentService.addEmployeeToDepartmentById(departmentId, employeeId);
     }
 
     @DeleteMapping("/{departmentId}")

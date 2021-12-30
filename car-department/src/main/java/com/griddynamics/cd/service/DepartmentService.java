@@ -1,7 +1,8 @@
 package com.griddynamics.cd.service;
 
-import com.griddynamics.cd.entity.DepartmentEntity;
+import com.griddynamics.cd.mapper.DepartmentMapper;
 import com.griddynamics.cd.model.Department;
+import com.griddynamics.cd.model.DepartmentRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,49 +17,42 @@ import java.util.stream.StreamSupport;
 public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
+    private final DepartmentMapper departmentMapper;
     private final EmployeeService employeeService;
 
     public List<Department> getAllDepartments() {
         return StreamSupport.stream(departmentRepository.findAll().spliterator(), false)
-                .map(this::mapDepartmentEntityToDepartmentModel)
+                .map(departmentMapper::toDepartmentModel)
                 .collect(Collectors.toList());
     }
 
     public Department getDepartmentById(Long departmentId) {
-        return mapDepartmentEntityToDepartmentModel(departmentRepository.findById(departmentId)
+        return departmentMapper.toDepartmentModel(
+                departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Department with " + departmentId + " id was not found"))
         );
     }
 
-    public void saveDepartment(Department department) {
-        departmentRepository.save(mapDepartmentModelToDepartmentEntity(department));
+    public Department saveDepartment(DepartmentRequest departmentRequest) {
+        return departmentMapper.toDepartmentModel(
+                departmentRepository.save(
+                        departmentMapper.toDepartmentEntity(departmentRequest))
+        );
+    }
+
+    public Department addEmployeeToDepartmentById(Long departmentId, Long employeeId) {
+        Department department = getDepartmentById(departmentId);
+
+        department.getEmployees().add(employeeService.getEmployeeById(employeeId));
+
+        return departmentMapper.toDepartmentModel(
+                departmentRepository.save(
+                        departmentMapper.toDepartmentEntity(department)
+                )
+        );
     }
 
     public void deleteDepartment(Long departmentId) {
         departmentRepository.deleteById(departmentId);
-    }
-
-    private Department mapDepartmentEntityToDepartmentModel(DepartmentEntity entity) {
-        return Department.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .email(entity.getEmail())
-                .description(entity.getDescription())
-                .departmentType(entity.getDepartmentType())
-                .employees(employeeService.getAllEmployeesByDepartmentId(entity.getId()))
-                .build();
-    }
-
-    private DepartmentEntity mapDepartmentModelToDepartmentEntity(Department department) {
-        return DepartmentEntity.builder()
-                .id(department.getId())
-                .name(department.getName())
-                .email(department.getEmail())
-                .description(department.getDescription())
-                .departmentType(department.getDepartmentType())
-                .employees(department.getEmployees().stream()
-                        .map(employeeService::mapEmployeeModelToEmployeeEntity)
-                        .collect(Collectors.toList()))
-                .build();
     }
 }
