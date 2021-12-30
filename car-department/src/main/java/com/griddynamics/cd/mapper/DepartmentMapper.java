@@ -8,6 +8,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring",
         uses = {EmployeeMapper.class})
 public interface DepartmentMapper {
+
     Department toDepartmentModel(DepartmentEntity entity);
     DepartmentEntity toDepartmentEntity(DepartmentRequest request);
     DepartmentEntity toDepartmentEntity(Department department);

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 
 @Data
 public class EmployeeRequest {
+
     @NotNull
     @Pattern(regexp = "^[a-zA-Z]+", message = "Invalid first name value")
     private String firstName;

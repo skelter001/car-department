@@ -8,6 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class Car {
+
     private Long id;
     private String manufacturer;
     private String model;

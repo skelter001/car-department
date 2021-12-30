@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
@@ -31,12 +32,13 @@ public class ExceptionAdviser extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException manve, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
+        log.error("Failed to parse request");
 
         List<ErrorResponse.ValidationError> validationErrors = manve.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(val -> new ErrorResponse.ValidationError(val.getField(), val.getDefaultMessage()))
-                .toList();
+                .collect(Collectors.toList());
 
         String[] msg = manve.getMessage().split("\\s+");
 

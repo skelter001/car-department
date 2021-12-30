@@ -14,6 +14,7 @@ import java.util.List;
 @Setter
 @Builder
 public class DepartmentEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

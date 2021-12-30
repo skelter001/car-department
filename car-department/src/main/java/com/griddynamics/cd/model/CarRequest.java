@@ -10,6 +10,7 @@ import javax.validation.constraints.Pattern;
 
 @Data
 public class CarRequest {
+
     @Pattern(regexp = "[a-zA-Z0-9]+", message = "Must contain only letters and numbers")
     private String manufacturer;
     @Pattern(regexp = "[a-zA-Z0-9]+", message = "Must contain only letters and numbers")

@@ -10,6 +10,7 @@ import javax.validation.constraints.Pattern;
 
 @Data
 public class DepartmentRequest {
+
     @Pattern(regexp = "^[a-zA-Z]+", message = "Must contain only letters")
     private String name;
     @Email(message = "Email should be valid")

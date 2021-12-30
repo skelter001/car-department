@@ -8,6 +8,7 @@ import javax.validation.constraints.Pattern;
 
 @Data
 public class ColorRequest {
+
     @Pattern(regexp = "[a-zA-Z]+", message = "Must contains only letters")
     private String colorName;
 

@@ -6,5 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface CarRepository extends CrudRepository<CarEntity, Long> {
+
     List<CarEntity> findAllCarsByEmployeeId(Long employeeId);
 }

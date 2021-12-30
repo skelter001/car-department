@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ColorMapper {
+
     Color toColorModel(ColorEntity entity);
     ColorEntity toColorEntity(ColorRequest request);
 }

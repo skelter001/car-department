@@ -7,7 +7,8 @@
 ## Download
 * ```git clone https://github.com/griddynamics/internship-tasks.git```
 ## Set up
-* From the project root open terminal and throw ```docker-compose up```
+* Enter in terminal ```docker build -f Dockerfile .``` from the project root directory.
+* Then to up containers enter ```docker-compose up```
 * Enter ```docker exec -it car_department bash``` to connect to the ```car_department``` container
 * Enter ```psql -U admin -d car_department_database``` to connect to database
 * At this point you can do anything in the database. For example:

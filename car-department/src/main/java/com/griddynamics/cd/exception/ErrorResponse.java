@@ -17,6 +17,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
+
     private final LocalDateTime timestamp;
     private final int status;
     private final String message;
