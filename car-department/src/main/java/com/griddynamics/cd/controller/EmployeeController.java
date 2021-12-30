@@ -67,8 +67,22 @@ public class EmployeeController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public void saveEmployee(@RequestBody Employee employee) {
-        employeeService.saveEmployee(employee);
+    public Employee saveEmployee(@RequestBody @Valid EmployeeRequest employeeRequest) {
+        return employeeService.saveEmployee(employeeRequest);
+    }
+
+    @PutMapping("/employees/{employeeId}/cars")
+    @Operation(
+            summary = "Add car to employee by id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            }
+    )
+    public Employee addCarToEmployee(@PathVariable Long employeeId,
+                                     @RequestBody Long carId) {
+        return employeeService.addCarToEmployeeById(employeeId, carId);
     }
 
     @DeleteMapping("/employees/{employeeId}")
