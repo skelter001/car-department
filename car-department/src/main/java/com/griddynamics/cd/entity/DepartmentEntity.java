@@ -1,11 +1,7 @@
 package com.griddynamics.cd.entity;
 
-import com.griddynamics.cd.model.Department;
 import com.griddynamics.cd.model.DepartmentType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Builder
 public class DepartmentEntity {
     @Id
@@ -24,6 +21,7 @@ public class DepartmentEntity {
     private String email;
     private String description;
     @Enumerated(EnumType.STRING)
+    @Column(name = "department_type", nullable = false)
     private DepartmentType departmentType;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id")

@@ -1,23 +1,13 @@
 package com.griddynamics.cd.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "car")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -28,9 +18,10 @@ public class CarEntity {
     private String manufacturer;
     private String model;
     private String vinNumber;
-    @NotNull
-    private Long employeeId;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private EmployeeEntity employee;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "color_id")
+    @JoinColumn(name = "color_id", nullable = false)
     private ColorEntity color;
 }

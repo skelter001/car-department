@@ -1,19 +1,8 @@
 package com.griddynamics.cd.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 public class EmployeeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +22,9 @@ public class EmployeeEntity {
     private LocalDate birthday;
     private String address;
     private String phoneNumber;
-    @NotNull
-    private Long departmentId;
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private DepartmentEntity department;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "car_id")
     private List<CarEntity> cars;
