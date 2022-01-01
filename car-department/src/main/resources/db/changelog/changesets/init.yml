@@ -26,7 +26,7 @@ databaseChangeLog:
               - column:
                   name: department_type
                   type: VARCHAR(255)
-                contraints:
+                constraints:
                   nullable: false
         - createTable:
             tableName: employee
@@ -35,7 +35,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  contraints:
+                  constraints:
                     nullable: false
                     primaryKey: true
                     primaryKeyName: pk_employee
@@ -43,7 +43,7 @@ databaseChangeLog:
                   name: first_name
                   type: VARCHAR(255)
               - column:
-                  name: second_name
+                  name: last_name
                   type: VARCHAR(255)
               - column:
                   name: birthday
@@ -51,7 +51,7 @@ databaseChangeLog:
               - column:
                   name: address
                   type: VARCHAR(255)
-              -column:
+              - column:
                   name: phone_number
                   type: VARCHAR(255)
               - column:
@@ -107,7 +107,7 @@ databaseChangeLog:
                   name: vin_number
                   type: VARCHAR(255)
               - column:
-                  name: employeeId
+                  name: employee_id
                   type: BIGINT
               - column:
                   name: color_id
