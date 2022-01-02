@@ -45,7 +45,7 @@ public class EmployeeController {
         return employeeService.getEmployeeById(employeeId);
     }
 
-    @GetMapping("/department/{departmentId}/employees")
+    @GetMapping("/departments/{departmentId}/employees")
     @Operation(
             summary = "Get all employees from specific department by id",
             responses = {

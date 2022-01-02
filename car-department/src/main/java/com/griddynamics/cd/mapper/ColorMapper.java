@@ -9,5 +9,6 @@ import org.mapstruct.Mapper;
 public interface ColorMapper {
 
     Color toColorModel(ColorEntity entity);
+
     ColorEntity toColorEntity(ColorRequest request);
 }

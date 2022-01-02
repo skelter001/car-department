@@ -32,7 +32,7 @@ public class CarService {
         );
     }
 
-    public List<Car> getAllCarsByEmployeeId(long employeeId) {
+    public List<Car> getAllCarsByEmployeeId(Long employeeId) {
         return carRepository.findAllCarsByEmployeeId(employeeId).stream()
                 .map(carMapper::toCarModel)
                 .collect(Collectors.toList());

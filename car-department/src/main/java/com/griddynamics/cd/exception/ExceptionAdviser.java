@@ -25,34 +25,32 @@ public class ExceptionAdviser extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException enfe) {
-        log.error("Failed to find expected entity", enfe);
-        return buildErrorResponse(enfe.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now(), null);
+    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+        log.error("Failed to find expected entity", ex);
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now(), null);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException manve, HttpHeaders headers,
+            MethodArgumentNotValidException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
         log.error("Failed to parse request");
 
-        List<ErrorResponse.ValidationError> validationErrors = manve.getBindingResult()
-                .getFieldErrors()
-                .stream()
+        List<ErrorResponse.ValidationError> validationErrors = ex.getBindingResult().getFieldErrors().stream()
                 .map(val -> new ErrorResponse.ValidationError(val.getField(), val.getDefaultMessage()))
                 .collect(Collectors.toList());
 
-        String[] msg = manve.getMessage().split("\\s+");
+        String[] msg = ex.getMessage().split("\\s+");
 
         return buildErrorResponse(msg[0] + ' ' + msg[1], HttpStatus.BAD_REQUEST, LocalDateTime.now(), validationErrors);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException hmnre, HttpHeaders headers, HttpStatus status, WebRequest request) {
+            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         log.error("Failed to parse json");
 
-        String[] msg = Objects.requireNonNull(hmnre.getMessage()).split("\\s+");
+        String[] msg = Objects.requireNonNull(ex.getMessage()).split("\\s+");
 
         return buildErrorResponse(msg[0] + ' ' + msg[1] + ' ' + msg[2], HttpStatus.BAD_REQUEST, LocalDateTime.now(), null);
     }

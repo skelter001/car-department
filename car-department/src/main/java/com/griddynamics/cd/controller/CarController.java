@@ -45,7 +45,7 @@ public class CarController {
         return carService.getCarById(carId);
     }
 
-    @GetMapping("/employee/{employeeId}/cars")
+    @GetMapping("/employees/{employeeId}/cars")
     @Operation(
             summary = "Get all cars from the specific employee",
             responses = {

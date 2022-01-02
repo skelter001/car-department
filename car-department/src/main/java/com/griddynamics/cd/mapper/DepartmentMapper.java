@@ -10,6 +10,8 @@ import org.mapstruct.Mapper;
 public interface DepartmentMapper {
 
     Department toDepartmentModel(DepartmentEntity entity);
+
     DepartmentEntity toDepartmentEntity(DepartmentRequest request);
+
     DepartmentEntity toDepartmentEntity(Department department);
 }

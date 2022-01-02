@@ -9,6 +9,8 @@ import org.mapstruct.Mapper;
 public interface CarMapper {
 
     Car toCarModel(CarEntity entity);
+
     CarEntity toCarEntity(CarRequest request);
+
     CarEntity toCarEntity(Car car);
 }

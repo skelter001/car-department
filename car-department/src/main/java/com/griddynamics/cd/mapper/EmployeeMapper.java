@@ -10,6 +10,8 @@ import org.mapstruct.Mapper;
 public interface EmployeeMapper {
 
     Employee toEmployeeModel(EmployeeEntity entity);
+
     EmployeeEntity toEmployeeEntity(EmployeeRequest request);
+
     EmployeeEntity toEmployeeEntity(Employee employee);
 }
