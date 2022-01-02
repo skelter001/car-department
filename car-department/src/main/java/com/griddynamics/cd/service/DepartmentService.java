@@ -7,6 +7,7 @@ import com.griddynamics.cd.repository.DepartmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ public class DepartmentService {
     public Department getDepartmentById(Long departmentId) {
         return departmentMapper.toDepartmentModel(
                 departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new EntityNotFoundException("Department with " + departmentId + " id was not found"))
+                        .orElseThrow(() -> new EntityNotFoundException("Department with " + departmentId + " id was not found"))
         );
     }
 
@@ -53,6 +54,9 @@ public class DepartmentService {
     }
 
     public void deleteDepartment(Long departmentId) {
+        if (!departmentRepository.existsById(departmentId)) {
+            throw new EntityExistsException("Department with " + departmentId + " id does not exist");
+        }
         departmentRepository.deleteById(departmentId);
     }
 }

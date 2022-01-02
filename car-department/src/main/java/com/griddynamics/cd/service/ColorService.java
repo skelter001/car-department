@@ -8,6 +8,7 @@ import com.griddynamics.cd.repository.ColorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,10 +27,10 @@ public class ColorService {
                 .collect(Collectors.toList());
     }
 
-    public Color getColorById(Long id) {
+    public Color getColorById(Long colorId) {
         return colorMapper.toColorModel(
-                colorRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Color with " + id + " id was not found"))
+                colorRepository.findById(colorId)
+                        .orElseThrow(() -> new EntityNotFoundException("Color with " + colorId + " id was not found"))
         );
     }
 
@@ -40,7 +41,10 @@ public class ColorService {
         );
     }
 
-    public void deleteColorById(Long id) {
-        colorRepository.deleteById(id);
+    public void deleteColorById(Long colorId) {
+        if (!colorRepository.existsById(colorId)) {
+            throw new EntityExistsException("Color with " + colorId + " id does not exist");
+        }
+        colorRepository.deleteById(colorId);
     }
 }

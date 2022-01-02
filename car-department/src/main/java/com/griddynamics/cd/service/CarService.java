@@ -7,6 +7,7 @@ import com.griddynamics.cd.repository.CarRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +47,9 @@ public class CarService {
     }
 
     public void deleteCar(Long carId) {
+        if (!carRepository.existsById(carId)) {
+            throw new EntityExistsException("Car with " + carId + " id does not exist");
+        }
         carRepository.deleteById(carId);
     }
 }
