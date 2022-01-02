@@ -47,7 +47,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: birthday
-                  type: Date
+                  type: DATE
               - column:
                   name: address
                   type: VARCHAR(255)
@@ -57,7 +57,7 @@ databaseChangeLog:
               - column:
                   name: department_id
                   type: BIGINT
-              - colunn:
+              - column:
                   name: employee_id
                   type: BIGINT
         - addForeignKeyConstraint:
