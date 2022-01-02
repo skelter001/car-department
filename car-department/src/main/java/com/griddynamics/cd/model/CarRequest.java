@@ -11,9 +11,9 @@ import javax.validation.constraints.Pattern;
 @Data
 public class CarRequest {
 
-    @Pattern(regexp = "[a-zA-Z0-9]+", message = "Must contain only letters and numbers")
+    @Pattern(regexp = "[a-zA-Z0-9\s]+", message = "Must contain only letters, numbers or spaces")
     private String manufacturer;
-    @Pattern(regexp = "[a-zA-Z0-9]+", message = "Must contain only letters and numbers")
+    @Pattern(regexp = "[a-zA-Z0-9\s]+", message = "Must contain only letters, numbers or spaces")
     private String model;
     @Pattern(regexp = "(\\d[A-Z]{4}\\d[A-Z]{2}\\d[A-Z]{3}\\d{5})", message = "Invalid vin number")
     private String vinNumber;
