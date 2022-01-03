@@ -81,7 +81,7 @@ public class EmployeeController {
             }
     )
     public Employee addEmployeeToDepartment(@PathVariable Long departmentId,
-                                            @RequestBody Long employeeId) {
+                                            @RequestParam Long employeeId) {
         return employeeService.addEmployeeToDepartmentById(departmentId, employeeId);
     }
 

@@ -81,7 +81,7 @@ public class CarController {
             }
     )
     public Car addCarToEmployee(@PathVariable Long employeeId,
-                                @RequestBody Long carId) {
+                                @RequestParam Long carId) {
         return carService.addCarToEmployeeById(employeeId, carId);
     }
 
