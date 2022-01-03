@@ -58,20 +58,6 @@ public class DepartmentController {
         return departmentService.saveDepartment(departmentRequest);
     }
 
-    @PutMapping("/{departmentId}/employees")
-    @Operation(
-            summary = "Add employee to department",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
-                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
-            }
-    )
-    public Department addEmployeeToDepartment(@PathVariable Long departmentId,
-                                              @RequestBody Long employeeId) {
-        return departmentService.addEmployeeToDepartmentById(departmentId, employeeId);
-    }
-
     @DeleteMapping("/{departmentId}")
     @Operation(
             summary = "Delete department by id",

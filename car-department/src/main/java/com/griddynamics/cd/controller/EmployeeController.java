@@ -55,7 +55,7 @@ public class EmployeeController {
             }
     )
     public List<Employee> getEmployeesByDepartmentId(@PathVariable Long departmentId) {
-        return employeeService.getAllEmployeesByDepartmentId(departmentId);
+        return employeeService.getEmployeesByDepartmentId(departmentId);
     }
 
     @PostMapping("/employees")
@@ -71,18 +71,18 @@ public class EmployeeController {
         return employeeService.saveEmployee(employeeRequest);
     }
 
-    @PutMapping("/employees/{employeeId}/cars")
+    @PutMapping("/departments/{departmentId}/employees")
     @Operation(
-            summary = "Add car to employee by id",
+            summary = "Add employee to department",
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK"),
                     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public Employee addCarToEmployee(@PathVariable Long employeeId,
-                                     @RequestBody Long carId) {
-        return employeeService.addCarToEmployeeById(employeeId, carId);
+    public Employee addEmployeeToDepartment(@PathVariable Long departmentId,
+                                            @RequestBody Long employeeId) {
+        return employeeService.addEmployeeToDepartmentById(departmentId, employeeId);
     }
 
     @DeleteMapping("/employees/{employeeId}")

@@ -41,18 +41,6 @@ public class DepartmentService {
         );
     }
 
-    public Department addEmployeeToDepartmentById(Long departmentId, Long employeeId) {
-        Department department = getDepartmentById(departmentId);
-
-        department.getEmployees().add(employeeService.getEmployeeById(employeeId));
-
-        return departmentMapper.toDepartmentModel(
-                departmentRepository.save(
-                        departmentMapper.toDepartmentEntity(department)
-                )
-        );
-    }
-
     public void deleteDepartment(Long departmentId) {
         if (!departmentRepository.existsById(departmentId)) {
             throw new EntityExistsException("Department with " + departmentId + " id does not exist");

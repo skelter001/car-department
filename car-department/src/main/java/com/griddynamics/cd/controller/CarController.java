@@ -55,7 +55,7 @@ public class CarController {
             }
     )
     public List<Car> getCarsByEmployeeId(@PathVariable Long employeeId) {
-        return carService.getAllCarsByEmployeeId(employeeId);
+        return carService.getCarsByEmployeeId(employeeId);
     }
 
     @PostMapping("/cars")
@@ -69,6 +69,20 @@ public class CarController {
     )
     public Car saveCar(@RequestBody @Valid CarRequest carRequest) {
         return carService.saveCar(carRequest);
+    }
+
+    @PutMapping("/employees/{employeeId}/cars")
+    @Operation(
+            summary = "Add car to employee by id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            }
+    )
+    public Car addCarToEmployee(@PathVariable Long employeeId,
+                                @RequestBody Long carId) {
+        return carService.addCarToEmployeeById(employeeId, carId);
     }
 
     @DeleteMapping("/cars/{carId}")
