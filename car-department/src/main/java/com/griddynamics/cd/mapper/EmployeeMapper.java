@@ -3,7 +3,7 @@ package com.griddynamics.cd.mapper;
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.model.Employee;
-import com.griddynamics.cd.model.EmployeeRequest;
+import com.griddynamics.cd.model.create.CreateEmployeeRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -13,7 +13,7 @@ public interface EmployeeMapper {
 
     Employee toEmployeeModel(EmployeeEntity entity);
 
-    EmployeeEntity toEmployeeEntity(EmployeeRequest request);
+    EmployeeEntity toEmployeeEntity(CreateEmployeeRequest request);
 
     EmployeeEntity toEmployeeEntity(Employee employee);
 

@@ -3,7 +3,8 @@ package com.griddynamics.cd.mapper;
 import com.griddynamics.cd.entity.CarEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.model.Car;
-import com.griddynamics.cd.model.CarRequest;
+import com.griddynamics.cd.model.create.CreateCarRequest;
+import com.griddynamics.cd.model.update.UpdateCarRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,7 +13,7 @@ public interface CarMapper {
 
     Car toCarModel(CarEntity entity);
 
-    CarEntity toCarEntity(CarRequest request);
+    CarEntity toCarEntity(CreateCarRequest request);
 
     CarEntity toCarEntity(Car car);
 

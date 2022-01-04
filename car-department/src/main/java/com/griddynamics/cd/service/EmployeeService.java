@@ -4,7 +4,7 @@ import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.mapper.EmployeeMapper;
 import com.griddynamics.cd.model.Employee;
-import com.griddynamics.cd.model.EmployeeRequest;
+import com.griddynamics.cd.model.create.CreateEmployeeRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
@@ -42,7 +42,7 @@ public class EmployeeService {
                 .collect(Collectors.toList());
     }
 
-    public Employee saveEmployee(EmployeeRequest employeeRequest) {
+    public Employee saveEmployee(CreateEmployeeRequest employeeRequest) {
         return employeeMapper.toEmployeeModel(
                 employeeRepository.save(
                         employeeMapper.toEmployeeEntity(employeeRequest))

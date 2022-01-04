@@ -1,7 +1,7 @@
 package com.griddynamics.cd.controller;
 
 import com.griddynamics.cd.model.Department;
-import com.griddynamics.cd.model.DepartmentRequest;
+import com.griddynamics.cd.model.create.CreateDepartmentRequest;
 import com.griddynamics.cd.service.DepartmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -54,7 +54,7 @@ public class DepartmentController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public Department saveDepartment(@RequestBody @Valid DepartmentRequest departmentRequest) {
+    public Department saveDepartment(@RequestBody @Valid CreateDepartmentRequest departmentRequest) {
         return departmentService.saveDepartment(departmentRequest);
     }
 

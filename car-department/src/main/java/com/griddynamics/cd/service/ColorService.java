@@ -3,7 +3,7 @@ package com.griddynamics.cd.service;
 
 import com.griddynamics.cd.mapper.ColorMapper;
 import com.griddynamics.cd.model.Color;
-import com.griddynamics.cd.model.ColorRequest;
+import com.griddynamics.cd.model.create.CreateColorRequest;
 import com.griddynamics.cd.repository.ColorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class ColorService {
         );
     }
 
-    public Color saveColor(ColorRequest colorRequest) {
+    public Color saveColor(CreateColorRequest colorRequest) {
         return colorMapper.toColorModel(
                 colorRepository.save(
                         colorMapper.toColorEntity(colorRequest))

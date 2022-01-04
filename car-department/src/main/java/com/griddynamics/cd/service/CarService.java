@@ -4,7 +4,8 @@ import com.griddynamics.cd.entity.CarEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.mapper.CarMapper;
 import com.griddynamics.cd.model.Car;
-import com.griddynamics.cd.model.CarRequest;
+import com.griddynamics.cd.model.create.CreateCarRequest;
+import com.griddynamics.cd.model.update.UpdateCarRequest;
 import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
@@ -42,13 +43,12 @@ public class CarService {
                 .collect(Collectors.toList());
     }
 
-    public Car saveCar(CarRequest car) {
+    public Car saveCar(CreateCarRequest createCarRequest) {
         return carMapper.toCarModel(
                 carRepository.save(
-                        carMapper.toCarEntity(car))
+                        carMapper.toCarEntity(createCarRequest))
         );
     }
-
 
     public Car addCarToEmployeeById(Long employeeId, Long carId) {
         CarEntity carEntity = carRepository.findById(carId)

@@ -1,7 +1,7 @@
 package com.griddynamics.cd.controller;
 
 import com.griddynamics.cd.model.Color;
-import com.griddynamics.cd.model.ColorRequest;
+import com.griddynamics.cd.model.create.CreateColorRequest;
 import com.griddynamics.cd.service.ColorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -53,7 +53,7 @@ public class ColorController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public Color saveColor(@RequestBody @Valid ColorRequest colorRequest) {
+    public Color saveColor(@RequestBody @Valid CreateColorRequest colorRequest) {
         return colorService.saveColor(colorRequest);
     }
 

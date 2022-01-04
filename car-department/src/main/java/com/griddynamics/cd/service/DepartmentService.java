@@ -2,7 +2,7 @@ package com.griddynamics.cd.service;
 
 import com.griddynamics.cd.mapper.DepartmentMapper;
 import com.griddynamics.cd.model.Department;
-import com.griddynamics.cd.model.DepartmentRequest;
+import com.griddynamics.cd.model.create.CreateDepartmentRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,10 +33,10 @@ public class DepartmentService {
         );
     }
 
-    public Department saveDepartment(DepartmentRequest departmentRequest) {
+    public Department saveDepartment(CreateDepartmentRequest createDepartmentRequest) {
         return departmentMapper.toDepartmentModel(
                 departmentRepository.save(
-                        departmentMapper.toDepartmentEntity(departmentRequest))
+                        departmentMapper.toDepartmentEntity(createDepartmentRequest))
         );
     }
 

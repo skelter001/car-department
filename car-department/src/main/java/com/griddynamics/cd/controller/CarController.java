@@ -1,7 +1,8 @@
 package com.griddynamics.cd.controller;
 
 import com.griddynamics.cd.model.Car;
-import com.griddynamics.cd.model.CarRequest;
+import com.griddynamics.cd.model.create.CreateCarRequest;
+import com.griddynamics.cd.model.update.UpdateCarRequest;
 import com.griddynamics.cd.service.CarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -66,8 +67,8 @@ public class CarController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public Car saveCar(@RequestBody @Valid CarRequest carRequest) {
-        return carService.saveCar(carRequest);
+    public Car saveCar(@RequestBody @Valid CreateCarRequest createCarRequest) {
+        return carService.saveCar(createCarRequest);
     }
 
     @PutMapping("/employees/{employeeId}/cars")

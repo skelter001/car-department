@@ -1,4 +1,4 @@
-package com.griddynamics.cd.model;
+package com.griddynamics.cd.model.create;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,7 +9,7 @@ import javax.validation.constraints.Pattern;
 
 
 @Data
-public class CarRequest {
+public class CreateCarRequest {
 
     @Pattern(regexp = "[a-zA-Z0-9\s]+", message = "Must contain only letters, numbers or spaces")
     private String manufacturer;
@@ -18,13 +18,13 @@ public class CarRequest {
     @Pattern(regexp = "([A-Za-z0-9]{17})", message = "Invalid vin number")
     private String vinNumber;
     @NotNull
-    private ColorRequest color;
+    private CreateColorRequest color;
 
     @JsonCreator
-    public CarRequest(@JsonProperty("manufacturer") String manufacturer,
-                      @JsonProperty("model") String model,
-                      @JsonProperty("vinNumber") String vinNumber,
-                      @JsonProperty("color") ColorRequest color) {
+    public CreateCarRequest(@JsonProperty("manufacturer") String manufacturer,
+                            @JsonProperty("model") String model,
+                            @JsonProperty("vinNumber") String vinNumber,
+                            @JsonProperty("color") CreateColorRequest color) {
         this.manufacturer = manufacturer;
         this.model = model;
         this.vinNumber = vinNumber;

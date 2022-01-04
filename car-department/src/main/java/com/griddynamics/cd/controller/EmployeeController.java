@@ -1,7 +1,7 @@
 package com.griddynamics.cd.controller;
 
 import com.griddynamics.cd.model.Employee;
-import com.griddynamics.cd.model.EmployeeRequest;
+import com.griddynamics.cd.model.create.CreateEmployeeRequest;
 import com.griddynamics.cd.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -66,7 +66,7 @@ public class EmployeeController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public Employee saveEmployee(@RequestBody @Valid EmployeeRequest employeeRequest) {
+    public Employee saveEmployee(@RequestBody @Valid CreateEmployeeRequest employeeRequest) {
         return employeeService.saveEmployee(employeeRequest);
     }
 

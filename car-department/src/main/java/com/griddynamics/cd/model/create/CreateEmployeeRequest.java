@@ -1,4 +1,4 @@
-package com.griddynamics.cd.model;
+package com.griddynamics.cd.model.create;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,7 +10,7 @@ import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 @Data
-public class EmployeeRequest {
+public class CreateEmployeeRequest {
 
     @NotNull
     @Pattern(regexp = "^[a-zA-Z]+", message = "Invalid first name value")
@@ -26,10 +26,10 @@ public class EmployeeRequest {
     private String phoneNumber;
 
     @JsonCreator
-    public EmployeeRequest(@JsonProperty("firstName") String firstName,
-                           @JsonProperty("lastName") String lastName,
-                           @JsonProperty("address") String address,
-                           @JsonProperty("phoneNumber") String phoneNumber) {
+    public CreateEmployeeRequest(@JsonProperty("firstName") String firstName,
+                                 @JsonProperty("lastName") String lastName,
+                                 @JsonProperty("address") String address,
+                                 @JsonProperty("phoneNumber") String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
