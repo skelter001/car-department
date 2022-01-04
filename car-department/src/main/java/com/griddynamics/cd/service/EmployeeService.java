@@ -1,5 +1,6 @@
 package com.griddynamics.cd.service;
 
+import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.mapper.EmployeeMapper;
 import com.griddynamics.cd.model.Employee;
@@ -9,7 +10,6 @@ import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,7 +70,7 @@ public class EmployeeService {
 
     public void deleteEmployee(Long employeeId) {
         if (!employeeRepository.existsById(employeeId)) {
-            throw new EntityExistsException("Employee with " + employeeId + " id does not exist");
+            throw new EntityNotFoundException("Employee with " + employeeId + " id was not found");
         }
         employeeRepository.deleteById(employeeId);
     }
