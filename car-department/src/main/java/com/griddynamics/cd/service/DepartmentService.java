@@ -1,8 +1,10 @@
 package com.griddynamics.cd.service;
 
+import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.mapper.DepartmentMapper;
 import com.griddynamics.cd.model.Department;
 import com.griddynamics.cd.model.create.CreateDepartmentRequest;
+import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,16 @@ public class DepartmentService {
         return departmentMapper.toDepartmentModel(
                 departmentRepository.save(
                         departmentMapper.toDepartmentEntity(createDepartmentRequest))
+        );
+    }
+
+    public Department updateDepartment(UpdateDepartmentRequest updateDepartmentRequest, Long departmentId) {
+        DepartmentEntity departmentEntity = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new EntityNotFoundException("Department with " + departmentId + " id was not found"));
+
+        return departmentMapper.toDepartmentModel(
+                departmentRepository.save(
+                        departmentMapper.toDepartmentEntity(updateDepartmentRequest, departmentEntity))
         );
     }
 

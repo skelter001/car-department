@@ -61,6 +61,17 @@ public class CarService {
         return carMapper.toCarModel(carRepository.save(updatedCarEntity));
     }
 
+    public Car updateCar(UpdateCarRequest updateCarRequest, Long carId) {
+        CarEntity carEntity = carRepository.findById(carId)
+                        .orElseThrow(() -> new EntityNotFoundException("Car with " + carId + " id was not found"));
+
+        return carMapper.toCarModel(
+                carRepository.save(
+                        carMapper.toCarEntity(updateCarRequest, carEntity)
+                )
+        );
+    }
+
     public void deleteCar(Long carId) {
         if (!carRepository.existsById(carId)) {
             throw new EntityNotFoundException("Car with " + carId + " id was not found");

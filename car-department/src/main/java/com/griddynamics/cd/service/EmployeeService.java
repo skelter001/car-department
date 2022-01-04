@@ -5,6 +5,7 @@ import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.mapper.EmployeeMapper;
 import com.griddynamics.cd.model.Employee;
 import com.griddynamics.cd.model.create.CreateEmployeeRequest;
+import com.griddynamics.cd.model.update.UpdateEmployeeRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,17 @@ public class EmployeeService {
         return employeeMapper.toEmployeeModel(
                 employeeRepository.save(
                         employeeMapper.toEmployeeEntity(employeeRequest))
+        );
+    }
+
+    public Employee updateEmployee(UpdateEmployeeRequest updateEmployeeRequest, Long employeeId) {
+        EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
+                        .orElseThrow(() -> new EntityNotFoundException("Employee with " + employeeId + " id was not found"));
+
+        return employeeMapper.toEmployeeModel(
+                employeeRepository.save(
+                        employeeMapper.toEmployeeEntity(updateEmployeeRequest, employeeEntity)
+                )
         );
     }
 

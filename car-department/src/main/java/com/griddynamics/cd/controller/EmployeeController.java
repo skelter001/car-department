@@ -2,6 +2,7 @@ package com.griddynamics.cd.controller;
 
 import com.griddynamics.cd.model.Employee;
 import com.griddynamics.cd.model.create.CreateEmployeeRequest;
+import com.griddynamics.cd.model.update.UpdateEmployeeRequest;
 import com.griddynamics.cd.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -70,7 +71,21 @@ public class EmployeeController {
         return employeeService.saveEmployee(employeeRequest);
     }
 
-    @PutMapping("/departments/{departmentId}/employees")
+    @PutMapping("/employees/{employeeId}")
+    @Operation(
+            summary = "Update employee model",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            }
+    )
+    public Employee updateEmployee(@PathVariable Long employeeId,
+                                   @RequestBody @Valid UpdateEmployeeRequest updateEmployeeRequest) {
+        return employeeService.updateEmployee(updateEmployeeRequest, employeeId);
+    }
+
+    @PutMapping("/departments/employees/{employeeId}")
     @Operation(
             summary = "Add employee to department",
             responses = {
@@ -79,8 +94,8 @@ public class EmployeeController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public Employee addEmployeeToDepartment(@PathVariable Long departmentId,
-                                            @RequestParam Long employeeId) {
+    public Employee addEmployeeToDepartment(@PathVariable Long employeeId,
+                                            @RequestBody Long departmentId) {
         return employeeService.addEmployeeToDepartmentById(departmentId, employeeId);
     }
 

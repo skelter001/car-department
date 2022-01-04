@@ -71,7 +71,7 @@ public class CarController {
         return carService.saveCar(createCarRequest);
     }
 
-    @PutMapping("/employees/{employeeId}/cars")
+    @PutMapping("/employees/cars/{carId}")
     @Operation(
             summary = "Add car to employee by id",
             responses = {
@@ -80,9 +80,23 @@ public class CarController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public Car addCarToEmployee(@PathVariable Long employeeId,
-                                @RequestParam Long carId) {
+    public Car addCarToEmployee(@PathVariable Long carId,
+                                @RequestBody Long employeeId) {
         return carService.addCarToEmployeeById(employeeId, carId);
+    }
+
+    @PutMapping("/cars/{carId}")
+    @Operation(
+            summary = "Update car model",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            }
+    )
+    public Car updateCar(@PathVariable Long carId,
+                         @RequestBody @Valid UpdateCarRequest updateCarRequest) {
+        return carService.updateCar(updateCarRequest, carId);
     }
 
     @DeleteMapping("/cars/{carId}")

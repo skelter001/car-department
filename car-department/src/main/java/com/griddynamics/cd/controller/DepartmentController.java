@@ -2,6 +2,7 @@ package com.griddynamics.cd.controller;
 
 import com.griddynamics.cd.model.Department;
 import com.griddynamics.cd.model.create.CreateDepartmentRequest;
+import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import com.griddynamics.cd.service.DepartmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -56,6 +57,20 @@ public class DepartmentController {
     )
     public Department saveDepartment(@RequestBody @Valid CreateDepartmentRequest departmentRequest) {
         return departmentService.saveDepartment(departmentRequest);
+    }
+
+    @PutMapping("/{departmentId}")
+    @Operation(
+            summary = "Update department model",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            }
+    )
+    public Department updateDepartment(@PathVariable Long departmentId,
+                                       @RequestBody @Valid UpdateDepartmentRequest updateDepartmentRequest) {
+        return departmentService.updateDepartment(updateDepartmentRequest, departmentId);
     }
 
     @DeleteMapping("/{departmentId}")
