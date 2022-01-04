@@ -53,16 +53,10 @@ public class CarService {
     public Car addCarToEmployeeById(Long employeeId, Long carId) {
         CarEntity carEntity = carRepository.findById(carId)
                 .orElseThrow(() -> new EntityNotFoundException("Car with " + carId + " id was not found"));
+        EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("Employee with " + employeeId + " id was not found"));
 
-        CarEntity updatedCarEntity = CarEntity.builder()
-                .id(carEntity.getId())
-                .manufacturer(carEntity.getManufacturer())
-                .model(carEntity.getModel())
-                .vinNumber(carEntity.getVinNumber())
-                .employee(employeeRepository.findById(employeeId)
-                        .orElseThrow(() -> new EntityNotFoundException("Employee with " + employeeId + " id was not found")))
-                .color(carEntity.getColor())
-                .build();
+        CarEntity updatedCarEntity = carMapper.toCarEntity(carEntity, employeeEntity);
 
         return carMapper.toCarModel(carRepository.save(updatedCarEntity));
     }

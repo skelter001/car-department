@@ -52,18 +52,10 @@ public class EmployeeService {
     public Employee addEmployeeToDepartmentById(Long departmentId, Long employeeId) {
         EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Employee with " + employeeId + " id was not found"));
+        DepartmentEntity departmentEntity = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new EntityNotFoundException("Department with " + departmentId + " id was not found"));
 
-        EmployeeEntity updateEmployeeEntity = EmployeeEntity.builder()
-                .id(employeeEntity.getId())
-                .firstName(employeeEntity.getFirstName())
-                .lastName(employeeEntity.getLastName())
-                .birthday(employeeEntity.getBirthday())
-                .address(employeeEntity.getAddress())
-                .phoneNumber(employeeEntity.getPhoneNumber())
-                .department(departmentRepository.findById(departmentId)
-                        .orElseThrow(() -> new EntityNotFoundException("Department with " + departmentId + " id was not found")))
-                .cars(employeeEntity.getCars())
-                .build();
+        EmployeeEntity updateEmployeeEntity = employeeMapper.toEmployeeEntity(employeeEntity, departmentEntity);
 
         return employeeMapper.toEmployeeModel(employeeRepository.save(updateEmployeeEntity));
     }
