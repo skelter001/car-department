@@ -5,7 +5,6 @@ import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.model.Car;
 import com.griddynamics.cd.model.create.CreateCarRequest;
 import com.griddynamics.cd.model.update.UpdateCarRequest;
-import lombok.ToString;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
