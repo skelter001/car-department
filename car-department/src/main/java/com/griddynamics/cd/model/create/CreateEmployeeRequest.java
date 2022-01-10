@@ -28,10 +28,12 @@ public class CreateEmployeeRequest {
     @JsonCreator
     public CreateEmployeeRequest(@JsonProperty("firstName") String firstName,
                                  @JsonProperty("lastName") String lastName,
+                                 @JsonProperty("birthday") LocalDate birthday,
                                  @JsonProperty("address") String address,
                                  @JsonProperty("phoneNumber") String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.birthday = birthday;
         this.address = address;
         this.phoneNumber = phoneNumber;
     }
