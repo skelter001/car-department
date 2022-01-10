@@ -3,6 +3,7 @@ package com.griddynamics.cd.model.create;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.griddynamics.cd.model.DepartmentType;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Data
+@Builder
 public class CreateDepartmentRequest {
 
     @Pattern(regexp = "^[a-zA-Z]+", message = "Must contain only letters")

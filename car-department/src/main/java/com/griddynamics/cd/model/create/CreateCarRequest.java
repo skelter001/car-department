@@ -2,6 +2,7 @@ package com.griddynamics.cd.model.create;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import javax.validation.constraints.Pattern;
 
 
 @Data
+@Builder
 public class CreateCarRequest {
 
     @Pattern(regexp = "[a-zA-Z0-9\s]+", message = "Must contain only letters, numbers or spaces")
