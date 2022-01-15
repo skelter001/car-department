@@ -17,16 +17,27 @@ public class EmployeeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "birthday")
     private LocalDate birthday;
+    @Column(name = "address")
     private String address;
+    @Column(name = "phone_number")
     private String phoneNumber;
     @ManyToOne
     @JoinColumn(name = "department_id")
     private DepartmentEntity department;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinColumn(name = "car_id")
     private List<CarEntity> cars;
+
+//    public void setCars(List<CarEntity> cars) {
+//        this.cars = cars;
+//        this.cars.forEach(car -> car.setEmployee(this));
+//    }
 }

@@ -1,9 +1,9 @@
 package com.griddynamics.cd.model.create;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
@@ -11,6 +11,8 @@ import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class CreateEmployeeRequest {
 
@@ -26,17 +28,4 @@ public class CreateEmployeeRequest {
     private String address;
     @Pattern(regexp="(^$|[0-9]{10})", message = "Invalid phone number value")
     private String phoneNumber;
-
-    @JsonCreator
-    public CreateEmployeeRequest(@JsonProperty("firstName") String firstName,
-                                 @JsonProperty("lastName") String lastName,
-                                 @JsonProperty("birthday") LocalDate birthday,
-                                 @JsonProperty("address") String address,
-                                 @JsonProperty("phoneNumber") String phoneNumber) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthday = birthday;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-    }
 }

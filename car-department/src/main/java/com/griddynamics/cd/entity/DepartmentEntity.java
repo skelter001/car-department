@@ -17,14 +17,18 @@ public class DepartmentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "email")
     private String email;
+    @Column(name = "description")
     private String description;
-    @Enumerated(EnumType.STRING)
     @Column(name = "department_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private DepartmentType departmentType;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinColumn(name = "employee_id")
     private List<EmployeeEntity> employees;
 }

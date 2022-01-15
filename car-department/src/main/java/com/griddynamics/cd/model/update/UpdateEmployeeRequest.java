@@ -1,7 +1,5 @@
 package com.griddynamics.cd.model.update;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Past;
@@ -21,15 +19,4 @@ public class UpdateEmployeeRequest {
     private String address;
     @Pattern(regexp="(^$|[0-9]{10})", message = "Invalid phone number value")
     private String phoneNumber;
-
-    @JsonCreator
-    public UpdateEmployeeRequest(@JsonProperty("firstName") String firstName,
-                                 @JsonProperty("lastName") String lastName,
-                                 @JsonProperty("address") String address,
-                                 @JsonProperty("phoneNumber") String phoneNumber) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-    }
 }

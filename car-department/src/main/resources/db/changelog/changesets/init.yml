@@ -73,20 +73,6 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: department
         - createTable:
-            tableName: color
-            columns:
-              - column:
-                  name: id
-                  type: BIGINT
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: pk_color
-              - column:
-                  name: color_name
-                  type: VARCHAR(255)
-        - createTable:
             tableName: car
             columns:
               - column:
@@ -110,8 +96,8 @@ databaseChangeLog:
                   name: employee_id
                   type: BIGINT
               - column:
-                  name: color_id
-                  type: BIGINT
+                  name: color
+                  type: VARCHAR(255)
                   constraints:
                     nullable: false
               - column:
@@ -123,12 +109,6 @@ databaseChangeLog:
             constraintName: FK_CAR_ON_CAR
             referencedColumnNames: id
             referencedTableName: employee
-        - addForeignKeyConstraint:
-            baseColumnNames: color_id
-            baseTableName: car
-            constraintName: FK_CAR_ON_COLOR
-            referencedColumnNames: id
-            referencedTableName: color
         - addForeignKeyConstraint:
             baseColumnNames: employee_id
             baseTableName: car

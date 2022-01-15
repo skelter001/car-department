@@ -1,15 +1,18 @@
 package com.griddynamics.cd.model.create;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.griddynamics.cd.model.Color;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class CreateCarRequest {
 
@@ -20,16 +23,5 @@ public class CreateCarRequest {
     @Pattern(regexp = "([A-Z0-9]{17})", message = "Invalid vin number")
     private String vinNumber;
     @NotNull
-    private CreateColorRequest color;
-
-    @JsonCreator
-    public CreateCarRequest(@JsonProperty("manufacturer") String manufacturer,
-                            @JsonProperty("model") String model,
-                            @JsonProperty("vinNumber") String vinNumber,
-                            @JsonProperty("color") CreateColorRequest color) {
-        this.manufacturer = manufacturer;
-        this.model = model;
-        this.vinNumber = vinNumber;
-        this.color = color;
-    }
+    private Color color;
 }

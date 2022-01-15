@@ -1,7 +1,5 @@
 package com.griddynamics.cd.model.update;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.griddynamics.cd.model.DepartmentType;
 import lombok.Data;
 
@@ -17,15 +15,4 @@ public class UpdateDepartmentRequest {
     private String email;
     private String description;
     private DepartmentType departmentType;
-
-    @JsonCreator
-    public UpdateDepartmentRequest(@JsonProperty("name") String name,
-                                   @JsonProperty("email") String email,
-                                   @JsonProperty("description") String description,
-                                   @JsonProperty("departmentType") DepartmentType departmentType) {
-        this.name = name;
-        this.email = email;
-        this.description = description;
-        this.departmentType = departmentType;
-    }
 }
