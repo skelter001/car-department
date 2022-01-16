@@ -20,7 +20,6 @@ public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
-    private final EmployeeService employeeService;
 
     public List<Department> getAllDepartments() {
         return StreamSupport.stream(departmentRepository.findAll().spliterator(), false)

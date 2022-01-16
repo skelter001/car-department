@@ -85,20 +85,6 @@ public class EmployeeController {
         return employeeService.updateEmployee(updateEmployeeRequest, employeeId);
     }
 
-    @PutMapping("/departments/employees/{employeeId}")
-    @Operation(
-            summary = "Add employee to department",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
-                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
-            }
-    )
-    public Employee addEmployeeToDepartment(@PathVariable Long employeeId,
-                                            @RequestBody Long departmentId) {
-        return employeeService.addEmployeeToDepartmentById(departmentId, employeeId);
-    }
-
     @DeleteMapping("/employees/{employeeId}")
     @Operation(
             summary = "Delete employee by id",
