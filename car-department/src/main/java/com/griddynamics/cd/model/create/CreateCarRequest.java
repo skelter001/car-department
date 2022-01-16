@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 
 
 @Data
@@ -24,4 +25,6 @@ public class CreateCarRequest {
     private String vinNumber;
     @NotNull
     private Color color;
+    @Positive
+    private Long employeeId;
 }

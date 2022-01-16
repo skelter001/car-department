@@ -44,26 +44,26 @@ public class CarService {
     }
 
     public Car saveCar(CreateCarRequest createCarRequest) {
-        return carMapper.toCarModel(
-                carRepository.save(
-                        carMapper.toCarEntity(createCarRequest))
-        );
-    }
+        CarEntity carEntity = carMapper.toCarEntity(createCarRequest);
 
-    public Car addCarToEmployeeById(Long employeeId, Long carId) {
-        CarEntity carEntity = carRepository.findById(carId)
-                .orElseThrow(() -> new EntityNotFoundException("Car with " + carId + " id was not found"));
-        EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("Employee with " + employeeId + " id was not found"));
+        if (createCarRequest.getEmployeeId() != null) {
+            EmployeeEntity employeeEntity = employeeRepository.findById(createCarRequest.getEmployeeId())
+                    .orElseThrow(() -> new EntityNotFoundException("Employee with " + createCarRequest.getEmployeeId() + " id was not found"));
+            carEntity.setEmployee(employeeEntity);
+        }
 
-        CarEntity updatedCarEntity = carMapper.toCarEntity(carEntity, employeeEntity);
-
-        return carMapper.toCarModel(carRepository.save(updatedCarEntity));
+        return carMapper.toCarModel(carRepository.save(carEntity));
     }
 
     public Car updateCar(UpdateCarRequest updateCarRequest, Long carId) {
         CarEntity carEntity = carRepository.findById(carId)
-                        .orElseThrow(() -> new EntityNotFoundException("Car with " + carId + " id was not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Car with " + carId + " id was not found"));
+
+        if (updateCarRequest.getEmployeeId() != null) {
+            EmployeeEntity employeeEntity = employeeRepository.findById(updateCarRequest.getEmployeeId())
+                    .orElseThrow(() -> new EntityNotFoundException("Employee with " + updateCarRequest.getEmployeeId() + " id was not found"));
+            carEntity.setEmployee(employeeEntity);
+        }
 
         return carMapper.toCarModel(
                 carRepository.save(

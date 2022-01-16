@@ -8,4 +8,8 @@ import java.util.List;
 public interface EmployeeRepository extends CrudRepository<EmployeeEntity, Long> {
 
     List<EmployeeEntity> findAllEmployeesByDepartmentId(Long departmentId);
+
+    boolean existsByPhoneNumber(String phoneNumber);
+
+    boolean existsByPhoneNumberAndIdIsNot(String phoneNumber, Long id);
 }
