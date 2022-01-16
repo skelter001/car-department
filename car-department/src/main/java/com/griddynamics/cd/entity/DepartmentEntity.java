@@ -28,7 +28,6 @@ public class DepartmentEntity {
     @Column(name = "department_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private DepartmentType departmentType;
-    @OneToMany
-    @JoinColumn(name = "employee_id")
+    @OneToMany(mappedBy = "department")
     private List<EmployeeEntity> employees;
 }

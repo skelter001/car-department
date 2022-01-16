@@ -57,19 +57,10 @@ databaseChangeLog:
               - column:
                   name: department_id
                   type: BIGINT
-              - column:
-                  name: employee_id
-                  type: BIGINT
         - addForeignKeyConstraint:
             baseColumnNames: department_id
             baseTableName: employee
             constraintName: FK_EMPLOYEE_ON_DEPARTMENT
-            referencedColumnNames: id
-            referencedTableName: department
-        - addForeignKeyConstraint:
-            baseColumnNames: employee_id
-            baseTableName: employee
-            constraintName: FK_EMPLOYEE_ON_EMPLOYEE
             referencedColumnNames: id
             referencedTableName: department
         - createTable:
@@ -100,15 +91,6 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-              - column:
-                  name: car_id
-                  type: BIGINT
-        - addForeignKeyConstraint:
-            baseColumnNames: car_id
-            baseTableName: car
-            constraintName: FK_CAR_ON_CAR
-            referencedColumnNames: id
-            referencedTableName: employee
         - addForeignKeyConstraint:
             baseColumnNames: employee_id
             baseTableName: car

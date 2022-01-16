@@ -32,8 +32,7 @@ public class EmployeeEntity {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private DepartmentEntity department;
-    @OneToMany
-    @JoinColumn(name = "car_id")
+    @OneToMany(mappedBy = "employee")
     private List<CarEntity> cars;
 
 //    public void setCars(List<CarEntity> cars) {
