@@ -8,7 +8,7 @@ import com.griddynamics.cd.model.update.UpdateEmployeeRequest;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
-        uses = {CarMapper.class})
+        uses = {DepartmentMapper.class})
 public interface EmployeeMapper {
 
     Employee toEmployeeModel(EmployeeEntity entity);

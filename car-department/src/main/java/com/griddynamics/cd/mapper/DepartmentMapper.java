@@ -6,8 +6,7 @@ import com.griddynamics.cd.model.create.CreateDepartmentRequest;
 import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring",
-        uses = {EmployeeMapper.class})
+@Mapper(componentModel = "spring")
 public interface DepartmentMapper {
 
     Department toDepartmentModel(DepartmentEntity entity);
