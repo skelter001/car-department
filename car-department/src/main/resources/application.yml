@@ -4,4 +4,7 @@ spring:
 
 logging:
   level:
-    "liquibase": info
+    liquibase: info
+    org:
+      hibernate:
+        SQL: debug
