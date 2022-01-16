@@ -9,6 +9,7 @@ import com.griddynamics.cd.repository.DepartmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +36,12 @@ public class DepartmentService {
     }
 
     public Department saveDepartment(CreateDepartmentRequest createDepartmentRequest) {
+        if (createDepartmentRequest.getEmail() != null) {
+            if (departmentRepository.existsByEmail(createDepartmentRequest.getEmail())) {
+                throw new EntityExistsException("Department with " + createDepartmentRequest.getEmail() + " email already exist");
+            }
+        }
+
         return departmentMapper.toDepartmentModel(
                 departmentRepository.save(
                         departmentMapper.toDepartmentEntity(createDepartmentRequest))
@@ -45,9 +52,16 @@ public class DepartmentService {
         DepartmentEntity departmentEntity = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Department with " + departmentId + " id was not found"));
 
+        if (updateDepartmentRequest.getEmail() != null) {
+            if (departmentRepository.existsByEmailAndIdIsNot(updateDepartmentRequest.getEmail(), departmentId)) {
+                throw new EntityExistsException("Department with " + updateDepartmentRequest.getEmail() + " email already exist");
+            }
+        }
+
         return departmentMapper.toDepartmentModel(
                 departmentRepository.save(
-                        departmentMapper.toDepartmentEntity(updateDepartmentRequest, departmentEntity))
+                        departmentMapper.toDepartmentEntity(updateDepartmentRequest, departmentEntity)
+                )
         );
     }
 

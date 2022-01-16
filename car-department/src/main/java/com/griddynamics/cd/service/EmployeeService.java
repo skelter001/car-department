@@ -11,6 +11,7 @@ import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,15 +45,38 @@ public class EmployeeService {
     }
 
     public Employee saveEmployee(CreateEmployeeRequest employeeRequest) {
-        return employeeMapper.toEmployeeModel(
-                employeeRepository.save(
-                        employeeMapper.toEmployeeEntity(employeeRequest))
-        );
+        EmployeeEntity employeeEntity = employeeMapper.toEmployeeEntity(employeeRequest);
+
+        if (employeeRequest.getPhoneNumber() != null) {
+            if (employeeRepository.existsByPhoneNumber(employeeRequest.getPhoneNumber())) {
+                throw new EntityExistsException("Employee with " + employeeRequest.getPhoneNumber() + " phone number already exist");
+            }
+        }
+
+        if (employeeRequest.getDepartmentId() != null) {
+            DepartmentEntity departmentEntity = departmentRepository.findById(employeeRequest.getDepartmentId())
+                    .orElseThrow(() -> new EntityNotFoundException("Department with " + employeeRequest.getDepartmentId() + " id was not found"));
+            employeeEntity.setDepartment(departmentEntity);
+        }
+
+        return employeeMapper.toEmployeeModel(employeeRepository.save(employeeEntity));
     }
 
     public Employee updateEmployee(UpdateEmployeeRequest updateEmployeeRequest, Long employeeId) {
         EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
-                        .orElseThrow(() -> new EntityNotFoundException("Employee with " + employeeId + " id was not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Employee with " + employeeId + " id was not found"));
+
+        if (updateEmployeeRequest.getPhoneNumber() != null) {
+            if (employeeRepository.existsByPhoneNumberAndIdIsNot(updateEmployeeRequest.getPhoneNumber(), employeeId)) {
+                throw new EntityExistsException("Employee with " + updateEmployeeRequest.getPhoneNumber() + " phone number already exist");
+            }
+        }
+
+        if (updateEmployeeRequest.getDepartmentId() != null) {
+            DepartmentEntity departmentEntity = departmentRepository.findById(updateEmployeeRequest.getDepartmentId())
+                    .orElseThrow(() -> new EntityNotFoundException("Department with " + updateEmployeeRequest.getDepartmentId() + " id was not found"));
+            employeeEntity.setDepartment(departmentEntity);
+        }
 
         return employeeMapper.toEmployeeModel(
                 employeeRepository.save(

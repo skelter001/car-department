@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 
 @Data
@@ -28,4 +29,6 @@ public class CreateEmployeeRequest {
     private String address;
     @Pattern(regexp="(^$|[0-9]{10})", message = "Invalid phone number value")
     private String phoneNumber;
+    @Positive
+    private Long departmentId;
 }
