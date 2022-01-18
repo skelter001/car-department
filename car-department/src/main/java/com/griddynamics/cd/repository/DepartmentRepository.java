@@ -1,9 +1,9 @@
 package com.griddynamics.cd.repository;
 
 import com.griddynamics.cd.entity.DepartmentEntity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DepartmentRepository extends CrudRepository<DepartmentEntity, Long> {
+public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Long> {
 
     boolean existsByEmail(String email);
 

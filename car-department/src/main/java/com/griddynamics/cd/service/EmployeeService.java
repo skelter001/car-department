@@ -15,7 +15,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @AllArgsConstructor
@@ -26,7 +25,7 @@ public class EmployeeService {
     private final DepartmentRepository departmentRepository;
 
     public List<Employee> getAllEmployees() {
-        return StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
+        return employeeRepository.findAll().stream()
                 .map(employeeMapper::toEmployeeModel)
                 .collect(Collectors.toList());
     }

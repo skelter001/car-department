@@ -13,7 +13,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @AllArgsConstructor
@@ -23,7 +22,7 @@ public class DepartmentService {
     private final DepartmentMapper departmentMapper;
 
     public List<Department> getAllDepartments() {
-        return StreamSupport.stream(departmentRepository.findAll().spliterator(), false)
+        return departmentRepository.findAll().stream()
                 .map(departmentMapper::toDepartmentModel)
                 .collect(Collectors.toList());
     }

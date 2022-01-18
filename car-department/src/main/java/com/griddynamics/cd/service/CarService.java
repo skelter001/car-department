@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @AllArgsConstructor
@@ -25,7 +24,7 @@ public class CarService {
     private final CarMapper carMapper;
 
     public List<Car> getAllCars() {
-        return StreamSupport.stream(carRepository.findAll().spliterator(), false)
+        return carRepository.findAll().stream()
                 .map(carMapper::toCarModel)
                 .collect(Collectors.toList());
     }

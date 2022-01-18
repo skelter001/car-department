@@ -1,11 +1,11 @@
 package com.griddynamics.cd.repository;
 
 import com.griddynamics.cd.entity.EmployeeEntity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface EmployeeRepository extends CrudRepository<EmployeeEntity, Long> {
+public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> {
 
     List<EmployeeEntity> findAllEmployeesByDepartmentId(Long departmentId);
 
