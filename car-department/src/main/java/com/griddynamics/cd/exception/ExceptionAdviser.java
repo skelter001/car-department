@@ -1,6 +1,8 @@
 package com.griddynamics.cd.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.h2.jdbc.JdbcSQLException;
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,22 @@ public class ExceptionAdviser extends ResponseEntityExceptionHandler {
         log.error("Failed to parse request");
 
         return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now(), null);
+    }
+
+    @ExceptionHandler(JdbcSQLException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Object> handleJdbcSQLException(JdbcSQLException ex) {
+        log.error("JdbcSQLException occurred: " + ex.getMessage());
+
+        return buildErrorResponse("Unable to provide operation", HttpStatus.CONFLICT, LocalDateTime.now(), null);
+    }
+
+    @ExceptionHandler(PSQLException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Object> handlePSQLException(PSQLException ex) {
+        log.error("PSQLException occurred: " + ex.getMessage());
+
+        return buildErrorResponse("Unable to provide operation", HttpStatus.CONFLICT, LocalDateTime.now(), null);
     }
 
     @Override

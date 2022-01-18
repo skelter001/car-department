@@ -32,6 +32,7 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-validation:$springBootVersion",
             "org.springdoc:springdoc-openapi-ui:$springDocVersion",
             "io.swagger:swagger-annotations:$swaggerVersion",
+            "com.h2database:h2:$h2databaseVersion",
             "org.postgresql:postgresql:$postgresqlVersion",
             "org.hibernate:hibernate-core:$hibernateVersion",
     )
@@ -41,7 +42,6 @@ dependencies {
             "org.mapstruct:mapstruct:$mapstructVersion"
     )
     runtimeOnly(
-            "com.h2database:h2:$h2databaseVersion",
             "org.liquibase:liquibase-core:$liquibaseVersion"
     )
     annotationProcessor (
