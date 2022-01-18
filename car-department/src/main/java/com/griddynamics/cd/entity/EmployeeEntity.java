@@ -34,9 +34,4 @@ public class EmployeeEntity {
     private DepartmentEntity department;
     @OneToMany(mappedBy = "employee")
     private List<CarEntity> cars;
-
-//    public void setCars(List<CarEntity> cars) {
-//        this.cars = cars;
-//        this.cars.forEach(car -> car.setEmployee(this));
-//    }
 }
