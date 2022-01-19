@@ -1,12 +1,15 @@
 package com.griddynamics.cd.service;
 
 import com.griddynamics.cd.entity.DepartmentEntity;
+import com.griddynamics.cd.exception.EntityDeleteException;
 import com.griddynamics.cd.mapper.DepartmentMapper;
 import com.griddynamics.cd.model.Department;
 import com.griddynamics.cd.model.create.CreateDepartmentRequest;
 import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
+import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
+import org.apache.catalina.webresources.EmptyResource;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
@@ -20,6 +23,7 @@ public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
+    private final EmployeeRepository employeeRepository;
 
     public List<Department> getAllDepartments() {
         return departmentRepository.findAll().stream()
@@ -68,6 +72,11 @@ public class DepartmentService {
         if (!departmentRepository.existsById(departmentId)) {
             throw new EntityNotFoundException("Department with " + departmentId + " id was not found");
         }
+
+        if (!employeeRepository.findAllEmployeesByDepartmentId(departmentId).isEmpty()) {
+            throw new EntityDeleteException("Unable to delete department with id " + departmentId);
+        }
+
         departmentRepository.deleteById(departmentId);
     }
 }

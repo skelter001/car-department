@@ -2,10 +2,12 @@ package com.griddynamics.cd.service;
 
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
+import com.griddynamics.cd.exception.EntityDeleteException;
 import com.griddynamics.cd.mapper.EmployeeMapper;
 import com.griddynamics.cd.model.Employee;
 import com.griddynamics.cd.model.create.CreateEmployeeRequest;
 import com.griddynamics.cd.model.update.UpdateEmployeeRequest;
+import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,7 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
     private final DepartmentRepository departmentRepository;
+    private final CarRepository carRepository;
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll().stream()
@@ -88,6 +91,11 @@ public class EmployeeService {
         if (!employeeRepository.existsById(employeeId)) {
             throw new EntityNotFoundException("Employee with " + employeeId + " id was not found");
         }
+
+        if (!carRepository.findAllCarsByEmployeeId(employeeId).isEmpty()) {
+            throw new EntityDeleteException("Unable to delete department with id " + employeeId);
+        }
+
         employeeRepository.deleteById(employeeId);
     }
 }

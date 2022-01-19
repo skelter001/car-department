@@ -33,21 +33,29 @@ public class ExceptionAdviser extends ResponseEntityExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now(), null);
     }
 
-    @ExceptionHandler(EntityExistsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> handleEntityExistsException(EntityExistsException ex) {
-        log.error("Failed to parse request");
+//    @ExceptionHandler(EntityExistsException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ResponseEntity<Object> handleEntityExistsException(EntityExistsException ex) {
+//        log.error("Failed to parse request");
+//
+//        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now(), null);
+//    }
 
-        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now(), null);
-    }
-
-    @ExceptionHandler(JdbcSQLException.class)
+    @ExceptionHandler(EntityDeleteException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<Object> handleJdbcSQLException(JdbcSQLException ex) {
-        log.error("JdbcSQLException occurred: " + ex.getMessage());
+    public ResponseEntity<Object> handleEntityDeleteException(EntityDeleteException ex) {
+        log.error("Failed delete entity");
 
-        return buildErrorResponse("Unable to provide operation", HttpStatus.CONFLICT, LocalDateTime.now(), null);
+        return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT, LocalDateTime.now(), null);
     }
+
+//    @ExceptionHandler(JdbcSQLException.class)
+//    @ResponseStatus(HttpStatus.CONFLICT)
+//    public ResponseEntity<Object> handleJdbcSQLException(JdbcSQLException ex) {
+//        log.error("JdbcSQLException occurred: " + ex.getMessage());
+//
+//        return buildErrorResponse("Unable to provide operation", HttpStatus.CONFLICT, LocalDateTime.now(), null);
+//    }
 
     @ExceptionHandler(PSQLException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
