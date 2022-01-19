@@ -9,7 +9,6 @@ import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
-import org.apache.catalina.webresources.EmptyResource;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;

@@ -1,7 +1,6 @@
 package com.griddynamics.cd.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.h2.jdbc.JdbcSQLException;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,14 +31,6 @@ public class ExceptionAdviser extends ResponseEntityExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now(), null);
     }
 
-//    @ExceptionHandler(EntityExistsException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ResponseEntity<Object> handleEntityExistsException(EntityExistsException ex) {
-//        log.error("Failed to parse request");
-//
-//        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now(), null);
-//    }
-
     @ExceptionHandler(EntityDeleteException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Object> handleEntityDeleteException(EntityDeleteException ex) {
@@ -48,14 +38,6 @@ public class ExceptionAdviser extends ResponseEntityExceptionHandler {
 
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT, LocalDateTime.now(), null);
     }
-
-//    @ExceptionHandler(JdbcSQLException.class)
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    public ResponseEntity<Object> handleJdbcSQLException(JdbcSQLException ex) {
-//        log.error("JdbcSQLException occurred: " + ex.getMessage());
-//
-//        return buildErrorResponse("Unable to provide operation", HttpStatus.CONFLICT, LocalDateTime.now(), null);
-//    }
 
     @ExceptionHandler(PSQLException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
