@@ -14,6 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,12 +40,12 @@ public class ExceptionAdviser extends ResponseEntityExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT, LocalDateTime.now(), null);
     }
 
-    @ExceptionHandler(PSQLException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<Object> handlePSQLException(PSQLException ex) {
-        log.error("PSQLException occurred: " + ex.getMessage());
+    @ExceptionHandler(EntityExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleEntityExistsException(EntityExistsException ex) {
+        log.error("Failed to parse request");
 
-        return buildErrorResponse("Unable to provide operation", HttpStatus.CONFLICT, LocalDateTime.now(), null);
+        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now(), null);
     }
 
     @Override
