@@ -1,23 +1,20 @@
 package com.griddynamics.cd.mapper;
 
 import com.griddynamics.cd.entity.CarEntity;
-import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.model.Car;
 import com.griddynamics.cd.model.create.CreateCarRequest;
 import com.griddynamics.cd.model.update.UpdateCarRequest;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring",
-        uses = {EmployeeMapper.class})
+@Mapper(componentModel = "spring")
 public interface CarMapper {
 
+    @Mapping(target = "employeeId",
+            expression = "java(entity.getEmployee().getId())")
     Car toCarModel(CarEntity entity);
 
     CarEntity toCarEntity(CreateCarRequest request);
 
-    @Mapping(target = "id", source = "entity.id")
-    @Mapping(target = "employee", source = "employee")
-    CarEntity toCarEntity(CarEntity entity, EmployeeEntity employee);
     @Mapping(target = "manufacturer", source = "request.manufacturer",
             nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

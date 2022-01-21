@@ -17,5 +17,5 @@ public class Employee {
     private LocalDate birthday;
     private String address;
     private String phoneNumber;
-    private Department department;
+    private Long departmentId;
 }

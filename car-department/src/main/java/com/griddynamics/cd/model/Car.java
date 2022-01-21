@@ -13,6 +13,6 @@ public class Car {
     private String manufacturer;
     private String model;
     private String vinNumber;
-    private Employee employee;
+    private Long employeeId;
     private Color color;
 }
