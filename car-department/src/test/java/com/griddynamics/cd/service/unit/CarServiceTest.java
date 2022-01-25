@@ -41,11 +41,11 @@ class CarServiceTest {
         when(carRepository.save(any(CarEntity.class)))
                 .thenReturn(mock(CarEntity.class));
 
+        when(carRepository.findById(anyLong()))
+                .thenReturn(Optional.of(mock(CarEntity.class)));
+
         when(carMapper.toCarEntity(any(CreateCarRequest.class)))
                 .thenReturn(mock(CarEntity.class));
-
-        when(carMapper.toCarModel(any(CarEntity.class)))
-                .thenReturn(mock(Car.class));
 
         when(carMapper.toCarModel(any(CarEntity.class)))
                 .thenReturn(mock(Car.class));
@@ -72,11 +72,6 @@ class CarServiceTest {
 
     @Test
     void getCarById_whenPassId_thenValidMethodCallsNumber() {
-        when(carRepository.findById(eq(1L)))
-                .thenReturn(Optional.of(mock(CarEntity.class)));
-        when(carRepository.findById(eq(2L)))
-                .thenReturn(Optional.of(mock(CarEntity.class)));
-
         carService.getCarById(1L);
         carService.getCarById(2L);
         carService.getCarById(1L);
@@ -88,6 +83,9 @@ class CarServiceTest {
 
     @Test
     void getCarById_whenPassWrongId_thenThrowEntityNotFoundException() {
+        when(carRepository.findById(100L))
+                .thenReturn(Optional.empty());
+
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> carService.getCarById(100L));
         assertEquals(thrown.getMessage(), "Car with 100 id was not found");
     }
@@ -162,9 +160,6 @@ class CarServiceTest {
 
     @Test
     void updateCar_whenUpdateRequestWithoutEmployeeId_thenValidMethodCallsNumber() {
-        when(carRepository.findById(1L))
-                .thenReturn(Optional.of(mock(CarEntity.class)));
-
         UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
         when(updateCarRequest.getEmployeeId())
                 .thenReturn(null);
@@ -178,17 +173,7 @@ class CarServiceTest {
     }
 
     @Test
-    void updateCar_whenPassWrongCarId_thenThrowEntityNotFoundException() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
-                () -> carService.updateCar(mock(UpdateCarRequest.class), 123L));
-        assertEquals(thrown.getMessage(), "Car with 123 id was not found");
-    }
-
-    @Test
     void updateCar_whenUpdateRequestWithEmployeeId_thenValidMethodCallsNumber() {
-        when(carRepository.findById(1L))
-                .thenReturn(Optional.of(mock(CarEntity.class)));
-
         UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
         when(updateCarRequest.getEmployeeId())
                 .thenReturn(1L);
@@ -202,14 +187,21 @@ class CarServiceTest {
         verify(carMapper, times(1)).toCarEntity(any(UpdateCarRequest.class), any(CarEntity.class));
     }
 
+    @Test
+    void updateCar_whenPassWrongCarId_thenThrowEntityNotFoundException() {
+        when(carRepository.findById(123L))
+                .thenReturn(Optional.empty());
+
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
+                () -> carService.updateCar(mock(UpdateCarRequest.class), 123L));
+        assertEquals(thrown.getMessage(), "Car with 123 id was not found");
+    }
 
     @Test
     void updateCar_whenPassUpdateRequestWithWrongEmployeeId_thenThrowEntityNotFoundException() {
         UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
         when(updateCarRequest.getEmployeeId())
                 .thenReturn(12L);
-        when(carRepository.findById(123L))
-                .thenReturn(Optional.of(mock(CarEntity.class)));
         when(employeeRepository.findById(12L))
                 .thenReturn(Optional.empty());
 
