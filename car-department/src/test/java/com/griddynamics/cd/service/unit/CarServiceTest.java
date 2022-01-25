@@ -76,8 +76,8 @@ class CarServiceTest {
         carService.getCarById(2L);
         carService.getCarById(1L);
 
-        verify(carRepository, times(2)).findById(eq(1L));
-        verify(carRepository, times(1)).findById(eq(2L));
+        verify(carRepository, times(2)).findById(1L);
+        verify(carRepository, times(1)).findById(2L);
         verify(carMapper, times(3)).toCarModel(any(CarEntity.class));
     }
 
@@ -86,18 +86,19 @@ class CarServiceTest {
         when(carRepository.findById(100L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> carService.getCarById(100L));
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
+                carService.getCarById(100L));
         assertEquals(thrown.getMessage(), "Car with 100 id was not found");
     }
 
     @Test
     void getCarByEmployeeId_whenPassEmployeeId_thenValidMethodCallsNumber() {
-        when(carRepository.findAllCarsByEmployeeId(eq(1L)))
+        when(carRepository.findAllCarsByEmployeeId(1L))
                 .thenReturn(List.of(mock(CarEntity.class), mock(CarEntity.class)));
 
         carService.getCarsByEmployeeId(1L);
 
-        verify(carRepository, times(1)).findAllCarsByEmployeeId(eq(1L));
+        verify(carRepository, times(1)).findAllCarsByEmployeeId(1L);
         verify(carMapper, times(2)).toCarModel(any(CarEntity.class));
     }
 
@@ -154,7 +155,8 @@ class CarServiceTest {
         when(employeeRepository.findById(10L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> carService.saveCar(createCarRequest));
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
+                carService.saveCar(createCarRequest));
         assertEquals("Employee with 10 id was not found", thrown.getMessage());
     }
 
@@ -178,10 +180,10 @@ class CarServiceTest {
         when(updateCarRequest.getEmployeeId())
                 .thenReturn(1L);
 
-        carService.updateCar(updateCarRequest, 1L);
+        carService.updateCar(updateCarRequest, 3L);
 
-        verify(carRepository, times(1)).findById(1L);
         verify(employeeRepository, times(1)).findById(1L);
+        verify(carRepository, times(1)).findById(3L);
         verify(carRepository, times(1)).save(any(CarEntity.class));
         verify(carMapper, times(1)).toCarModel(any(CarEntity.class));
         verify(carMapper, times(1)).toCarEntity(any(UpdateCarRequest.class), any(CarEntity.class));
@@ -192,8 +194,8 @@ class CarServiceTest {
         when(carRepository.findById(123L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
-                () -> carService.updateCar(mock(UpdateCarRequest.class), 123L));
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
+                carService.updateCar(mock(UpdateCarRequest.class), 123L));
         assertEquals(thrown.getMessage(), "Car with 123 id was not found");
     }
 
@@ -205,8 +207,8 @@ class CarServiceTest {
         when(employeeRepository.findById(12L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
-                () -> carService.updateCar(updateCarRequest, 123L));
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
+                carService.updateCar(updateCarRequest, 123L));
         assertEquals("Employee with 12 id was not found", thrown.getMessage());
     }
 
@@ -217,7 +219,7 @@ class CarServiceTest {
         doNothing().when(carRepository)
                 .deleteById(captor.capture());
 
-        when(carRepository.existsById(anyLong()))
+        when(carRepository.existsById(1L))
                 .thenReturn(true);
 
         carService.deleteCar(1L);
@@ -228,7 +230,8 @@ class CarServiceTest {
 
     @Test
     void deleteCar_whenPassWrongCarId_thenThrowEntityNotFoundException() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> carService.deleteCar(15L));
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
+                carService.deleteCar(15L));
         assertEquals("Car with 15 id was not found", thrown.getMessage());
     }
 }
