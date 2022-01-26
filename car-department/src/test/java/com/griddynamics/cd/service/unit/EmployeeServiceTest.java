@@ -111,8 +111,6 @@ class EmployeeServiceTest {
     @Test
     void saveEmployee_whenSaveEmployeeRequestWithoutDepartmentId_thenValidMethodCallsNumber() {
         CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
-        when(createEmployeeRequest.getDepartmentId())
-                .thenReturn(null);
 
         employeeService.saveEmployee(createEmployeeRequest);
 
@@ -138,8 +136,6 @@ class EmployeeServiceTest {
     @Test
     void saveEmployee_whenSaveDifferentEmployeeRequests_thenValidMethodCallsNumber() {
         CreateEmployeeRequest createEmployeeRequest1 = mock(CreateEmployeeRequest.class);
-        when(createEmployeeRequest1.getDepartmentId())
-                .thenReturn(null);
         CreateEmployeeRequest createEmployeeRequest2 = mock(CreateEmployeeRequest.class);
         when(createEmployeeRequest2.getDepartmentId())
                 .thenReturn(2L);
@@ -185,8 +181,6 @@ class EmployeeServiceTest {
     @Test
     void updateEmployee_whenUpdateRequestWithoutDepartmentId_thenValidMethodCallsNumber() {
         UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
-        when(updateEmployeeRequest.getDepartmentId())
-                .thenReturn(null);
 
         employeeService.updateEmployee(updateEmployeeRequest, 2L);
 
