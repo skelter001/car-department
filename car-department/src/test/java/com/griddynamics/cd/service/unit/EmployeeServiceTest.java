@@ -109,7 +109,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void saveEmployee_whenSaveEmployeeRequestWithoutDepartmentId_thenValidMethodCallsNumber() {
+    void saveEmployee_whenPassEmployeeRequestWithoutDepartmentId_thenValidMethodCallsNumber() {
         CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
 
         employeeService.saveEmployee(createEmployeeRequest);
@@ -120,7 +120,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void saveEmployee_whenSaveEmployeeRequestWithDepartmentId_thenValidMethodCallsNumber() {
+    void saveEmployee_whenPassEmployeeRequestWithDepartmentId_thenValidMethodCallsNumber() {
         CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
         when(createEmployeeRequest.getDepartmentId())
                 .thenReturn(2L);
@@ -134,7 +134,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void saveEmployee_whenSaveDifferentEmployeeRequests_thenValidMethodCallsNumber() {
+    void saveEmployee_whenPassDifferentEmployeeRequests_thenValidMethodCallsNumber() {
         CreateEmployeeRequest createEmployeeRequest1 = mock(CreateEmployeeRequest.class);
         CreateEmployeeRequest createEmployeeRequest2 = mock(CreateEmployeeRequest.class);
         when(createEmployeeRequest2.getDepartmentId())
@@ -150,7 +150,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void saveEmployee_whenSaveEmployeeWithExistingPhoneNumber_thenThrowEntityExistsException() {
+    void saveEmployee_whenPassEmployeeWithExistingPhoneNumber_thenThrowEntityExistsException() {
         CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
         when(createEmployeeRequest.getPhoneNumber())
                 .thenReturn("1234567890");

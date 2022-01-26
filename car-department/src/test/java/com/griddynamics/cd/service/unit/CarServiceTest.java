@@ -103,7 +103,7 @@ class CarServiceTest {
     }
 
     @Test
-    void saveCar_whenSaveCarRequestWithoutEmployeeId_thenValidMethodCallsNumber() {
+    void saveCar_whenPassCarRequestWithoutEmployeeId_thenValidMethodCallsNumber() {
         CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
 
         carService.saveCar(createCarRequest);
@@ -114,7 +114,7 @@ class CarServiceTest {
     }
 
     @Test
-    void saveCar_whenSaveCarRequestWithEmployeeId_thenValidMethodCallsNumber() {
+    void saveCar_whenPassCarRequestWithEmployeeId_thenValidMethodCallsNumber() {
         CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
         when(createCarRequest.getEmployeeId())
                 .thenReturn(1L);
@@ -128,7 +128,7 @@ class CarServiceTest {
     }
 
     @Test
-    void saveCar_whenSaveDifferentCarRequests_thenValidMethodCallsNumber() {
+    void saveCar_whenPassDifferentCarRequests_thenValidMethodCallsNumber() {
         CreateCarRequest createCarRequest1 = mock(CreateCarRequest.class);
         CreateCarRequest createCarRequest2 = mock(CreateCarRequest.class);
         when(createCarRequest2.getEmployeeId())
