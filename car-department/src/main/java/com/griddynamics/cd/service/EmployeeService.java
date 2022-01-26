@@ -93,7 +93,7 @@ public class EmployeeService {
         }
 
         if (!carRepository.findAllCarsByEmployeeId(employeeId).isEmpty()) {
-            throw new EntityDeleteException("Unable to delete department with id " + employeeId);
+            throw new EntityDeleteException("Unable to delete employee with id " + employeeId);
         }
 
         employeeRepository.deleteById(employeeId);
