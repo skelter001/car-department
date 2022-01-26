@@ -103,7 +103,7 @@ class CarServiceTest {
     }
 
     @Test
-    void saveCar_whenPassCarRequestWithoutEmployeeId_thenValidMethodCallsNumber() {
+    void saveCar_whenPassCreateCarRequestWithoutEmployeeId_thenValidMethodCallsNumber() {
         CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
 
         carService.saveCar(createCarRequest);
@@ -114,7 +114,7 @@ class CarServiceTest {
     }
 
     @Test
-    void saveCar_whenPassCarRequestWithEmployeeId_thenValidMethodCallsNumber() {
+    void saveCar_whenPassCreateCarRequestWithEmployeeId_thenValidMethodCallsNumber() {
         CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
         when(createCarRequest.getEmployeeId())
                 .thenReturn(1L);
@@ -128,7 +128,7 @@ class CarServiceTest {
     }
 
     @Test
-    void saveCar_whenPassDifferentCarRequests_thenValidMethodCallsNumber() {
+    void saveCar_whenPassDifferentCreateCarRequests_thenValidMethodCallsNumber() {
         CreateCarRequest createCarRequest1 = mock(CreateCarRequest.class);
         CreateCarRequest createCarRequest2 = mock(CreateCarRequest.class);
         when(createCarRequest2.getEmployeeId())
@@ -157,7 +157,7 @@ class CarServiceTest {
     }
 
     @Test
-    void updateCar_whenUpdateRequestWithoutEmployeeId_thenValidMethodCallsNumber() {
+    void updateCar_whenUpdateCarRequestWithoutEmployeeId_thenValidMethodCallsNumber() {
         UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
 
         carService.updateCar(updateCarRequest, 1L);
@@ -169,7 +169,7 @@ class CarServiceTest {
     }
 
     @Test
-    void updateCar_whenUpdateRequestWithEmployeeId_thenValidMethodCallsNumber() {
+    void updateCar_whenUpdateCarRequestWithEmployeeId_thenValidMethodCallsNumber() {
         UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
         when(updateCarRequest.getEmployeeId())
                 .thenReturn(1L);
@@ -194,7 +194,7 @@ class CarServiceTest {
     }
 
     @Test
-    void updateCar_whenPassUpdateRequestWithWrongEmployeeId_thenThrowEntityNotFoundException() {
+    void updateCar_whenPassUpdateCarRequestWithWrongEmployeeId_thenThrowEntityNotFoundException() {
         UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
         when(updateCarRequest.getEmployeeId())
                 .thenReturn(12L);

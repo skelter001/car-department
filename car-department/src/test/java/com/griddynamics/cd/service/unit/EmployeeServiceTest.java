@@ -109,7 +109,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void saveEmployee_whenPassEmployeeRequestWithoutDepartmentId_thenValidMethodCallsNumber() {
+    void saveEmployee_whenPassCreateEmployeeRequestWithoutDepartmentId_thenValidMethodCallsNumber() {
         CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
 
         employeeService.saveEmployee(createEmployeeRequest);
@@ -120,7 +120,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void saveEmployee_whenPassEmployeeRequestWithDepartmentId_thenValidMethodCallsNumber() {
+    void saveEmployee_whenPassCreateEmployeeRequestWithDepartmentId_thenValidMethodCallsNumber() {
         CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
         when(createEmployeeRequest.getDepartmentId())
                 .thenReturn(2L);
@@ -134,7 +134,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void saveEmployee_whenPassDifferentEmployeeRequests_thenValidMethodCallsNumber() {
+    void saveEmployee_whenPassDifferentCreateEmployeeRequests_thenValidMethodCallsNumber() {
         CreateEmployeeRequest createEmployeeRequest1 = mock(CreateEmployeeRequest.class);
         CreateEmployeeRequest createEmployeeRequest2 = mock(CreateEmployeeRequest.class);
         when(createEmployeeRequest2.getDepartmentId())
@@ -150,7 +150,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void saveEmployee_whenPassEmployeeWithExistingPhoneNumber_thenThrowEntityExistsException() {
+    void saveEmployee_whenPassCreateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() {
         CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
         when(createEmployeeRequest.getPhoneNumber())
                 .thenReturn("1234567890");
@@ -179,7 +179,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void updateEmployee_whenUpdateRequestWithoutDepartmentId_thenValidMethodCallsNumber() {
+    void updateEmployee_whenUpdateEmployeeRequestWithoutDepartmentId_thenValidMethodCallsNumber() {
         UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
 
         employeeService.updateEmployee(updateEmployeeRequest, 2L);
@@ -187,11 +187,11 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).findById(2L);
         verify(employeeRepository, times(1)).save(any(EmployeeEntity.class));
         verify(employeeMapper, times(1)).toEmployeeModel(any(EmployeeEntity.class));
-        verify(employeeMapper, times(1)).toEmployeeEntity(any(UpdateEmployeeRequest.class), any(EmployeeEntity.class));
+        verify(employeeMapper, times(1)).toEmployeeEntity(eq(updateEmployeeRequest), any(EmployeeEntity.class));
     }
 
     @Test
-    void updateEmployee_whenUpdateRequestWithDepartmentId_thenValidMethodCallsNumber() {
+    void updateEmployee_whenUpdateEmployeeRequestWithDepartmentId_thenValidMethodCallsNumber() {
         UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
         when(updateEmployeeRequest.getDepartmentId())
                 .thenReturn(1L);
@@ -216,7 +216,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void updateEmployee_whenPassEmployeeWithExistingPhoneNumber_thenThrowEntityExistsException() {
+    void updateEmployee_whenPassUpdateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() {
         UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
         when(updateEmployeeRequest.getPhoneNumber())
                 .thenReturn("1234567890");
@@ -229,7 +229,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void updateEmployee_whenPassUpdateRequestWithWrongDepartmentId_thenThrowEntityNotFoundException() {
+    void updateEmployee_whenPassUpdateEmployeeRequestWithWrongDepartmentId_thenThrowEntityNotFoundException() {
         UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
         when(updateEmployeeRequest.getDepartmentId())
                 .thenReturn(1L);
@@ -265,7 +265,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void deleteEmployee_whenPassEmployeeIdWithDependentCars_thenThrowEntityNotFoundException() {
+    void deleteEmployee_whenPassEmployeeIdWithDependentCars_thenThrowEntityDeleteException() {
         when(employeeRepository.existsById(3L))
                 .thenReturn(true);
         when(carRepository.findAllCarsByEmployeeId(3L))
@@ -273,6 +273,6 @@ class EmployeeServiceTest {
 
         EntityDeleteException thrown = assertThrows(EntityDeleteException.class, () ->
                 employeeService.deleteEmployee(3L));
-        assertEquals("Unable to delete department with id 3", thrown.getMessage());
+        assertEquals("Unable to delete employee with id 3", thrown.getMessage());
     }
 }
