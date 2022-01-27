@@ -49,6 +49,7 @@ dependencies {
             "org.mapstruct:mapstruct-processor:$mapstructVersion"
     )
     testImplementation (
+            "org.springframework.boot:spring-boot-starter-test:$springBootVersion",
             "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion",
             "org.mockito:mockito-core:$mockitoVersion",
             "org.mockito:mockito-inline:$mockitoVersion"
