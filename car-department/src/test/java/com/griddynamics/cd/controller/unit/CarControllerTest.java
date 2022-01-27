@@ -60,6 +60,12 @@ class CarControllerTest {
     void saveCar_whenValidCreateCarRequest_thenReturnOk() throws Exception {
         CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
 
+        when(createCarRequest.getManufacturer())
+                .thenReturn("Audi");
+        when(createCarRequest.getModel())
+                .thenReturn("A5");
+        when(createCarRequest.getVinNumber())
+                .thenReturn("JH4KA7530MC011312");
         when(createCarRequest.getColor())
                 .thenReturn(mock(Color.class));
         when(createCarRequest.getEmployeeId())
@@ -133,6 +139,14 @@ class CarControllerTest {
     void updateCar_whenValidUpdateCarRequest_thenReturnOk() throws Exception {
         UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
 
+        when(updateCarRequest.getManufacturer())
+                .thenReturn("Audi");
+        when(updateCarRequest.getModel())
+                .thenReturn("A7");
+        when(updateCarRequest.getVinNumber())
+                .thenReturn("KNDJE723297570351");
+        when(updateCarRequest.getColor())
+                .thenReturn(mock(Color.class));
         when(updateCarRequest.getEmployeeId())
                 .thenReturn(1L);
 
