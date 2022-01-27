@@ -8,13 +8,9 @@ import com.griddynamics.cd.model.create.CreateCarRequest;
 import com.griddynamics.cd.model.update.UpdateCarRequest;
 import com.griddynamics.cd.service.CarService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
@@ -24,20 +20,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {CarController.class, ObjectMapper.class})
-@AutoConfigureMockMvc
-@EnableWebMvc
 class CarControllerTest {
 
-    @MockBean
-    private CarService carService;
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final CarService carService = mock(CarService.class);
+    private final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new CarController(carService)).build();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    void getAllCars_whenPerformMethod_thenReturnOk() throws Exception {
+    void getAllCars_whenCallMethod_thenReturnOk() throws Exception {
         when(carService.getAllCars())
                 .thenReturn(List.of(mock(Car.class)));
 
@@ -53,13 +43,6 @@ class CarControllerTest {
 
         mockMvc.perform(get("/cars/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", notNullValue()));
-    }
-
-    @Test
-    void getCarById() throws Exception {
-        mockMvc.perform(get("/cars/12"))
-                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", notNullValue()));
     }
 
