@@ -88,9 +88,6 @@ class CarControllerTest {
         when(createCarRequest.getEmployeeId())
                 .thenReturn(3L);
 
-        when(carService.saveCar(any(CreateCarRequest.class)))
-                .thenReturn(mock(Car.class));
-
         mockMvc.perform(post("/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createCarRequest)))
@@ -105,9 +102,6 @@ class CarControllerTest {
                 .thenReturn(mock(Color.class));
         when(createCarRequest.getEmployeeId())
                 .thenReturn(-123L);
-
-        when(carService.saveCar(any(CreateCarRequest.class)))
-                .thenReturn(mock(Car.class));
 
         mockMvc.perform(post("/cars")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -125,9 +119,6 @@ class CarControllerTest {
                 .thenReturn(3L);
         when(createCarRequest.getVinNumber())
                 .thenReturn("qwe");
-
-        when(carService.saveCar(any(CreateCarRequest.class)))
-                .thenReturn(mock(Car.class));
 
         mockMvc.perform(post("/cars")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -168,9 +159,6 @@ class CarControllerTest {
                 .thenReturn(1L);
         when(updateCarRequest.getManufacturer())
                 .thenReturn("@$%");
-
-        when(carService.updateCar(any(UpdateCarRequest.class), anyLong()))
-                .thenReturn(mock(Car.class));
 
         mockMvc.perform(put("/cars/3")
                         .contentType(MediaType.APPLICATION_JSON)
