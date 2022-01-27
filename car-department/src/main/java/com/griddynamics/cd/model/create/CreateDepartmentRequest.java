@@ -16,7 +16,7 @@ import javax.validation.constraints.Pattern;
 @Builder
 public class CreateDepartmentRequest {
 
-    @Pattern(regexp = "^[a-zA-Z]+", message = "Must contain only letters")
+    @Pattern(regexp = "^[a-zA-Z0-9\s]+", message = "Must contain only letters")
     private String name;
     @Email(message = "Email should be valid")
     private String email;
