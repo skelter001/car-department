@@ -165,21 +165,6 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    void updateEmployee_whenUpdateEmployeeRequestWithoutLastName_thenReturnBadRequest() throws Exception {
-        UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
-
-        when(updateEmployeeRequest.getFirstName())
-                .thenReturn("Joe");
-        when(updateEmployeeRequest.getDepartmentId())
-                .thenReturn(12L);
-
-        mockMvc.perform(put("/employees/123L")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void updateEmployee_whenUpdateEmployeeRequestWithInvalidBirthday_thenReturnBadRequest() throws Exception {
         UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
 
@@ -192,7 +177,7 @@ public class EmployeeControllerTest {
         when(updateEmployeeRequest.getBirthday())
                 .thenReturn(LocalDate.now());
 
-        mockMvc.perform(put("/employees/123L")
+        mockMvc.perform(put("/employees/123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
                 .andExpect(status().isBadRequest());
@@ -211,7 +196,7 @@ public class EmployeeControllerTest {
         when(updateEmployeeRequest.getPhoneNumber())
                 .thenReturn("wrong");
 
-        mockMvc.perform(put("/employees/123L")
+        mockMvc.perform(put("/employees/123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
                 .andExpect(status().isBadRequest());
@@ -222,7 +207,7 @@ public class EmployeeControllerTest {
         doNothing().when(employeeService)
                 .deleteEmployee(anyLong());
 
-        mockMvc.perform(delete("/employees/-21"))
+        mockMvc.perform(delete("/employees/21"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").doesNotExist());
     }

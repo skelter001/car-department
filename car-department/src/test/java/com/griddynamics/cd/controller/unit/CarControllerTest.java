@@ -82,7 +82,7 @@ class CarControllerTest {
     }
 
     @Test
-    void saveCar_whenCreateCarRequestWithNullColor_thenReturnBadRequest() throws Exception {
+    void saveCar_whenCreateCarRequestWithoutColor_thenReturnBadRequest() throws Exception {
         CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
 
         when(createCarRequest.getEmployeeId())
