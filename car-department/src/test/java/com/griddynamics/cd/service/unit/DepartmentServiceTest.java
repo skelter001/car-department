@@ -43,33 +43,30 @@ class DepartmentServiceTest {
     @BeforeEach
     void setUp() {
         when(departmentRepository.save(any(DepartmentEntity.class)))
-                .thenReturn(mock(DepartmentEntity.class));
+                .thenReturn(new DepartmentEntity());
 
         when(departmentRepository.findById(anyLong()))
-                .thenReturn(Optional.of(mock(DepartmentEntity.class)));
+                .thenReturn(Optional.of(new DepartmentEntity()));
 
         when(departmentMapper.toDepartmentEntity(any(CreateDepartmentRequest.class)))
-                .thenReturn(mock(DepartmentEntity.class));
+                .thenReturn(new DepartmentEntity());
 
         when(departmentMapper.toDepartmentModel(any(DepartmentEntity.class)))
-                .thenReturn(mock(Department.class));
+                .thenReturn(new Department());
 
         when(departmentMapper.toDepartmentEntity(any(UpdateDepartmentRequest.class), any(DepartmentEntity.class)))
-                .thenReturn(mock(DepartmentEntity.class));
+                .thenReturn(new DepartmentEntity());
     }
 
     @Test
     void getAllDepartments_whenCallMethod_thenValidMethodCallsNumber() {
-        DepartmentEntity departmentEntity1 = mock(DepartmentEntity.class);
-        DepartmentEntity departmentEntity2 = mock(DepartmentEntity.class);
-        DepartmentEntity departmentEntity3 = mock(DepartmentEntity.class);
-
         when(departmentRepository.findAll())
-                .thenReturn(List.of(departmentEntity1, departmentEntity2, departmentEntity3));
+                .thenReturn(List.of(new DepartmentEntity(), new DepartmentEntity(), new DepartmentEntity()));
 
         departmentService.getAllDepartments();
 
         verify(departmentRepository, times(1)).findAll();
+        verify(departmentMapper, times(3)).toDepartmentModel(any(DepartmentEntity.class));
     }
 
     @Test
@@ -95,7 +92,7 @@ class DepartmentServiceTest {
 
     @Test
     void saveDepartment_whenPassCreateDepartmentRequestWithoutEmail_thenValidMethodCallsNumber() {
-        CreateDepartmentRequest createDepartmentRequest = mock(CreateDepartmentRequest.class);
+        CreateDepartmentRequest createDepartmentRequest = new CreateDepartmentRequest();
 
         departmentService.saveDepartment(createDepartmentRequest);
 
@@ -121,10 +118,8 @@ class DepartmentServiceTest {
 
     @Test
     void saveDepartment_whenPassDifferentCreateDepartmentRequests_thenValidMethodCallsNumber() {
-        CreateDepartmentRequest createDepartmentRequest1 = mock(CreateDepartmentRequest.class);
-        CreateDepartmentRequest createDepartmentRequest2 = mock(CreateDepartmentRequest.class);
-        when(createDepartmentRequest2.getEmail())
-                .thenReturn("test@test");
+        CreateDepartmentRequest createDepartmentRequest1 = new CreateDepartmentRequest();
+        CreateDepartmentRequest createDepartmentRequest2 = CreateDepartmentRequest.builder().email("test@test").build();
 
         departmentService.saveDepartment(createDepartmentRequest1);
         departmentService.saveDepartment(createDepartmentRequest2);
@@ -137,9 +132,8 @@ class DepartmentServiceTest {
 
     @Test
     void saveDepartment_whenPassCreateDepartmentRequestWithExistingEmail_thenThrowEntityNotFoundException() {
-        CreateDepartmentRequest createDepartmentRequest = mock(CreateDepartmentRequest.class);
-        when(createDepartmentRequest.getEmail())
-                .thenReturn("test@test");
+        CreateDepartmentRequest createDepartmentRequest = CreateDepartmentRequest.builder().email("test@test").build();
+
         when(departmentRepository.existsByEmail("test@test"))
                 .thenReturn(true);
 
@@ -150,7 +144,7 @@ class DepartmentServiceTest {
 
     @Test
     void updateDepartment_whenUpdateRequestWithoutEmployeeId_thenValidMethodCallsNumber() {
-        UpdateDepartmentRequest updateDepartmentRequest = mock(UpdateDepartmentRequest.class);
+        UpdateDepartmentRequest updateDepartmentRequest = new UpdateDepartmentRequest();
 
         departmentService.updateDepartment(updateDepartmentRequest, 1L);
 
@@ -162,9 +156,7 @@ class DepartmentServiceTest {
 
     @Test
     void updateDepartment_whenPassUpdateDepartmentRequestWithEmail_thenValidMethodCallsNumber() {
-        UpdateDepartmentRequest updateDepartmentRequest = mock(UpdateDepartmentRequest.class);
-        when(updateDepartmentRequest.getEmail())
-                .thenReturn("test@test");
+        UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder().email("test@test").build();
 
         departmentService.updateDepartment(updateDepartmentRequest, 2L);
 
@@ -177,20 +169,18 @@ class DepartmentServiceTest {
 
     @Test
     void updateDepartment_whenPassWrongDepartmentId_thenThrowEntityNotFoundException() {
-        UpdateDepartmentRequest updateDepartmentRequest = mock(UpdateDepartmentRequest.class);
         when(departmentRepository.findById(2L))
                 .thenReturn(Optional.empty());
 
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                departmentService.updateDepartment(updateDepartmentRequest, 2L));
+                departmentService.updateDepartment(new UpdateDepartmentRequest(), 2L));
         assertEquals("Department with 2 id was not found", thrown.getMessage());
     }
 
     @Test
     void updateDepartment_whenPassUpdateDepartmentRequestWithExistingEmail_thenThrowEntityExistsException() {
-        UpdateDepartmentRequest updateDepartmentRequest = mock(UpdateDepartmentRequest.class);
-        when(updateDepartmentRequest.getEmail())
-                .thenReturn("test@test");
+        UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder().email("test@test").build();
+
         when(departmentRepository.existsByEmailAndIdIsNot("test@test", 2L))
                 .thenReturn(true);
 

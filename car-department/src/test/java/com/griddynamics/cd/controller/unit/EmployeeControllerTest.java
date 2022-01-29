@@ -30,7 +30,7 @@ public class EmployeeControllerTest {
     @Test
     void getAllEmployees_whenCallMethod_thenReturnOk() throws Exception {
         when(employeeService.getAllEmployees())
-                .thenReturn(List.of(mock(Employee.class)));
+                .thenReturn(List.of(new Employee()));
 
         mockMvc.perform(get("/employees"))
                 .andExpect(status().isOk())
@@ -40,7 +40,7 @@ public class EmployeeControllerTest {
     @Test
     void getEmployeeById_whenPassValidId_thenReturnOk() throws Exception {
         when(employeeService.getEmployeeById(12L))
-                .thenReturn(mock(Employee.class));
+                .thenReturn(new Employee());
 
         mockMvc.perform(get("/employees/12"))
                 .andExpect(status().isOk())
@@ -50,7 +50,7 @@ public class EmployeeControllerTest {
     @Test
     void getEmployeesByDepartmentId_whenPassValidDepartmentId_thenReturnOk() throws Exception {
         when(employeeService.getEmployeesByDepartmentId(3L))
-                .thenReturn(List.of(mock(Employee.class), mock(Employee.class)));
+                .thenReturn(List.of(new Employee(), new Employee()));
 
         mockMvc.perform(get("/departments/3/employees"))
                 .andExpect(status().isOk())
@@ -59,23 +59,17 @@ public class EmployeeControllerTest {
 
     @Test
     void saveEmployee_whenValidCreateEmployeeRequest_thenReturnOk() throws Exception {
-        CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
-
-        when(createEmployeeRequest.getFirstName())
-                .thenReturn("Joe");
-        when(createEmployeeRequest.getLastName())
-                .thenReturn("Doe");
-        when(createEmployeeRequest.getDepartmentId())
-                .thenReturn(2L);
-        when(createEmployeeRequest.getBirthday())
-                .thenReturn(LocalDate.of(1998, 10, 10));
-        when(createEmployeeRequest.getAddress())
-                .thenReturn("Dallas, Texas US");
-        when(createEmployeeRequest.getPhoneNumber())
-                .thenReturn("1234567890");
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
+                .firstName("Joe")
+                .lastName("Doe")
+                .departmentId(2L)
+                .birthday(LocalDate.of(1998, 10, 10))
+                .address("Dallas, Texas US")
+                .phoneNumber("1234567890")
+                .build();
 
         when(employeeService.saveEmployee(any(CreateEmployeeRequest.class)))
-                .thenReturn(mock(Employee.class));
+                .thenReturn(new Employee());
 
         mockMvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -86,12 +80,10 @@ public class EmployeeControllerTest {
 
     @Test
     void saveEmployee_whenCreateEmployeeRequestWithoutFirstName_thenReturnBadRequest() throws Exception {
-        CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
-
-        when(createEmployeeRequest.getLastName())
-                .thenReturn("Doe");
-        when(createEmployeeRequest.getDepartmentId())
-                .thenReturn(1L);
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
+                .lastName("Doe")
+                .departmentId(1L)
+                .build();
 
         mockMvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -101,16 +93,12 @@ public class EmployeeControllerTest {
 
     @Test
     void saveEmployee_whenCreateEmployeeRequestWithInvalidBirthday_thenReturnBadRequest() throws Exception {
-        CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
-
-        when(createEmployeeRequest.getFirstName())
-                .thenReturn("Joe");
-        when(createEmployeeRequest.getLastName())
-                .thenReturn("Doe");
-        when(createEmployeeRequest.getDepartmentId())
-                .thenReturn(1L);
-        when(createEmployeeRequest.getBirthday())
-                .thenReturn(LocalDate.now());
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
+                .firstName("Joe")
+                .lastName("Doe")
+                .departmentId(1L)
+                .birthday(LocalDate.now())
+                .build();
 
         mockMvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -120,16 +108,12 @@ public class EmployeeControllerTest {
 
     @Test
     void saveEmployee_whenCreateEmployeeRequestWithInvalidPhoneNumber_thenReturnBadRequest() throws Exception {
-        CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
-
-        when(createEmployeeRequest.getFirstName())
-                .thenReturn("Joe");
-        when(createEmployeeRequest.getLastName())
-                .thenReturn("Doe");
-        when(createEmployeeRequest.getDepartmentId())
-                .thenReturn(1L);
-        when(createEmployeeRequest.getPhoneNumber())
-                .thenReturn("wrong");
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
+                .firstName("Joe")
+                .lastName("Doe")
+                .departmentId(1L)
+                .phoneNumber("wrong")
+                .build();
 
         mockMvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -139,23 +123,17 @@ public class EmployeeControllerTest {
 
     @Test
     void updateEmployee_whenValidUpdateEmployeeRequest_thenReturnOk() throws Exception {
-        UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
-
-        when(updateEmployeeRequest.getFirstName())
-                .thenReturn("Joe");
-        when(updateEmployeeRequest.getLastName())
-                .thenReturn("Doe");
-        when(updateEmployeeRequest.getDepartmentId())
-                .thenReturn(2L);
-        when(updateEmployeeRequest.getBirthday())
-                .thenReturn(LocalDate.of(1998, 10, 10));
-        when(updateEmployeeRequest.getAddress())
-                .thenReturn("Dallas, Texas US");
-        when(updateEmployeeRequest.getPhoneNumber())
-                .thenReturn("1234567890");
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
+                .firstName("Joe")
+                .lastName("Doe")
+                .departmentId(2L)
+                .birthday(LocalDate.of(1998, 10, 10))
+                .address("Austin, Texas US")
+                .phoneNumber("1234567890")
+                .build();
 
         when(employeeService.updateEmployee(any(UpdateEmployeeRequest.class), anyLong()))
-                .thenReturn(mock(Employee.class));
+                .thenReturn(new Employee());
 
         mockMvc.perform(put("/employees/5")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -166,16 +144,12 @@ public class EmployeeControllerTest {
 
     @Test
     void updateEmployee_whenUpdateEmployeeRequestWithInvalidBirthday_thenReturnBadRequest() throws Exception {
-        UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
-
-        when(updateEmployeeRequest.getFirstName())
-                .thenReturn("Joe");
-        when(updateEmployeeRequest.getLastName())
-                .thenReturn("Doe");
-        when(updateEmployeeRequest.getDepartmentId())
-                .thenReturn(1L);
-        when(updateEmployeeRequest.getBirthday())
-                .thenReturn(LocalDate.now());
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
+                .firstName("Joe")
+                .lastName("Doe")
+                .departmentId(1L)
+                .birthday(LocalDate.now())
+                .build();
 
         mockMvc.perform(put("/employees/123")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -185,16 +159,12 @@ public class EmployeeControllerTest {
 
     @Test
     void updateEmployee_whenUpdateEmployeeRequestWithInvalidPhoneNumber_thenReturnBadRequest() throws Exception {
-        UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
-
-        when(updateEmployeeRequest.getFirstName())
-                .thenReturn("Joe");
-        when(updateEmployeeRequest.getLastName())
-                .thenReturn("Doe");
-        when(updateEmployeeRequest.getDepartmentId())
-                .thenReturn(1L);
-        when(updateEmployeeRequest.getPhoneNumber())
-                .thenReturn("wrong");
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
+                .firstName("Joe")
+                .lastName("Doe")
+                .departmentId(1L)
+                .phoneNumber("wrong")
+                .build();
 
         mockMvc.perform(put("/employees/123")
                         .contentType(MediaType.APPLICATION_JSON)

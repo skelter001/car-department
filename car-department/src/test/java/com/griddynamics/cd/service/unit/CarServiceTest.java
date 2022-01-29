@@ -39,35 +39,33 @@ class CarServiceTest {
     @BeforeEach
     void setUp() {
         when(carRepository.save(any(CarEntity.class)))
-                .thenReturn(mock(CarEntity.class));
+                .thenReturn(new CarEntity());
 
         when(carRepository.findById(anyLong()))
-                .thenReturn(Optional.of(mock(CarEntity.class)));
+                .thenReturn(Optional.of(new CarEntity()));
 
         when(carMapper.toCarEntity(any(CreateCarRequest.class)))
-                .thenReturn(mock(CarEntity.class));
+                .thenReturn(new CarEntity());
 
         when(carMapper.toCarModel(any(CarEntity.class)))
-                .thenReturn(mock(Car.class));
+                .thenReturn(new Car());
 
         when(carMapper.toCarEntity(any(UpdateCarRequest.class), any(CarEntity.class)))
-                .thenReturn(mock(CarEntity.class));
+                .thenReturn(new CarEntity());
 
         when(employeeRepository.findById(anyLong()))
-                .thenReturn(Optional.of(mock(EmployeeEntity.class)));
+                .thenReturn(Optional.of(new EmployeeEntity()));
     }
 
     @Test
     void getAllCars_whenCallMethod_thenValidMethodCallsNumber() {
-        CarEntity carEntity1 = mock(CarEntity.class);
-        CarEntity carEntity2 = mock(CarEntity.class);
-
         when(carRepository.findAll())
-                .thenReturn(List.of(carEntity1, carEntity2));
+                .thenReturn(List.of(new CarEntity(), new CarEntity()));
 
         carService.getAllCars();
 
         verify(carRepository, times(1)).findAll();
+        verify(carMapper, times(2)).toCarModel(any(CarEntity.class));
     }
 
     @Test
@@ -94,7 +92,7 @@ class CarServiceTest {
     @Test
     void getCarByEmployeeId_whenPassEmployeeId_thenValidMethodCallsNumber() {
         when(carRepository.findAllCarsByEmployeeId(1L))
-                .thenReturn(List.of(mock(CarEntity.class), mock(CarEntity.class)));
+                .thenReturn(List.of(new CarEntity(), new CarEntity()));
 
         carService.getCarsByEmployeeId(1L);
 
@@ -115,9 +113,7 @@ class CarServiceTest {
 
     @Test
     void saveCar_whenPassCreateCarRequestWithEmployeeId_thenValidMethodCallsNumber() {
-        CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
-        when(createCarRequest.getEmployeeId())
-                .thenReturn(1L);
+        CreateCarRequest createCarRequest = CreateCarRequest.builder().employeeId(1L).build();
 
         carService.saveCar(createCarRequest);
 
@@ -129,10 +125,8 @@ class CarServiceTest {
 
     @Test
     void saveCar_whenPassDifferentCreateCarRequests_thenValidMethodCallsNumber() {
-        CreateCarRequest createCarRequest1 = mock(CreateCarRequest.class);
-        CreateCarRequest createCarRequest2 = mock(CreateCarRequest.class);
-        when(createCarRequest2.getEmployeeId())
-                .thenReturn(5L);
+        CreateCarRequest createCarRequest1 = new CreateCarRequest();
+        CreateCarRequest createCarRequest2 = CreateCarRequest.builder().employeeId(5L).build();
 
         carService.saveCar(createCarRequest1);
         carService.saveCar(createCarRequest2);
@@ -145,9 +139,8 @@ class CarServiceTest {
 
     @Test
     void saveCar_whenPassWrongEmployeeId_thenThrowEntityNotFoundException() {
-        CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
-        when(createCarRequest.getEmployeeId())
-                .thenReturn(10L);
+        CreateCarRequest createCarRequest = CreateCarRequest.builder().employeeId(10L).build();
+
         when(employeeRepository.findById(10L))
                 .thenReturn(Optional.empty());
 
@@ -158,21 +151,19 @@ class CarServiceTest {
 
     @Test
     void updateCar_whenUpdateCarRequestWithoutEmployeeId_thenValidMethodCallsNumber() {
-        UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
+        UpdateCarRequest updateCarRequest = new UpdateCarRequest();
 
         carService.updateCar(updateCarRequest, 1L);
 
         verify(carRepository, times(1)).findById(1L);
         verify(carRepository, times(1)).save(any(CarEntity.class));
         verify(carMapper, times(1)).toCarModel(any(CarEntity.class));
-        verify(carMapper, times(1)).toCarEntity(any(UpdateCarRequest.class), any(CarEntity.class));
+        verify(carMapper, times(1)).toCarEntity(eq(updateCarRequest), any(CarEntity.class));
     }
 
     @Test
     void updateCar_whenUpdateCarRequestWithEmployeeId_thenValidMethodCallsNumber() {
-        UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
-        when(updateCarRequest.getEmployeeId())
-                .thenReturn(1L);
+        UpdateCarRequest updateCarRequest = UpdateCarRequest.builder().employeeId(1L).build();
 
         carService.updateCar(updateCarRequest, 3L);
 
@@ -195,9 +186,8 @@ class CarServiceTest {
 
     @Test
     void updateCar_whenPassUpdateCarRequestWithWrongEmployeeId_thenThrowEntityNotFoundException() {
-        UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
-        when(updateCarRequest.getEmployeeId())
-                .thenReturn(12L);
+        UpdateCarRequest updateCarRequest = UpdateCarRequest.builder().employeeId(12L).build();
+
         when(employeeRepository.findById(12L))
                 .thenReturn(Optional.empty());
 

@@ -29,7 +29,7 @@ class CarControllerTest {
     @Test
     void getAllCars_whenCallMethod_thenReturnOk() throws Exception {
         when(carService.getAllCars())
-                .thenReturn(List.of(mock(Car.class)));
+                .thenReturn(List.of(new Car()));
 
         mockMvc.perform(get("/cars"))
                 .andExpect(status().isOk())
@@ -39,7 +39,7 @@ class CarControllerTest {
     @Test
     void getCarById_whenPassValidId_thenReturnOk() throws Exception {
         when(carService.getCarById(1L))
-                .thenReturn(mock(Car.class));
+                .thenReturn(new Car());
 
         mockMvc.perform(get("/cars/1"))
                 .andExpect(status().isOk())
@@ -49,7 +49,7 @@ class CarControllerTest {
     @Test
     void getCarsByEmployeeId_whenPassValidEmployeeId_thenReturnOk() throws Exception {
         when(carService.getCarsByEmployeeId(3L))
-                .thenReturn(List.of(mock(Car.class), mock(Car.class)));
+                .thenReturn(List.of(new Car(), new Car()));
 
         mockMvc.perform(get("/employees/3/cars"))
                 .andExpect(status().isOk())
@@ -58,21 +58,16 @@ class CarControllerTest {
 
     @Test
     void saveCar_whenValidCreateCarRequest_thenReturnOk() throws Exception {
-        CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
-
-        when(createCarRequest.getManufacturer())
-                .thenReturn("Audi");
-        when(createCarRequest.getModel())
-                .thenReturn("A5");
-        when(createCarRequest.getVinNumber())
-                .thenReturn("JH4KA7530MC011312");
-        when(createCarRequest.getColor())
-                .thenReturn(mock(Color.class));
-        when(createCarRequest.getEmployeeId())
-                .thenReturn(2L);
+        CreateCarRequest createCarRequest = CreateCarRequest.builder()
+                .manufacturer("Audi")
+                .model("A5")
+                .vinNumber("JH4KA7530MC011312")
+                .color(Color.WHITE)
+                .employeeId(2L)
+                .build();
 
         when(carService.saveCar(any(CreateCarRequest.class)))
-                .thenReturn(mock(Car.class));
+                .thenReturn(new Car());
 
         mockMvc.perform(post("/cars")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -83,10 +78,9 @@ class CarControllerTest {
 
     @Test
     void saveCar_whenCreateCarRequestWithoutColor_thenReturnBadRequest() throws Exception {
-        CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
-
-        when(createCarRequest.getEmployeeId())
-                .thenReturn(3L);
+        CreateCarRequest createCarRequest = CreateCarRequest.builder()
+                .employeeId(3L)
+                .build();
 
         mockMvc.perform(post("/cars")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -96,12 +90,10 @@ class CarControllerTest {
 
     @Test
     void saveCar_whenCreateCarRequestWithInvalidEmployeeId_thenReturnBadRequest() throws Exception {
-        CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
-
-        when(createCarRequest.getColor())
-                .thenReturn(mock(Color.class));
-        when(createCarRequest.getEmployeeId())
-                .thenReturn(-123L);
+        CreateCarRequest createCarRequest = CreateCarRequest.builder()
+                .color(Color.WHITE)
+                .employeeId(-123L)
+                .build();
 
         mockMvc.perform(post("/cars")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -111,14 +103,11 @@ class CarControllerTest {
 
     @Test
     void saveCar_whenCreateCarRequestWithInvalidVinNumber_thenReturnBadRequest() throws Exception {
-        CreateCarRequest createCarRequest = mock(CreateCarRequest.class);
-
-        when(createCarRequest.getColor())
-                .thenReturn(mock(Color.class));
-        when(createCarRequest.getEmployeeId())
-                .thenReturn(3L);
-        when(createCarRequest.getVinNumber())
-                .thenReturn("qwe");
+        CreateCarRequest createCarRequest = CreateCarRequest.builder()
+                .color(Color.GREY)
+                .vinNumber("asd")
+                .employeeId(3L)
+                .build();
 
         mockMvc.perform(post("/cars")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -128,21 +117,16 @@ class CarControllerTest {
 
     @Test
     void updateCar_whenValidUpdateCarRequest_thenReturnOk() throws Exception {
-        UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
-
-        when(updateCarRequest.getManufacturer())
-                .thenReturn("Audi");
-        when(updateCarRequest.getModel())
-                .thenReturn("A7");
-        when(updateCarRequest.getVinNumber())
-                .thenReturn("KNDJE723297570351");
-        when(updateCarRequest.getColor())
-                .thenReturn(mock(Color.class));
-        when(updateCarRequest.getEmployeeId())
-                .thenReturn(1L);
+        UpdateCarRequest updateCarRequest = UpdateCarRequest.builder()
+                .manufacturer("Audi")
+                .model("A7")
+                .vinNumber("KNDJE723297570351")
+                .color(Color.BLACK)
+                .employeeId(1L)
+                .build();
 
         when(carService.updateCar(any(UpdateCarRequest.class), anyLong()))
-                .thenReturn(mock(Car.class));
+                .thenReturn(new Car());
 
         mockMvc.perform(put("/cars/3")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -153,12 +137,11 @@ class CarControllerTest {
 
     @Test
     void updateCar_whenUpdateCarRequestWithInvalidManufacturer_thenReturnOk() throws Exception {
-        UpdateCarRequest updateCarRequest = mock(UpdateCarRequest.class);
-
-        when(updateCarRequest.getEmployeeId())
-                .thenReturn(1L);
-        when(updateCarRequest.getManufacturer())
-                .thenReturn("@$%");
+        UpdateCarRequest updateCarRequest = UpdateCarRequest
+                .builder()
+                .manufacturer("@$%")
+                .employeeId(1L)
+                .build();
 
         mockMvc.perform(put("/cars/3")
                         .contentType(MediaType.APPLICATION_JSON)

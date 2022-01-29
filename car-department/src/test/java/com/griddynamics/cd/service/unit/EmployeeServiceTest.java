@@ -45,35 +45,33 @@ class EmployeeServiceTest {
     @BeforeEach
     void setUp() {
         when(employeeRepository.save(any(EmployeeEntity.class)))
-                .thenReturn(mock(EmployeeEntity.class));
+                .thenReturn(new EmployeeEntity());
 
         when(employeeRepository.findById(anyLong()))
-                .thenReturn(Optional.of(mock(EmployeeEntity.class)));
+                .thenReturn(Optional.of(new EmployeeEntity()));
 
         when(employeeMapper.toEmployeeEntity(any(CreateEmployeeRequest.class)))
-                .thenReturn(mock(EmployeeEntity.class));
+                .thenReturn(new EmployeeEntity());
 
         when(employeeMapper.toEmployeeModel(any(EmployeeEntity.class)))
-                .thenReturn(mock(Employee.class));
+                .thenReturn(new Employee());
 
         when(employeeMapper.toEmployeeEntity(any(UpdateEmployeeRequest.class), any(EmployeeEntity.class)))
-                .thenReturn(mock(EmployeeEntity.class));
+                .thenReturn(new EmployeeEntity());
 
         when(departmentRepository.findById(anyLong()))
-                .thenReturn(Optional.of(mock(DepartmentEntity.class)));
+                .thenReturn(Optional.of(new DepartmentEntity()));
     }
 
     @Test
     void getAllEmployees_whenCallMethod_thenValidMethodCallsNumber() {
-        EmployeeEntity employeeEntity1 = mock(EmployeeEntity.class);
-        EmployeeEntity employeeEntity2 = mock(EmployeeEntity.class);
-
         when(employeeRepository.findAll())
-                .thenReturn(List.of(employeeEntity1, employeeEntity2));
+                .thenReturn(List.of(new EmployeeEntity(), new EmployeeEntity()));
 
         employeeService.getAllEmployees();
 
         verify(employeeRepository, times(1)).findAll();
+        verify(employeeMapper, times(2)).toEmployeeModel(any(EmployeeEntity.class));
     }
 
     @Test
@@ -110,35 +108,31 @@ class EmployeeServiceTest {
 
     @Test
     void saveEmployee_whenPassCreateEmployeeRequestWithoutDepartmentId_thenValidMethodCallsNumber() {
-        CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
+        CreateEmployeeRequest createEmployeeRequest = new CreateEmployeeRequest();
 
         employeeService.saveEmployee(createEmployeeRequest);
 
         verify(employeeMapper, times(1)).toEmployeeModel(any(EmployeeEntity.class));
-        verify(employeeMapper, times(1)).toEmployeeEntity(any(CreateEmployeeRequest.class));
+        verify(employeeMapper, times(1)).toEmployeeEntity(createEmployeeRequest);
         verify(employeeRepository, times(1)).save(any(EmployeeEntity.class));
     }
 
     @Test
     void saveEmployee_whenPassCreateEmployeeRequestWithDepartmentId_thenValidMethodCallsNumber() {
-        CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
-        when(createEmployeeRequest.getDepartmentId())
-                .thenReturn(2L);
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder().departmentId(2L).build();
 
         employeeService.saveEmployee(createEmployeeRequest);
 
         verify(departmentRepository, times(1)).findById(2L);
         verify(employeeMapper, times(1)).toEmployeeModel(any(EmployeeEntity.class));
-        verify(employeeMapper, times(1)).toEmployeeEntity(any(CreateEmployeeRequest.class));
+        verify(employeeMapper, times(1)).toEmployeeEntity(createEmployeeRequest);
         verify(employeeRepository, times(1)).save(any(EmployeeEntity.class));
     }
 
     @Test
     void saveEmployee_whenPassDifferentCreateEmployeeRequests_thenValidMethodCallsNumber() {
-        CreateEmployeeRequest createEmployeeRequest1 = mock(CreateEmployeeRequest.class);
-        CreateEmployeeRequest createEmployeeRequest2 = mock(CreateEmployeeRequest.class);
-        when(createEmployeeRequest2.getDepartmentId())
-                .thenReturn(2L);
+        CreateEmployeeRequest createEmployeeRequest1 = new CreateEmployeeRequest();
+        CreateEmployeeRequest createEmployeeRequest2 = CreateEmployeeRequest.builder().departmentId(2L).build();
 
         employeeService.saveEmployee(createEmployeeRequest1);
         employeeService.saveEmployee(createEmployeeRequest2);
@@ -151,9 +145,7 @@ class EmployeeServiceTest {
 
     @Test
     void saveEmployee_whenPassCreateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() {
-        CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
-        when(createEmployeeRequest.getPhoneNumber())
-                .thenReturn("1234567890");
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder().phoneNumber("1234567890").build();
         when(employeeRepository.existsByPhoneNumber("1234567890"))
                 .thenReturn(true);
 
@@ -161,14 +153,12 @@ class EmployeeServiceTest {
                 employeeService.saveEmployee(createEmployeeRequest));
 
         assertEquals("Employee with 1234567890 phone number already exist", thrown.getMessage());
-
     }
 
     @Test
     void saveEmployee_whenPassWrongDepartmentId_thenThrowEntityNotFoundException() {
-        CreateEmployeeRequest createEmployeeRequest = mock(CreateEmployeeRequest.class);
-        when(createEmployeeRequest.getDepartmentId())
-                .thenReturn(3L);
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder().departmentId(3L).build();
+
         when(departmentRepository.findById(3L))
                 .thenReturn(Optional.empty());
 
@@ -180,7 +170,7 @@ class EmployeeServiceTest {
 
     @Test
     void updateEmployee_whenUpdateEmployeeRequestWithoutDepartmentId_thenValidMethodCallsNumber() {
-        UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
+        UpdateEmployeeRequest updateEmployeeRequest = new UpdateEmployeeRequest();
 
         employeeService.updateEmployee(updateEmployeeRequest, 2L);
 
@@ -192,9 +182,7 @@ class EmployeeServiceTest {
 
     @Test
     void updateEmployee_whenUpdateEmployeeRequestWithDepartmentId_thenValidMethodCallsNumber() {
-        UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
-        when(updateEmployeeRequest.getDepartmentId())
-                .thenReturn(1L);
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder().departmentId(1L).build();
 
         employeeService.updateEmployee(updateEmployeeRequest, 2L);
 
@@ -202,7 +190,7 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).findById(2L);
         verify(employeeRepository, times(1)).save(any(EmployeeEntity.class));
         verify(employeeMapper, times(1)).toEmployeeModel(any(EmployeeEntity.class));
-        verify(employeeMapper, times(1)).toEmployeeEntity(any(UpdateEmployeeRequest.class), any(EmployeeEntity.class));
+        verify(employeeMapper, times(1)).toEmployeeEntity(eq(updateEmployeeRequest), any(EmployeeEntity.class));
     }
 
     @Test
@@ -211,15 +199,14 @@ class EmployeeServiceTest {
                 .thenReturn(Optional.empty());
 
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                employeeService.updateEmployee(mock(UpdateEmployeeRequest.class), 2L));
+                employeeService.updateEmployee(new UpdateEmployeeRequest(), 2L));
         assertEquals("Employee with 2 id was not found", thrown.getMessage());
     }
 
     @Test
     void updateEmployee_whenPassUpdateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() {
-        UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
-        when(updateEmployeeRequest.getPhoneNumber())
-                .thenReturn("1234567890");
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder().phoneNumber("1234567890").build();
+
         when(employeeRepository.existsByPhoneNumberAndIdIsNot("1234567890", 1L))
                 .thenReturn(true);
 
@@ -230,9 +217,8 @@ class EmployeeServiceTest {
 
     @Test
     void updateEmployee_whenPassUpdateEmployeeRequestWithWrongDepartmentId_thenThrowEntityNotFoundException() {
-        UpdateEmployeeRequest updateEmployeeRequest = mock(UpdateEmployeeRequest.class);
-        when(updateEmployeeRequest.getDepartmentId())
-                .thenReturn(1L);
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder().departmentId(1L).build();
+
         when(departmentRepository.findById(1L))
                 .thenReturn(Optional.empty());
 

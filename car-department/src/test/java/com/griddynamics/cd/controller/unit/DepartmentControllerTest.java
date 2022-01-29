@@ -17,6 +17,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,7 +31,7 @@ public class DepartmentControllerTest {
     @Test
     void getAllDepartments_whenCallMethod_thenReturnOk() throws Exception {
         when(departmentService.getAllDepartments())
-                .thenReturn(List.of(mock(Department.class)));
+                .thenReturn(List.of(new Department()));
 
         mockMvc.perform(get("/departments"))
                 .andExpect(status().isOk())
@@ -40,7 +41,7 @@ public class DepartmentControllerTest {
     @Test
     void getDepartmentById_whenPassValidId_thenReturnOk() throws Exception {
         when(departmentService.getDepartmentById(1L))
-                .thenReturn(mock(Department.class));
+                .thenReturn(new Department());
 
         mockMvc.perform(get("/departments/1"))
                 .andExpect(status().isOk())
@@ -49,16 +50,12 @@ public class DepartmentControllerTest {
 
     @Test
     void saveDepartment_whenValidCreateDepartmentRequest_thenReturnOk() throws Exception {
-        CreateDepartmentRequest createDepartmentRequest = mock(CreateDepartmentRequest.class);
-
-        when(createDepartmentRequest.getName())
-                .thenReturn("Department 1");
-        when(createDepartmentRequest.getEmail())
-                .thenReturn("test@test");
-        when(createDepartmentRequest.getDescription())
-                .thenReturn("some desc.");
-        when(createDepartmentRequest.getDepartmentType())
-                .thenReturn(mock(DepartmentType.class));
+        CreateDepartmentRequest createDepartmentRequest = CreateDepartmentRequest.builder()
+                .name("Department 1")
+                .email("test@test")
+                .description("some desc.")
+                .departmentType(DepartmentType.SALE)
+                .build();
 
         when(departmentService.saveDepartment(any(CreateDepartmentRequest.class)))
                 .thenReturn(mock(Department.class));
@@ -72,12 +69,10 @@ public class DepartmentControllerTest {
 
     @Test
     void saveDepartment_whenCreateDepartmentRequestWithInvalidName_thenReturnBadRequest() throws Exception {
-        CreateDepartmentRequest createDepartmentRequest = mock(CreateDepartmentRequest.class);
-
-        when(createDepartmentRequest.getName())
-                .thenReturn("De@#!");
-        when(createDepartmentRequest.getDepartmentType())
-                .thenReturn(mock(DepartmentType.class));
+        CreateDepartmentRequest createDepartmentRequest = CreateDepartmentRequest.builder()
+                .name("De@#!")
+                .departmentType(DepartmentType.SUPPORT)
+                .build();
 
         mockMvc.perform(post("/departments")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -87,12 +82,10 @@ public class DepartmentControllerTest {
 
     @Test
     void saveDepartment_whenCreateDepartmentRequestWithInvalidEmail_thenReturnBadRequest() throws Exception {
-        CreateDepartmentRequest createDepartmentRequest = mock(CreateDepartmentRequest.class);
-
-        when(createDepartmentRequest.getEmail())
-                .thenReturn("wrong");
-        when(createDepartmentRequest.getDepartmentType())
-                .thenReturn(mock(DepartmentType.class));
+        CreateDepartmentRequest createDepartmentRequest = CreateDepartmentRequest.builder()
+                .email("wrong")
+                .departmentType(DepartmentType.SUPPORT)
+                .build();
 
         mockMvc.perform(post("/departments")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -102,10 +95,9 @@ public class DepartmentControllerTest {
 
     @Test
     void saveDepartment_whenCreateDepartmentRequestWithoutDepartmentType_thenReturnBadRequest() throws Exception {
-        CreateDepartmentRequest createDepartmentRequest = mock(CreateDepartmentRequest.class);
-
-        when(createDepartmentRequest.getEmail())
-                .thenReturn("test@test");
+        CreateDepartmentRequest createDepartmentRequest = CreateDepartmentRequest.builder()
+                .email("test@test")
+                .build();
 
         mockMvc.perform(post("/departments")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -115,16 +107,12 @@ public class DepartmentControllerTest {
 
     @Test
     void updateDepartment_whenValidUpdateDepartmentRequest_thenReturnOk() throws Exception {
-        UpdateDepartmentRequest updateDepartmentRequest = mock(UpdateDepartmentRequest.class);
-
-        when(updateDepartmentRequest.getName())
-                .thenReturn("Department 1");
-        when(updateDepartmentRequest.getEmail())
-                .thenReturn("test@test");
-        when(updateDepartmentRequest.getDescription())
-                .thenReturn("some desc.");
-        when(updateDepartmentRequest.getDepartmentType())
-                .thenReturn(mock(DepartmentType.class));
+        UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder()
+                .name("Department 1")
+                .email("test@test")
+                .description("some desc.")
+                .departmentType(DepartmentType.SUPPORT)
+                .build();
 
         when(departmentService.updateDepartment(any(UpdateDepartmentRequest.class), anyLong()))
                 .thenReturn(mock(Department.class));
@@ -138,12 +126,9 @@ public class DepartmentControllerTest {
 
     @Test
     void updateDepartment_whenUpdateDepartmentRequestWithInvalidName_thenReturnBadRequest() throws Exception {
-        UpdateDepartmentRequest updateDepartmentRequest = mock(UpdateDepartmentRequest.class);
-
-        when(updateDepartmentRequest.getName())
-                .thenReturn("De@#!");
-        when(updateDepartmentRequest.getDepartmentType())
-                .thenReturn(mock(DepartmentType.class));
+        UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder()
+                .name("De@#!")
+                .build();
 
         mockMvc.perform(put("/departments/2")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -153,12 +138,9 @@ public class DepartmentControllerTest {
 
     @Test
     void updateDepartment_whenUpdateDepartmentRequestWithInvalidEmail_thenReturnBadRequest() throws Exception {
-        UpdateDepartmentRequest updateDepartmentRequest = mock(UpdateDepartmentRequest.class);
-
-        when(updateDepartmentRequest.getEmail())
-                .thenReturn("wrong");
-        when(updateDepartmentRequest.getDepartmentType())
-                .thenReturn(mock(DepartmentType.class));
+        UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder()
+                .email("wrong")
+                .build();
 
         mockMvc.perform(put("/departments/2")
                         .contentType(MediaType.APPLICATION_JSON)
