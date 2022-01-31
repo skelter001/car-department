@@ -9,8 +9,7 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface CarMapper {
 
-    @Mapping(target = "employeeId",
-            expression = "java(entity.getEmployee().getId())")
+    @Mapping(target = "employeeId", source = "employee.id")
     Car toCarModel(CarEntity entity);
 
     CarEntity toCarEntity(CreateCarRequest request);

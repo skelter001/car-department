@@ -9,8 +9,7 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface EmployeeMapper {
 
-    @Mapping(target = "departmentId",
-            expression = "java(entity.getDepartment().getId())")
+    @Mapping(target = "departmentId", source = "department.id")
     Employee toEmployeeModel(EmployeeEntity entity);
 
     EmployeeEntity toEmployeeEntity(CreateEmployeeRequest request);
