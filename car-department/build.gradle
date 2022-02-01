@@ -23,6 +23,7 @@ ext {
     hibernateVersion = "5.6.3.Final"
     mapstructVersion = "1.4.2.Final"
     mockitoVersion = "4.2.0"
+    testcontainersVersion = "1.16.3"
 }
 
 dependencies {
@@ -52,7 +53,9 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-test:$springBootVersion",
             "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion",
             "org.mockito:mockito-core:$mockitoVersion",
-            "org.mockito:mockito-inline:$mockitoVersion"
+            "org.mockito:mockito-inline:$mockitoVersion",
+            "org.testcontainers:junit-jupiter:$testcontainersVersion",
+            "org.testcontainers:postgresql:$testcontainersVersion"
     )
     testRuntimeOnly (
             "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
