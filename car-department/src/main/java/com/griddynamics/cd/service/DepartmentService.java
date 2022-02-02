@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
-    private final DepartmentMapper departmentMapper;
     private final EmployeeRepository employeeRepository;
+    private final DepartmentMapper departmentMapper;
 
     public List<Department> getAllDepartments() {
         return departmentRepository.findAll().stream()
