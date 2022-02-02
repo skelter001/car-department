@@ -119,7 +119,9 @@ class DepartmentServiceTest {
     @Test
     void saveDepartment_whenPassDifferentCreateDepartmentRequests_thenValidMethodCallsNumber() {
         CreateDepartmentRequest createDepartmentRequest1 = new CreateDepartmentRequest();
-        CreateDepartmentRequest createDepartmentRequest2 = CreateDepartmentRequest.builder().email("test@test").build();
+        CreateDepartmentRequest createDepartmentRequest2 = CreateDepartmentRequest.builder()
+                .email("test@test")
+                .build();
 
         departmentService.saveDepartment(createDepartmentRequest1);
         departmentService.saveDepartment(createDepartmentRequest2);
@@ -132,7 +134,9 @@ class DepartmentServiceTest {
 
     @Test
     void saveDepartment_whenPassCreateDepartmentRequestWithExistingEmail_thenThrowEntityExistsException() {
-        CreateDepartmentRequest createDepartmentRequest = CreateDepartmentRequest.builder().email("test@test").build();
+        CreateDepartmentRequest createDepartmentRequest = CreateDepartmentRequest.builder()
+                .email("test@test")
+                .build();
 
         when(departmentRepository.existsByEmail("test@test"))
                 .thenReturn(true);
@@ -156,7 +160,9 @@ class DepartmentServiceTest {
 
     @Test
     void updateDepartment_whenPassUpdateDepartmentRequestWithEmail_thenValidMethodCallsNumber() {
-        UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder().email("test@test").build();
+        UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder()
+                .email("test@test")
+                .build();
 
         departmentService.updateDepartment(updateDepartmentRequest, 2L);
 
@@ -179,7 +185,9 @@ class DepartmentServiceTest {
 
     @Test
     void updateDepartment_whenPassUpdateDepartmentRequestWithExistingEmail_thenThrowEntityExistsException() {
-        UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder().email("test@test").build();
+        UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder()
+                .email("test@test")
+                .build();
 
         when(departmentRepository.existsByEmailAndIdIsNot("test@test", 2L))
                 .thenReturn(true);

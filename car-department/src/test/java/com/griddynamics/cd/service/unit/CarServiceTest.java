@@ -113,7 +113,9 @@ class CarServiceTest {
 
     @Test
     void saveCar_whenPassCreateCarRequestWithEmployeeId_thenValidMethodCallsNumber() {
-        CreateCarRequest createCarRequest = CreateCarRequest.builder().employeeId(1L).build();
+        CreateCarRequest createCarRequest = CreateCarRequest.builder()
+                .employeeId(1L)
+                .build();
 
         carService.saveCar(createCarRequest);
 
@@ -126,7 +128,9 @@ class CarServiceTest {
     @Test
     void saveCar_whenPassDifferentCreateCarRequests_thenValidMethodCallsNumber() {
         CreateCarRequest createCarRequest1 = new CreateCarRequest();
-        CreateCarRequest createCarRequest2 = CreateCarRequest.builder().employeeId(5L).build();
+        CreateCarRequest createCarRequest2 = CreateCarRequest.builder()
+                .employeeId(5L)
+                .build();
 
         carService.saveCar(createCarRequest1);
         carService.saveCar(createCarRequest2);
@@ -139,7 +143,9 @@ class CarServiceTest {
 
     @Test
     void saveCar_whenPassInvalidEmployeeId_thenThrowEntityNotFoundException() {
-        CreateCarRequest createCarRequest = CreateCarRequest.builder().employeeId(10L).build();
+        CreateCarRequest createCarRequest = CreateCarRequest.builder()
+                .employeeId(10L)
+                .build();
 
         when(employeeRepository.findById(10L))
                 .thenReturn(Optional.empty());
@@ -163,7 +169,9 @@ class CarServiceTest {
 
     @Test
     void updateCar_whenUpdateCarRequestWithEmployeeId_thenValidMethodCallsNumber() {
-        UpdateCarRequest updateCarRequest = UpdateCarRequest.builder().employeeId(1L).build();
+        UpdateCarRequest updateCarRequest = UpdateCarRequest.builder()
+                .employeeId(1L)
+                .build();
 
         carService.updateCar(updateCarRequest, 3L);
 
@@ -186,7 +194,9 @@ class CarServiceTest {
 
     @Test
     void updateCar_whenPassUpdateCarRequestWithInvalidEmployeeId_thenThrowEntityNotFoundException() {
-        UpdateCarRequest updateCarRequest = UpdateCarRequest.builder().employeeId(12L).build();
+        UpdateCarRequest updateCarRequest = UpdateCarRequest.builder()
+                .employeeId(12L)
+                .build();
 
         when(employeeRepository.findById(12L))
                 .thenReturn(Optional.empty());

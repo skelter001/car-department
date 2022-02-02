@@ -77,6 +77,7 @@ public class CarServiceTest {
                 .birthday(LocalDate.of(1993, 8, 2))
                 .phoneNumber("5738310041")
                 .build();
+
         employeeRepository.saveAll(List.of(employeeEntity1, employeeEntity2));
 
         CarEntity carEntity1 = CarEntity.builder()
@@ -180,15 +181,19 @@ public class CarServiceTest {
     }
 
     @Test
-    void getCarById_whenPassInvalidId_thenThrowEntityNotFoundException() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> carService.getCarById(123L));
+    void getCarById_whenPassInvalidCarId_thenThrowEntityNotFoundException() {
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> carService.getCarById(123L)
+        );
         assertEquals("Car with 123 id was not found", thrown.getMessage());
     }
 
     @Test
     @Order(3)
     void getCarsByEmployeeId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() {
-        List<Car> expected1 = List.of(Car.builder()
+        List<Car> expected1 = List.of(
+                Car.builder()
                 .id(9L)
                 .manufacturer("Honda")
                 .model("Coupe")
@@ -197,7 +202,8 @@ public class CarServiceTest {
                 .employeeId(5L)
                 .build()
         );
-        List<Car> expected2 = List.of(Car.builder()
+        List<Car> expected2 = List.of(
+                Car.builder()
                         .id(10L)
                         .manufacturer("Nissan")
                         .model("Silvia S13")
@@ -250,7 +256,9 @@ public class CarServiceTest {
     void saveCar_whenPassCreateCarRequestWithInvalidEmployeeId_thenThrowEntityNotFoundException() {
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
-                () -> carService.saveCar(CreateCarRequest.builder().employeeId(123L).build())
+                () -> carService.saveCar(CreateCarRequest.builder()
+                        .employeeId(123L)
+                        .build())
         );
         assertEquals("Employee with 123 id was not found", thrown.getMessage());
     }
@@ -282,7 +290,7 @@ public class CarServiceTest {
     void updateCar_whenPassInvalidCarId_thenThrowEntityNotFoundException() {
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
-                () -> carService.updateCar(UpdateCarRequest.builder().build(), 123L)
+                () -> carService.updateCar(new UpdateCarRequest(), 123L)
         );
         assertEquals("Car with 123 id was not found", thrown.getMessage());
     }
@@ -292,7 +300,9 @@ public class CarServiceTest {
     void updateCar_whenPassUpdateCarRequestWithInvalidEmployeeId_thenThrowEntityNotFoundException() {
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
-                () -> carService.updateCar(UpdateCarRequest.builder().employeeId(54L).build(), 27L)
+                () -> carService.updateCar(UpdateCarRequest.builder()
+                        .employeeId(54L)
+                        .build(), 27L)
         );
         assertEquals("Employee with 54 id was not found", thrown.getMessage());
     }
@@ -300,7 +310,6 @@ public class CarServiceTest {
     @Test
     @Order(6)
     void deleteCar_whenPassValidCarId_thenCheckIfEntityActuallyDeleted() {
-        System.out.println(carService.getAllCars());
         carService.deleteCar(22L);
         assertFalse(carRepository.existsById(22L));
     }

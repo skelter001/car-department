@@ -54,7 +54,7 @@ class DepartmentServiceTest {
         registry.add("spring.datasource.url", container::getJdbcUrl);
         registry.add("spring.datasource.password", container::getPassword);
         registry.add("spring.datasource.username", container::getUsername);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
     }
 
     @BeforeEach
@@ -272,8 +272,7 @@ class DepartmentServiceTest {
     @Test
     @Order(7)
     void deleteDepartment_whenPasDepartmentIdWithDependentEmployees_thenThrowEntityDeleteException() {
-        EmployeeEntity employeeEntity = EmployeeEntity
-                .builder()
+        EmployeeEntity employeeEntity = EmployeeEntity.builder()
                 .firstName("Joe")
                 .lastName("Doe")
                 .department(departmentRepository.getById(26L))

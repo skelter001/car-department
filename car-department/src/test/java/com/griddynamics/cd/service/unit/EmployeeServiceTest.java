@@ -119,7 +119,9 @@ class EmployeeServiceTest {
 
     @Test
     void saveEmployee_whenPassCreateEmployeeRequestWithDepartmentId_thenValidMethodCallsNumber() {
-        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder().departmentId(2L).build();
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
+                .departmentId(2L)
+                .build();
 
         employeeService.saveEmployee(createEmployeeRequest);
 
@@ -132,7 +134,9 @@ class EmployeeServiceTest {
     @Test
     void saveEmployee_whenPassDifferentCreateEmployeeRequests_thenValidMethodCallsNumber() {
         CreateEmployeeRequest createEmployeeRequest1 = new CreateEmployeeRequest();
-        CreateEmployeeRequest createEmployeeRequest2 = CreateEmployeeRequest.builder().departmentId(2L).build();
+        CreateEmployeeRequest createEmployeeRequest2 = CreateEmployeeRequest.builder()
+                .departmentId(2L)
+                .build();
 
         employeeService.saveEmployee(createEmployeeRequest1);
         employeeService.saveEmployee(createEmployeeRequest2);
@@ -145,7 +149,9 @@ class EmployeeServiceTest {
 
     @Test
     void saveEmployee_whenPassCreateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() {
-        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder().phoneNumber("1234567890").build();
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
+                .phoneNumber("1234567890")
+                .build();
         when(employeeRepository.existsByPhoneNumber("1234567890"))
                 .thenReturn(true);
 
@@ -157,7 +163,9 @@ class EmployeeServiceTest {
 
     @Test
     void saveEmployee_whenPassInvalidDepartmentId_thenThrowEntityNotFoundException() {
-        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder().departmentId(3L).build();
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
+                .departmentId(3L)
+                .build();
 
         when(departmentRepository.findById(3L))
                 .thenReturn(Optional.empty());
@@ -182,7 +190,9 @@ class EmployeeServiceTest {
 
     @Test
     void updateEmployee_whenUpdateEmployeeRequestWithDepartmentId_thenValidMethodCallsNumber() {
-        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder().departmentId(1L).build();
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
+                .departmentId(1L)
+                .build();
 
         employeeService.updateEmployee(updateEmployeeRequest, 2L);
 
@@ -205,7 +215,9 @@ class EmployeeServiceTest {
 
     @Test
     void updateEmployee_whenPassUpdateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() {
-        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder().phoneNumber("1234567890").build();
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
+                .phoneNumber("1234567890")
+                .build();
 
         when(employeeRepository.existsByPhoneNumberAndIdIsNot("1234567890", 1L))
                 .thenReturn(true);
@@ -217,7 +229,9 @@ class EmployeeServiceTest {
 
     @Test
     void updateEmployee_whenPassUpdateEmployeeRequestWithInvalidDepartmentId_thenThrowEntityNotFoundException() {
-        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder().departmentId(1L).build();
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
+                .departmentId(1L)
+                .build();
 
         when(departmentRepository.findById(1L))
                 .thenReturn(Optional.empty());
