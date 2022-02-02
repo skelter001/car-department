@@ -37,7 +37,7 @@ class DepartmentServiceTest {
         departmentRepository = mock(DepartmentRepository.class);
         departmentMapper = mock(DepartmentMapper.class);
         employeeRepository = mock(EmployeeRepository.class);
-        departmentService = new DepartmentService(departmentRepository, departmentMapper, employeeRepository);
+        departmentService = new DepartmentService(departmentRepository, employeeRepository, departmentMapper);
     }
 
     @BeforeEach
@@ -70,7 +70,7 @@ class DepartmentServiceTest {
     }
 
     @Test
-    void getDepartmentById_whenPassId_thenValidMethodCallsNumber() {
+    void getDepartmentById_whenPassDepartmentId_thenValidMethodCallsNumber() {
         departmentService.getDepartmentById(2L);
         departmentService.getDepartmentById(1L);
         departmentService.getDepartmentById(2L);
@@ -81,7 +81,7 @@ class DepartmentServiceTest {
     }
 
     @Test
-    void getDepartmentById_whenPassWrongId_thenThrowEntityNotFoundException() {
+    void getDepartmentById_whenPassInvalidDepartmentId_thenThrowEntityNotFoundException() {
         when(departmentRepository.findById(2L))
                 .thenReturn(Optional.empty());
 
@@ -131,7 +131,7 @@ class DepartmentServiceTest {
     }
 
     @Test
-    void saveDepartment_whenPassCreateDepartmentRequestWithExistingEmail_thenThrowEntityNotFoundException() {
+    void saveDepartment_whenPassCreateDepartmentRequestWithExistingEmail_thenThrowEntityExistsException() {
         CreateDepartmentRequest createDepartmentRequest = CreateDepartmentRequest.builder().email("test@test").build();
 
         when(departmentRepository.existsByEmail("test@test"))
@@ -168,7 +168,7 @@ class DepartmentServiceTest {
     }
 
     @Test
-    void updateDepartment_whenPassWrongDepartmentId_thenThrowEntityNotFoundException() {
+    void updateDepartment_whenPassInvalidDepartmentId_thenThrowEntityNotFoundException() {
         when(departmentRepository.findById(2L))
                 .thenReturn(Optional.empty());
 
@@ -207,7 +207,7 @@ class DepartmentServiceTest {
     }
 
     @Test
-    void deleteDepartment_whenPassWrongDepartmentId_thenThrowEntityNotFoundException() {
+    void deleteDepartment_whenPassInvalidDepartmentId_thenThrowEntityNotFoundException() {
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
                 departmentService.deleteDepartment(2L));
         assertEquals("Department with 2 id was not found", thrown.getMessage());

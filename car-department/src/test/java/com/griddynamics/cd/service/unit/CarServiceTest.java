@@ -69,7 +69,7 @@ class CarServiceTest {
     }
 
     @Test
-    void getCarById_whenPassId_thenValidMethodCallsNumber() {
+    void getCarById_whenPassCarId_thenValidMethodCallsNumber() {
         carService.getCarById(1L);
         carService.getCarById(2L);
         carService.getCarById(1L);
@@ -80,7 +80,7 @@ class CarServiceTest {
     }
 
     @Test
-    void getCarById_whenPassWrongId_thenThrowEntityNotFoundException() {
+    void getCarById_whenPassInvalidCarId_thenThrowEntityNotFoundException() {
         when(carRepository.findById(100L))
                 .thenReturn(Optional.empty());
 
@@ -138,7 +138,7 @@ class CarServiceTest {
     }
 
     @Test
-    void saveCar_whenPassWrongEmployeeId_thenThrowEntityNotFoundException() {
+    void saveCar_whenPassInvalidEmployeeId_thenThrowEntityNotFoundException() {
         CreateCarRequest createCarRequest = CreateCarRequest.builder().employeeId(10L).build();
 
         when(employeeRepository.findById(10L))
@@ -175,7 +175,7 @@ class CarServiceTest {
     }
 
     @Test
-    void updateCar_whenPassWrongCarId_thenThrowEntityNotFoundException() {
+    void updateCar_whenPassInvalidCarId_thenThrowEntityNotFoundException() {
         when(carRepository.findById(123L))
                 .thenReturn(Optional.empty());
 
@@ -185,7 +185,7 @@ class CarServiceTest {
     }
 
     @Test
-    void updateCar_whenPassUpdateCarRequestWithWrongEmployeeId_thenThrowEntityNotFoundException() {
+    void updateCar_whenPassUpdateCarRequestWithInvalidEmployeeId_thenThrowEntityNotFoundException() {
         UpdateCarRequest updateCarRequest = UpdateCarRequest.builder().employeeId(12L).build();
 
         when(employeeRepository.findById(12L))
@@ -213,7 +213,7 @@ class CarServiceTest {
     }
 
     @Test
-    void deleteCar_whenPassWrongCarId_thenThrowEntityNotFoundException() {
+    void deleteCar_whenPassInvalidCarId_thenThrowEntityNotFoundException() {
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
                 carService.deleteCar(15L));
         assertEquals("Car with 15 id was not found", thrown.getMessage());

@@ -39,7 +39,7 @@ class EmployeeServiceTest {
         employeeMapper = mock(EmployeeMapper.class);
         departmentRepository = mock(DepartmentRepository.class);
         carRepository = mock(CarRepository.class);
-        employeeService = new EmployeeService(employeeRepository, employeeMapper, departmentRepository, carRepository);
+        employeeService = new EmployeeService(employeeRepository, departmentRepository, carRepository, employeeMapper);
     }
 
     @BeforeEach
@@ -75,7 +75,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void getEmployeeById_whenPassId_thenValidMethodCallsNumber() {
+    void getEmployeeById_whenPassEmployeeId_thenValidMethodCallsNumber() {
         employeeService.getEmployeeById(1L);
         employeeService.getEmployeeById(1L);
         employeeService.getEmployeeById(2L);
@@ -86,7 +86,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void getEmployeeById_whenPassWrongId_thenThrowEntityNotFoundException() {
+    void getEmployeeById_whenPassInvalidEmployeeId_thenThrowEntityNotFoundException() {
         when(employeeRepository.findById(12L))
                 .thenReturn(Optional.empty());
 
@@ -156,7 +156,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void saveEmployee_whenPassWrongDepartmentId_thenThrowEntityNotFoundException() {
+    void saveEmployee_whenPassInvalidDepartmentId_thenThrowEntityNotFoundException() {
         CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder().departmentId(3L).build();
 
         when(departmentRepository.findById(3L))
@@ -194,7 +194,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void updateEmployee_whenPassWrongEmployeeId_thenThrowEntityNotFoundException() {
+    void updateEmployee_whenPassInvalidEmployeeId_thenThrowEntityNotFoundException() {
         when(employeeRepository.findById(2L))
                 .thenReturn(Optional.empty());
 
@@ -216,7 +216,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void updateEmployee_whenPassUpdateEmployeeRequestWithWrongDepartmentId_thenThrowEntityNotFoundException() {
+    void updateEmployee_whenPassUpdateEmployeeRequestWithInvalidDepartmentId_thenThrowEntityNotFoundException() {
         UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder().departmentId(1L).build();
 
         when(departmentRepository.findById(1L))
@@ -244,7 +244,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void deleteEmployee_whenPassWrongEmployeeId_thenThrowEntityNotFoundException() {
+    void deleteEmployee_whenPassInvalidEmployeeId_thenThrowEntityNotFoundException() {
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
                 employeeService.deleteEmployee(3L));
         assertEquals("Employee with 3 id was not found", thrown.getMessage());
