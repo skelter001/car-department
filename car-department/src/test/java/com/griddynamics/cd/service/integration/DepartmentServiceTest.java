@@ -57,6 +57,11 @@ class DepartmentServiceTest {
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
     }
 
+    @AfterAll
+    static void tearDown() {
+        container.stop();
+    }
+
     @BeforeEach
     void setUp() {
         DepartmentEntity departmentEntity1 = DepartmentEntity.builder()
@@ -91,11 +96,6 @@ class DepartmentServiceTest {
     void tearDownEach() {
         employeeRepository.deleteAll();
         departmentRepository.deleteAll();
-    }
-
-    @AfterAll
-    static void tearDown() {
-        container.stop();
     }
 
     @Test
