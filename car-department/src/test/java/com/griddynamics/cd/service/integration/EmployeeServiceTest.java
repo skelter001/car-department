@@ -48,7 +48,10 @@ public class EmployeeServiceTest {
     private final CarRepository carRepository;
 
     @Autowired
-    public EmployeeServiceTest(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, CarRepository carRepository, EmployeeMapper employeeMapper) {
+    public EmployeeServiceTest(EmployeeRepository employeeRepository,
+                               DepartmentRepository departmentRepository,
+                               CarRepository carRepository,
+                               EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
         this.departmentRepository = departmentRepository;
         this.carRepository = carRepository;

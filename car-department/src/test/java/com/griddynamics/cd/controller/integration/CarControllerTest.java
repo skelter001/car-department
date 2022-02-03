@@ -56,7 +56,10 @@ public class CarControllerTest {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public CarControllerTest(CarRepository carRepository, EmployeeRepository employeeRepository, CarMapper carMapper, ExceptionAdviser exceptionAdviser) {
+    public CarControllerTest(CarRepository carRepository,
+                             EmployeeRepository employeeRepository,
+                             CarMapper carMapper,
+                             ExceptionAdviser exceptionAdviser) {
         this.carRepository = carRepository;
         this.employeeRepository = employeeRepository;
         this.mockMvc = MockMvcBuilders

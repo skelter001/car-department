@@ -3,6 +3,7 @@ package com.griddynamics.cd.controller.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.griddynamics.cd.controller.DepartmentController;
 import com.griddynamics.cd.entity.DepartmentEntity;
+import com.griddynamics.cd.exception.ExceptionAdviser;
 import com.griddynamics.cd.mapper.DepartmentMapper;
 import com.griddynamics.cd.model.Department;
 import com.griddynamics.cd.model.DepartmentType;
@@ -48,7 +49,10 @@ public class DepartmentControllerTest {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public DepartmentControllerTest(DepartmentRepository departmentRepository, EmployeeRepository employeeRepository, DepartmentMapper departmentMapper) {
+    public DepartmentControllerTest(DepartmentRepository departmentRepository,
+                                    EmployeeRepository employeeRepository,
+                                    DepartmentMapper departmentMapper,
+                                    ExceptionAdviser exceptionAdviser) {
         this.departmentRepository = departmentRepository;
         this.employeeRepository = employeeRepository;
         this.mockMvc = MockMvcBuilders
@@ -56,7 +60,9 @@ public class DepartmentControllerTest {
                         new DepartmentService(departmentRepository,
                                 employeeRepository,
                                 departmentMapper)
-                )).build();
+                ))
+                .setControllerAdvice(exceptionAdviser)
+                .build();
         this.objectMapper = new ObjectMapper();
     }
 

@@ -43,7 +43,9 @@ public class CarServiceTest {
     private final CarService carService;
 
     @Autowired
-    public CarServiceTest(CarRepository carRepository, EmployeeRepository employeeRepository, CarMapper carMapper) {
+    public CarServiceTest(CarRepository carRepository,
+                          EmployeeRepository employeeRepository,
+                          CarMapper carMapper) {
         this.carRepository = carRepository;
         this.employeeRepository = employeeRepository;
         carService = new CarService(carRepository, employeeRepository, carMapper);

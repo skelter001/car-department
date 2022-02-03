@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.griddynamics.cd.controller.EmployeeController;
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
+import com.griddynamics.cd.exception.ExceptionAdviser;
 import com.griddynamics.cd.mapper.EmployeeMapper;
 import com.griddynamics.cd.model.DepartmentType;
 import com.griddynamics.cd.model.Employee;
@@ -53,7 +54,11 @@ public class EmployeeControllerTest {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public EmployeeControllerTest(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, CarRepository carRepository, EmployeeMapper employeeMapper) {
+    public EmployeeControllerTest(EmployeeRepository employeeRepository,
+                                  DepartmentRepository departmentRepository,
+                                  CarRepository carRepository,
+                                  EmployeeMapper employeeMapper,
+                                  ExceptionAdviser exceptionAdviser) {
         this.employeeRepository = employeeRepository;
         this.departmentRepository = departmentRepository;
         this.carRepository = carRepository;
@@ -64,7 +69,9 @@ public class EmployeeControllerTest {
                                 departmentRepository,
                                 carRepository,
                                 employeeMapper)
-                )).build();
+                ))
+                .setControllerAdvice(exceptionAdviser)
+                .build();
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 

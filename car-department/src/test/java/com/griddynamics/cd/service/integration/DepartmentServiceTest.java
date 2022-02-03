@@ -43,7 +43,9 @@ class DepartmentServiceTest {
     private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public DepartmentServiceTest(DepartmentRepository departmentRepository, EmployeeRepository employeeRepository, DepartmentMapper departmentMapper) {
+    public DepartmentServiceTest(DepartmentRepository departmentRepository,
+                                 EmployeeRepository employeeRepository,
+                                 DepartmentMapper departmentMapper) {
         this.departmentRepository = departmentRepository;
         this.employeeRepository = employeeRepository;
         this.departmentService = new DepartmentService(departmentRepository, employeeRepository, departmentMapper);
