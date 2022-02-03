@@ -3,13 +3,17 @@ package com.griddynamics.cd.controller.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.griddynamics.cd.controller.EmployeeController;
+import com.griddynamics.cd.entity.CarEntity;
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
+import com.griddynamics.cd.exception.EntityDeleteException;
 import com.griddynamics.cd.exception.ExceptionAdviser;
 import com.griddynamics.cd.mapper.EmployeeMapper;
+import com.griddynamics.cd.model.Color;
 import com.griddynamics.cd.model.DepartmentType;
 import com.griddynamics.cd.model.Employee;
 import com.griddynamics.cd.model.create.CreateEmployeeRequest;
+import com.griddynamics.cd.model.update.UpdateCarRequest;
 import com.griddynamics.cd.model.update.UpdateEmployeeRequest;
 import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.DepartmentRepository;
@@ -22,16 +26,21 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -230,6 +239,15 @@ public class EmployeeControllerTest {
     }
 
     @Test
+    void getEmployeeById_whenPassInvalidEmployeeId_thenThrowEntityNotFoundException() throws Exception {
+        MvcResult result = mockMvc.perform(get("/employees/123"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Employee with 123 id was not found", ex.getMessage()));
+    }
+
+    @Test
     @Order(3)
     void getEmployeesByDepartmentId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() throws Exception {
         List<Employee> expected1 = List.of(
@@ -315,6 +333,40 @@ public class EmployeeControllerTest {
     }
 
     @Test
+    void saveEmployee_whenPassCreateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() throws Exception {
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
+                .firstName("Van")
+                .lastName("Keefer")
+                .phoneNumber("7630894488")
+                .build();
+
+        MvcResult result = mockMvc.perform(post("/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createEmployeeRequest)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        Optional<EntityExistsException> thrown = Optional.ofNullable((EntityExistsException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Employee with 7630894488 phone number already exist", ex.getMessage()));
+    }
+
+    @Test
+    void saveEmployee_whenPassCreateCarRequestWithInvalidDepartmentId_thenThrowEntityNotFoundException() throws Exception {
+        CreateEmployeeRequest employeeRequest = CreateEmployeeRequest.builder()
+                .firstName("Van")
+                .lastName("Keefer")
+                .departmentId(111L)
+                .build();
+
+        MvcResult result = mockMvc.perform(post("/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(employeeRequest)))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Department with 111 id was not found", ex.getMessage()));
+    }
+
+    @Test
     @Order(5)
     void updateDepartment_whenPassValidUpdateDepartmentRequest_thenReturnValidModel() throws Exception {
         UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
@@ -345,11 +397,84 @@ public class EmployeeControllerTest {
     }
 
     @Test
+    void updateEmployee_whenPassInvalidEmployeeId_thenThrowEntityNotFoundException() throws Exception {
+        MvcResult result = mockMvc.perform(put("/employees/123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new UpdateCarRequest())))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Employee with 123 id was not found", ex.getMessage()));
+    }
+
+    @Test
     @Order(6)
-    void deleteDepartment_whenPassValidDepartmentId_thenCheckIfEntityActuallyDeleted() throws Exception {
-        mockMvc.perform(delete("/employees/24"))
+    void updateEmployee_whenPassUpdateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() throws Exception {
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
+                .phoneNumber("7630894488")
+                .build();
+
+        MvcResult result = mockMvc.perform(put("/employees/25")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        Optional<EntityExistsException> thrown = Optional.ofNullable((EntityExistsException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Employee with 7630894488 phone number already exist", ex.getMessage()));
+    }
+
+    @Test
+    @Order(7)
+    void updateEmployee_whenPassUpdateEmployeeRequestWithInvalidDepartmentId_thenThrowEntityNotFoundException() throws Exception {
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
+                .departmentId(111L)
+                .build();
+
+        MvcResult result = mockMvc.perform(put("/employees/26")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Department with 111 id was not found", ex.getMessage()));
+    }
+
+    @Test
+    @Order(8)
+    void deleteDepartmentById_whenPassValidDepartmentId_thenCheckIfEntityActuallyDeleted() throws Exception {
+        mockMvc.perform(delete("/employees/30"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").doesNotExist());
-        assertFalse(employeeRepository.existsById(24L));
+        assertFalse(employeeRepository.existsById(30L));
+    }
+
+    @Test
+    void deleteEmployeeById_whenPassInvalidEmployeeId_thenThrowEntityNotFoundException() throws Exception {
+        MvcResult result = mockMvc.perform(delete("/employees/114"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Employee with 114 id was not found", ex.getMessage()));
+    }
+
+    @Test
+    @Order(9)
+    void deleteEmployeeById_whenPassEmployeeIdWithDependentCars_thenThrowEntityDeleteException() throws Exception {
+        EmployeeEntity employeeEntity = employeeRepository.getById(34L);
+
+        CarEntity carEntity = CarEntity.builder()
+                .manufacturer("Audi")
+                .model("A2")
+                .vinNumber("JH4KA8271NC000480")
+                .employee(employeeEntity)
+                .color(Color.WHITE)
+                .build();
+        carRepository.save(carEntity);
+
+        MvcResult result = mockMvc.perform(delete("/employees/34"))
+                .andExpect(status().isConflict())
+                .andReturn();
+        Optional<EntityDeleteException> thrown = Optional.ofNullable((EntityDeleteException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Unable to delete employee with id 34", ex.getMessage()));
     }
 }
