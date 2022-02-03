@@ -64,8 +64,7 @@ public class EmployeeControllerTest {
                                 departmentRepository,
                                 carRepository,
                                 employeeMapper)
-                ))
-                .build();
+                )).build();
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 

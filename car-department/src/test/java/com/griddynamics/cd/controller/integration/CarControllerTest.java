@@ -57,7 +57,10 @@ public class CarControllerTest {
         this.employeeRepository = employeeRepository;
         this.mockMvc = MockMvcBuilders
                 .standaloneSetup(new CarController(
-                        new CarService(carRepository, employeeRepository, carMapper)
+                        new CarService(
+                                carRepository,
+                                employeeRepository,
+                                carMapper)
                 ))
                 .setControllerAdvice(new ExceptionAdviser())
                 .build();
