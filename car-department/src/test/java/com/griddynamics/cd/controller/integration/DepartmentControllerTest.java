@@ -3,11 +3,14 @@ package com.griddynamics.cd.controller.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.griddynamics.cd.controller.DepartmentController;
 import com.griddynamics.cd.entity.DepartmentEntity;
+import com.griddynamics.cd.entity.EmployeeEntity;
+import com.griddynamics.cd.exception.EntityDeleteException;
 import com.griddynamics.cd.exception.ExceptionAdviser;
 import com.griddynamics.cd.mapper.DepartmentMapper;
 import com.griddynamics.cd.model.Department;
 import com.griddynamics.cd.model.DepartmentType;
 import com.griddynamics.cd.model.create.CreateDepartmentRequest;
+import com.griddynamics.cd.model.update.UpdateCarRequest;
 import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
@@ -19,15 +22,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -186,6 +194,15 @@ public class DepartmentControllerTest {
     }
 
     @Test
+    void getDepartmentById_whenPassInvalidDepartmentId_thenThrowEntityNotFoundException() throws Exception {
+        MvcResult result = mockMvc.perform(get("/departments/100"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Department with 100 id was not found", ex.getMessage()));
+    }
+
+    @Test
     @Order(3)
     void saveDepartment_whenPassValidCreateDepartmentRequest_thenReturnValidModel() throws Exception {
         CreateDepartmentRequest createDepartmentRequest = CreateDepartmentRequest.builder()
@@ -210,6 +227,24 @@ public class DepartmentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
                 .andExpect(content().string(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void saveDepartment_whenPassCreateDepartmentRequestWithExistingEmail_thenThrowEntityExistsException() throws Exception {
+        CreateDepartmentRequest createDepartmentRequest = CreateDepartmentRequest.builder()
+                .name("department")
+                .email("test1@test")
+                .description("smth")
+                .departmentType(DepartmentType.PROVIDER)
+                .build();
+
+        MvcResult result = mockMvc.perform(post("/departments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createDepartmentRequest)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        Optional<EntityExistsException> thrown = Optional.ofNullable((EntityExistsException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Department with test1@test email already exist", ex.getMessage()));
     }
 
     @Test
@@ -239,11 +274,67 @@ public class DepartmentControllerTest {
     }
 
     @Test
+    void updateDepartment_whenPassWrongDepartmentId_thenThrowEntityNotFoundException() throws Exception {
+        MvcResult result = mockMvc.perform(put("/departments/123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new UpdateCarRequest())))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Department with 123 id was not found", ex.getMessage()));
+    }
+
+    @Test
     @Order(5)
+    void updateDepartment_whenPassUpdateDepartmentRequestWithExistingEmail_thenThrowEntityExistsException() throws Exception {
+        UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder()
+                .name("new name")
+                .email("test1@test")
+                .description("new desc")
+                .departmentType(DepartmentType.SUPPORT)
+                .build();
+
+        MvcResult result = mockMvc.perform(put("/departments/19")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDepartmentRequest)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        Optional<EntityExistsException> thrown = Optional.ofNullable((EntityExistsException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Department with test1@test email already exist", ex.getMessage()));
+    }
+
+    @Test
+    @Order(6)
     void deleteDepartment_whenPassValidDepartmentId_thenCheckIfEntityActuallyDeleted() throws Exception {
-        mockMvc.perform(delete("/departments/19"))
+        mockMvc.perform(delete("/departments/23"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").doesNotExist());
-        assertFalse(departmentRepository.existsById(19L));
+        assertFalse(departmentRepository.existsById(23L));
+    }
+
+    @Test
+    void deleteDepartment_whenPassInvalidDepartmentId_thenThrowEntityNotFoundException() throws Exception {
+        MvcResult result = mockMvc.perform(delete("/departments/114"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Department with 114 id was not found", ex.getMessage()));
+    }
+
+    @Test
+    @Order(7)
+    void deleteDepartment_whenPasDepartmentIdWithDependentEmployees_thenThrowEntityDeleteException() throws Exception {
+        EmployeeEntity employeeEntity = EmployeeEntity.builder()
+                .firstName("Joe")
+                .lastName("Doe")
+                .department(departmentRepository.getById(26L))
+                .build();
+        employeeRepository.save(employeeEntity);
+
+        MvcResult result = mockMvc.perform(delete("/departments/26"))
+                .andExpect(status().isConflict())
+                .andReturn();
+        Optional<EntityDeleteException> thrown = Optional.ofNullable((EntityDeleteException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Unable to delete department with id 26", ex.getMessage()));
     }
 }
