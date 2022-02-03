@@ -90,8 +90,10 @@ class EmployeeServiceTest {
         when(employeeRepository.findById(12L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                employeeService.getEmployeeById(12L));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> employeeService.getEmployeeById(12L)
+        );
         assertEquals(thrown.getMessage(), "Employee with 12 id was not found");
     }
 
@@ -155,8 +157,10 @@ class EmployeeServiceTest {
         when(employeeRepository.existsByPhoneNumber("1234567890"))
                 .thenReturn(true);
 
-        EntityExistsException thrown = assertThrows(EntityExistsException.class, () ->
-                employeeService.saveEmployee(createEmployeeRequest));
+        EntityExistsException thrown = assertThrows(
+                EntityExistsException.class,
+                () -> employeeService.saveEmployee(createEmployeeRequest)
+        );
 
         assertEquals("Employee with 1234567890 phone number already exist", thrown.getMessage());
     }
@@ -170,8 +174,10 @@ class EmployeeServiceTest {
         when(departmentRepository.findById(3L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                employeeService.saveEmployee(createEmployeeRequest));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> employeeService.saveEmployee(createEmployeeRequest)
+        );
 
         assertEquals("Department with 3 id was not found", thrown.getMessage());
     }
@@ -208,8 +214,10 @@ class EmployeeServiceTest {
         when(employeeRepository.findById(2L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                employeeService.updateEmployee(new UpdateEmployeeRequest(), 2L));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> employeeService.updateEmployee(new UpdateEmployeeRequest(), 2L)
+        );
         assertEquals("Employee with 2 id was not found", thrown.getMessage());
     }
 
@@ -222,8 +230,10 @@ class EmployeeServiceTest {
         when(employeeRepository.existsByPhoneNumberAndIdIsNot("1234567890", 1L))
                 .thenReturn(true);
 
-        EntityExistsException thrown = assertThrows(EntityExistsException.class, () ->
-                employeeService.updateEmployee(updateEmployeeRequest, 1L));
+        EntityExistsException thrown = assertThrows(
+                EntityExistsException.class,
+                () -> employeeService.updateEmployee(updateEmployeeRequest, 1L)
+        );
         assertEquals("Employee with 1234567890 phone number already exist", thrown.getMessage());
     }
 
@@ -236,8 +246,10 @@ class EmployeeServiceTest {
         when(departmentRepository.findById(1L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                employeeService.updateEmployee(updateEmployeeRequest, 2L));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> employeeService.updateEmployee(updateEmployeeRequest, 2L)
+        );
         assertEquals("Department with 1 id was not found", thrown.getMessage());
     }
 
@@ -259,8 +271,10 @@ class EmployeeServiceTest {
 
     @Test
     void deleteEmployee_whenPassInvalidEmployeeId_thenThrowEntityNotFoundException() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                employeeService.deleteEmployee(3L));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> employeeService.deleteEmployee(3L)
+        );
         assertEquals("Employee with 3 id was not found", thrown.getMessage());
     }
 
@@ -271,8 +285,10 @@ class EmployeeServiceTest {
         when(carRepository.findAllCarsByEmployeeId(3L))
                 .thenReturn(List.of(mock(CarEntity.class)));
 
-        EntityDeleteException thrown = assertThrows(EntityDeleteException.class, () ->
-                employeeService.deleteEmployee(3L));
+        EntityDeleteException thrown = assertThrows(
+                EntityDeleteException.class,
+                () -> employeeService.deleteEmployee(3L)
+        );
         assertEquals("Unable to delete employee with id 3", thrown.getMessage());
     }
 }

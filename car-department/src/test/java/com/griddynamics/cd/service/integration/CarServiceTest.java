@@ -301,11 +301,13 @@ public class CarServiceTest {
     @Test
     @Order(6)
     void updateCar_whenPassUpdateCarRequestWithInvalidEmployeeId_thenThrowEntityNotFoundException() {
+        UpdateCarRequest updateCarRequest = UpdateCarRequest.builder()
+                .employeeId(54L)
+                .build();
+
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
-                () -> carService.updateCar(UpdateCarRequest.builder()
-                        .employeeId(54L)
-                        .build(), 22L)
+                () -> carService.updateCar(updateCarRequest, 22L)
         );
         assertEquals("Employee with 54 id was not found", thrown.getMessage());
     }

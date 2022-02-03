@@ -285,7 +285,7 @@ public class EmployeeServiceTest {
 
     @Test
     void saveEmployee_whenPassCreateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() {
-        CreateEmployeeRequest employeeRequest = CreateEmployeeRequest.builder()
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
                 .firstName("Van")
                 .lastName("Keefer")
                 .phoneNumber("7630894488")
@@ -293,7 +293,7 @@ public class EmployeeServiceTest {
 
         EntityExistsException thrown = assertThrows(
                 EntityExistsException.class,
-                () -> employeeService.saveEmployee(employeeRequest)
+                () -> employeeService.saveEmployee(createEmployeeRequest)
         );
 
         assertEquals("Employee with 7630894488 phone number already exist", thrown.getMessage());
@@ -301,7 +301,7 @@ public class EmployeeServiceTest {
 
     @Test
     void saveEmployee_whenPassCreateCarRequestWithInvalidDepartmentId_thenThrowEntityNotFoundException() {
-        CreateEmployeeRequest employeeRequest = CreateEmployeeRequest.builder()
+        CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
                 .firstName("Van")
                 .lastName("Keefer")
                 .departmentId(111L)
@@ -309,7 +309,7 @@ public class EmployeeServiceTest {
 
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
-                () -> employeeService.saveEmployee(employeeRequest)
+                () -> employeeService.saveEmployee(createEmployeeRequest)
         );
 
         assertEquals("Department with 111 id was not found", thrown.getMessage());
@@ -352,12 +352,13 @@ public class EmployeeServiceTest {
     @Test
     @Order(6)
     void updateEmployee_whenPassUpdateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() {
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
+                .phoneNumber("7630894488")
+                .build();
+
         EntityExistsException thrown = assertThrows(
                 EntityExistsException.class,
-                () -> employeeService.updateEmployee(UpdateEmployeeRequest.builder()
-                        .phoneNumber("7630894488")
-                        .build(),
-                        25L)
+                () -> employeeService.updateEmployee(updateEmployeeRequest, 25L)
         );
         assertEquals("Employee with 7630894488 phone number already exist", thrown.getMessage());
     }
@@ -365,12 +366,13 @@ public class EmployeeServiceTest {
     @Test
     @Order(7)
     void updateEmployee_whenPassUpdateEmployeeRequestWithInvalidDepartmentId_thenThrowEntityNotFoundException() {
+        UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
+                .departmentId(118L)
+                .build();
+
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
-                () -> employeeService.updateEmployee(UpdateEmployeeRequest.builder()
-                        .departmentId(118L)
-                        .build(),
-                        26L)
+                () -> employeeService.updateEmployee(updateEmployeeRequest, 26L)
         );
 
         assertEquals("Department with 118 id was not found", thrown.getMessage());

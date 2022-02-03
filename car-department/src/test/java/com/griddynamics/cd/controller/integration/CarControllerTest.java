@@ -378,7 +378,7 @@ public class CarControllerTest {
     }
 
     @Test
-    void deleteCar_whenPassInvalidCarId_thenThrowEntityNotFoundException() throws Exception {
+    void deleteCarById_whenPassInvalidCarId_thenThrowEntityNotFoundException() throws Exception {
         MvcResult result = mockMvc.perform(delete("/cars/12"))
                 .andExpect(status().isNotFound())
                 .andReturn();

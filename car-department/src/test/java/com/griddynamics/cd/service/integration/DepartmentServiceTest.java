@@ -231,7 +231,8 @@ class DepartmentServiceTest {
     void updateDepartment_whenPassWrongDepartmentId_thenThrowEntityNotFoundException() {
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
-                () -> departmentService.updateDepartment(new UpdateDepartmentRequest(), 123L));
+                () -> departmentService.updateDepartment(new UpdateDepartmentRequest(), 123L)
+        );
 
         assertEquals("Department with 123 id was not found", thrown.getMessage());
     }

@@ -84,8 +84,10 @@ class CarServiceTest {
         when(carRepository.findById(100L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                carService.getCarById(100L));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> carService.getCarById(100L)
+        );
         assertEquals(thrown.getMessage(), "Car with 100 id was not found");
     }
 
@@ -150,8 +152,10 @@ class CarServiceTest {
         when(employeeRepository.findById(10L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                carService.saveCar(createCarRequest));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> carService.saveCar(createCarRequest)
+        );
         assertEquals("Employee with 10 id was not found", thrown.getMessage());
     }
 
@@ -187,8 +191,10 @@ class CarServiceTest {
         when(carRepository.findById(123L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                carService.updateCar(mock(UpdateCarRequest.class), 123L));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> carService.updateCar(new UpdateCarRequest(), 123L)
+        );
         assertEquals(thrown.getMessage(), "Car with 123 id was not found");
     }
 
@@ -201,8 +207,10 @@ class CarServiceTest {
         when(employeeRepository.findById(12L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                carService.updateCar(updateCarRequest, 123L));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> carService.updateCar(updateCarRequest, 123L)
+        );
         assertEquals("Employee with 12 id was not found", thrown.getMessage());
     }
 
@@ -224,8 +232,10 @@ class CarServiceTest {
 
     @Test
     void deleteCar_whenPassInvalidCarId_thenThrowEntityNotFoundException() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                carService.deleteCar(15L));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> carService.deleteCar(15L)
+        );
         assertEquals("Car with 15 id was not found", thrown.getMessage());
     }
 }

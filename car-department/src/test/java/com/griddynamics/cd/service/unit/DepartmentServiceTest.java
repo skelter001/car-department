@@ -85,8 +85,10 @@ class DepartmentServiceTest {
         when(departmentRepository.findById(2L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                departmentService.getDepartmentById(2L));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> departmentService.getDepartmentById(2L)
+        );
         assertEquals(thrown.getMessage(), "Department with 2 id was not found");
     }
 
@@ -141,8 +143,9 @@ class DepartmentServiceTest {
         when(departmentRepository.existsByEmail("test@test"))
                 .thenReturn(true);
 
-        EntityExistsException thrown = assertThrows(EntityExistsException.class, () ->
-                departmentService.saveDepartment(createDepartmentRequest));
+        EntityExistsException thrown = assertThrows(
+                EntityExistsException.class,
+                () -> departmentService.saveDepartment(createDepartmentRequest));
         assertEquals("Department with test@test email already exist", thrown.getMessage());
     }
 
@@ -178,8 +181,10 @@ class DepartmentServiceTest {
         when(departmentRepository.findById(2L))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                departmentService.updateDepartment(new UpdateDepartmentRequest(), 2L));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> departmentService.updateDepartment(new UpdateDepartmentRequest(), 2L)
+        );
         assertEquals("Department with 2 id was not found", thrown.getMessage());
     }
 
@@ -216,8 +221,10 @@ class DepartmentServiceTest {
 
     @Test
     void deleteDepartment_whenPassInvalidDepartmentId_thenThrowEntityNotFoundException() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () ->
-                departmentService.deleteDepartment(2L));
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> departmentService.deleteDepartment(2L)
+        );
         assertEquals("Department with 2 id was not found", thrown.getMessage());
     }
 
@@ -226,10 +233,12 @@ class DepartmentServiceTest {
         when(departmentRepository.existsById(2L))
                 .thenReturn(true);
         when(employeeRepository.findAllEmployeesByDepartmentId(2L))
-                .thenReturn(List.of(mock(EmployeeEntity.class), mock(EmployeeEntity.class)));
+                .thenReturn(List.of(new EmployeeEntity(), new EmployeeEntity()));
 
-        EntityDeleteException thrown = assertThrows(EntityDeleteException.class, () ->
-                departmentService.deleteDepartment(2L));
+        EntityDeleteException thrown = assertThrows(
+                EntityDeleteException.class,
+                () -> departmentService.deleteDepartment(2L)
+        );
         assertEquals("Unable to delete department with id 2", thrown.getMessage());
     }
 }
