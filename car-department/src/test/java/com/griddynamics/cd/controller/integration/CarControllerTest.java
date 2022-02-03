@@ -21,16 +21,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -52,7 +56,7 @@ public class CarControllerTest {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public CarControllerTest(CarRepository carRepository, EmployeeRepository employeeRepository, CarMapper carMapper) {
+    public CarControllerTest(CarRepository carRepository, EmployeeRepository employeeRepository, CarMapper carMapper, ExceptionAdviser exceptionAdviser) {
         this.carRepository = carRepository;
         this.employeeRepository = employeeRepository;
         this.mockMvc = MockMvcBuilders
@@ -62,7 +66,7 @@ public class CarControllerTest {
                                 employeeRepository,
                                 carMapper)
                 ))
-                .setControllerAdvice(new ExceptionAdviser())
+                .setControllerAdvice(exceptionAdviser)
                 .build();
         this.objectMapper = new ObjectMapper();
     }
@@ -209,6 +213,15 @@ public class CarControllerTest {
     }
 
     @Test
+    void getCarById_whenPassInvalidCarId_thenThrowEntityNotFoundException() throws Exception {
+        MvcResult result = mockMvc.perform(get("/cars/123"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Car with 123 id was not found", ex.getMessage()));
+    }
+
+    @Test
     @Order(3)
     void getCarsByEmployeeId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() throws Exception {
         List<Car> expected1 = List.of(
@@ -283,6 +296,22 @@ public class CarControllerTest {
     }
 
     @Test
+    void saveCar_whenPassCreateCarRequestWithInvalidEmployeeId_thenThrowEntityNotFoundException() throws Exception {
+        CreateCarRequest createCarRequest = CreateCarRequest.builder()
+                .color(Color.WHITE)
+                .employeeId(123L)
+                .build();
+
+        MvcResult result = mockMvc.perform(post("/cars")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createCarRequest)))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Employee with 123 id was not found", ex.getMessage()));
+    }
+
+    @Test
     @Order(5)
     void updateCar_whenPassValidUpdateCarRequest_thenReturnValidModel() throws Exception {
         UpdateCarRequest updateCarRequest = UpdateCarRequest.builder()
@@ -311,12 +340,46 @@ public class CarControllerTest {
     }
 
     @Test
+    void updateCar_whenPassInvalidCarId_thenThrowEntityNotFoundException() throws Exception {
+        MvcResult result = mockMvc.perform(put("/cars/123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new UpdateCarRequest())))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Car with 123 id was not found", ex.getMessage()));
+    }
+
+    @Test
     @Order(6)
-    void deleteCar_whenPassValidCarId_thenCheckIfEntityActuallyDeleted() throws Exception {
-        mockMvc.perform(delete("/cars/22"))
+    void updateCar_whenPassUpdateCarRequestWithInvalidEmployeeId_thenThrowEntityNotFoundException() throws Exception {
+        MvcResult result = mockMvc.perform(put("/cars/22")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(UpdateCarRequest.builder()
+                                .employeeId(54L)
+                                .build())))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Employee with 54 id was not found", ex.getMessage()));
+    }
+
+    @Test
+    @Order(7)
+    void deleteCarById_whenPassValidCarId_thenCheckIfEntityActuallyDeleted() throws Exception {
+        mockMvc.perform(delete("/cars/27"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").doesNotExist());
 
-        assertFalse(carRepository.existsById(22L));
+        assertFalse(carRepository.existsById(27L));
+    }
+
+    @Test
+    void deleteCar_whenPassInvalidCarId_thenThrowEntityNotFoundException() throws Exception {
+        MvcResult result = mockMvc.perform(delete("/cars/12"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
+        thrown.ifPresent(ex -> assertEquals("Car with 12 id was not found", ex.getMessage()));
     }
 }
