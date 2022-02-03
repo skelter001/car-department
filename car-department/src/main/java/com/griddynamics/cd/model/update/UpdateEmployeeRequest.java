@@ -22,7 +22,7 @@ public class UpdateEmployeeRequest {
     private String lastName;
     @Past(message = "Invalid birthday date")
     private LocalDate birthday;
-    @Pattern(regexp = "[a-zA-Z0-9,\s]+", message = "Invalid address value")
+    @Pattern(regexp = "[a-zA-Z0-9,\s\\.]+", message = "Invalid address value")
     private String address;
     @Pattern(regexp="(^$|[0-9]{10})", message = "Invalid phone number value")
     private String phoneNumber;
