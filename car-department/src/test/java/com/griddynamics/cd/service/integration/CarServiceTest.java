@@ -297,22 +297,22 @@ public class CarServiceTest {
     }
 
     @Test
-    @Order(7)
+    @Order(6)
     void updateCar_whenPassUpdateCarRequestWithInvalidEmployeeId_thenThrowEntityNotFoundException() {
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
                 () -> carService.updateCar(UpdateCarRequest.builder()
                         .employeeId(54L)
-                        .build(), 27L)
+                        .build(), 22L)
         );
         assertEquals("Employee with 54 id was not found", thrown.getMessage());
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     void deleteCar_whenPassValidCarId_thenCheckIfEntityActuallyDeleted() {
-        carService.deleteCar(22L);
-        assertFalse(carRepository.existsById(22L));
+        carService.deleteCar(27L);
+        assertFalse(carRepository.existsById(27L));
     }
 
     @Test

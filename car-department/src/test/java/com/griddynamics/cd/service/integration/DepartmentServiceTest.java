@@ -235,7 +235,7 @@ class DepartmentServiceTest {
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     void updateDepartment_whenPassUpdateDepartmentRequestWithExistingEmail_thenThrowEntityExistsException() {
         UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder()
                 .name("new name")
@@ -246,17 +246,17 @@ class DepartmentServiceTest {
 
         EntityExistsException thrown = assertThrows(
                 EntityExistsException.class,
-                () -> departmentService.updateDepartment(updateDepartmentRequest, 23L)
+                () -> departmentService.updateDepartment(updateDepartmentRequest, 19L)
         );
 
         assertEquals("Department with test1@test email already exist", thrown.getMessage());
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     void deleteDepartment_whenPassValidDepartmentId_thenCheckIfEntityActuallyDeleted() {
-        departmentService.deleteDepartment(19L);
-        assertFalse(departmentRepository.existsById(19L));
+        departmentService.deleteDepartment(23L);
+        assertFalse(departmentRepository.existsById(23L));
     }
 
     @Test
