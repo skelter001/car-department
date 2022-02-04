@@ -142,10 +142,8 @@ public class EmployeeControllerTest {
         departmentRepository.deleteAll();
     }
 
-    @Test
-    @Order(1)
-    void getAllEmployees_whenSaveToEmployeeRepository_thenReturnValidList() throws Exception {
-        List<Employee> expected = List.of(
+    private List<Employee> getAllEmployeesData() {
+        return List.of(
                 Employee.builder()
                         .id(1L)
                         .firstName("Alfred")
@@ -183,6 +181,12 @@ public class EmployeeControllerTest {
                         .departmentId(2L)
                         .build()
         );
+    }
+
+    @Test
+    @Order(1)
+    void getAllEmployees_whenSaveToEmployeeRepository_thenReturnValidList() throws Exception {
+        List<Employee> expected = getAllEmployeesData();
 
         mockMvc.perform(get("/employees"))
                 .andExpect(status().isOk())
@@ -232,21 +236,8 @@ public class EmployeeControllerTest {
         thrown.ifPresent(ex -> assertEquals("Employee with 123 id was not found", ex.getMessage()));
     }
 
-    @Test
-    @Order(3)
-    void getEmployeesByDepartmentId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() throws Exception {
-        List<Employee> expected1 = List.of(
-                Employee.builder()
-                        .id(9L)
-                        .firstName("Alfred")
-                        .lastName("Miles")
-                        .address("Atlanta, Georgia US.")
-                        .birthday(LocalDate.of(1995, 6, 21))
-                        .phoneNumber("4539832543")
-                        .departmentId(5L)
-                        .build()
-        );
-        List<Employee> expected2 = List.of(
+    private List<Employee> getEmployeesByDepartmentIdData() {
+        return List.of(
                 Employee.builder()
                         .id(10L)
                         .firstName("Darius")
@@ -275,6 +266,23 @@ public class EmployeeControllerTest {
                         .departmentId(6L)
                         .build()
         );
+    }
+
+    @Test
+    @Order(3)
+    void getEmployeesByDepartmentId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() throws Exception {
+        List<Employee> expected1 = List.of(
+                Employee.builder()
+                        .id(9L)
+                        .firstName("Alfred")
+                        .lastName("Miles")
+                        .address("Atlanta, Georgia US.")
+                        .birthday(LocalDate.of(1995, 6, 21))
+                        .phoneNumber("4539832543")
+                        .departmentId(5L)
+                        .build()
+        );
+        List<Employee> expected2 = getEmployeesByDepartmentIdData();
 
 
         mockMvc.perform(get("/departments/5/employees"))

@@ -94,10 +94,8 @@ class DepartmentServiceTest {
         departmentRepository.deleteAll();
     }
 
-    @Test
-    @Order(1)
-    void getAllDepartments_whenSaveToDepartmentRepository_thenReturnValidList() {
-        List<Department> expected = List.of(
+    private List<Department> getAllDepartmentsData() {
+        return List.of(
                 Department.builder()
                         .id(1L)
                         .name("department 1")
@@ -127,6 +125,12 @@ class DepartmentServiceTest {
                         .departmentType(DepartmentType.SUPPORT)
                         .build()
         );
+    }
+
+    @Test
+    @Order(1)
+    void getAllDepartments_whenSaveToDepartmentRepository_thenReturnValidList() {
+        List<Department> expected = getAllDepartmentsData();
 
         assertEquals(expected, departmentService.getAllDepartments());
     }

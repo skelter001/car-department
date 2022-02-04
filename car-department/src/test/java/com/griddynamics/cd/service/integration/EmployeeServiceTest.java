@@ -124,10 +124,8 @@ public class EmployeeServiceTest {
         departmentRepository.deleteAll();
     }
 
-    @Test
-    @Order(1)
-    void getAllEmployees_whenSaveToEmployeeRepository_thenReturnValidList() {
-        List<Employee> expected = List.of(
+    private List<Employee> getAllEmployeesData() {
+        return List.of(
                 Employee.builder()
                         .id(1L)
                         .firstName("Alfred")
@@ -165,6 +163,12 @@ public class EmployeeServiceTest {
                         .departmentId(2L)
                         .build()
         );
+    }
+
+    @Test
+    @Order(1)
+    void getAllEmployees_whenSaveToEmployeeRepository_thenReturnValidList() {
+        List<Employee> expected = getAllEmployeesData();
 
         assertEquals(expected, employeeService.getAllEmployees());
     }
@@ -204,21 +208,8 @@ public class EmployeeServiceTest {
         assertEquals("Employee with 123 id was not found", thrown.getMessage());
     }
 
-    @Test
-    @Order(3)
-    void getEmployeesByDepartmentId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() {
-        List<Employee> expected1 = List.of(
-                Employee.builder()
-                        .id(9L)
-                        .firstName("Alfred")
-                        .lastName("Miles")
-                        .address("Atlanta, Georgia US.")
-                        .birthday(LocalDate.of(1995, 6, 21))
-                        .phoneNumber("4539832543")
-                        .departmentId(5L)
-                        .build()
-        );
-        List<Employee> expected2 = List.of(
+    private List<Employee> getEmployeesByDepartmentIdData() {
+        return List.of(
                 Employee.builder()
                         .id(10L)
                         .firstName("Darius")
@@ -247,6 +238,23 @@ public class EmployeeServiceTest {
                         .departmentId(6L)
                         .build()
         );
+    }
+
+    @Test
+    @Order(3)
+    void getEmployeesByDepartmentId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() {
+        List<Employee> expected1 = List.of(
+                Employee.builder()
+                        .id(9L)
+                        .firstName("Alfred")
+                        .lastName("Miles")
+                        .address("Atlanta, Georgia US.")
+                        .birthday(LocalDate.of(1995, 6, 21))
+                        .phoneNumber("4539832543")
+                        .departmentId(5L)
+                        .build()
+        );
+        List<Employee> expected2 = getEmployeesByDepartmentIdData();
 
         assertEquals(expected1, employeeService.getEmployeesByDepartmentId(5L));
         assertEquals(expected2, employeeService.getEmployeesByDepartmentId(6L));

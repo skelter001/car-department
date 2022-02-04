@@ -128,10 +128,8 @@ public class CarControllerTest {
         employeeRepository.deleteAll();
     }
 
-    @Test
-    @Order(1)
-    void getAllCars_whenSaveToCarRepository_thenReturnValidList() throws Exception {
-        List<Car> expected = List.of(
+    private List<Car> getAllCarsTestData() {
+        return  List.of(
                 Car.builder()
                         .id(1L)
                         .manufacturer("Honda")
@@ -164,6 +162,12 @@ public class CarControllerTest {
                         .employeeId(2L)
                         .build()
         );
+    }
+
+    @Test
+    @Order(1)
+    void getAllCars_whenSaveToCarRepository_thenReturnValidList() throws Exception {
+        List<Car> expected = getAllCarsTestData();
 
         mockMvc.perform(get("/cars"))
                 .andExpect(status().isOk())
@@ -209,20 +213,8 @@ public class CarControllerTest {
         thrown.ifPresent(ex -> assertEquals("Car with 123 id was not found", ex.getMessage()));
     }
 
-    @Test
-    @Order(3)
-    void getCarsByEmployeeId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() throws Exception {
-        List<Car> expected1 = List.of(
-                Car.builder()
-                        .id(9L)
-                        .manufacturer("Honda")
-                        .model("Coupe")
-                        .vinNumber("4T3ZK3BB7BU042861")
-                        .color(Color.BLACK)
-                        .employeeId(5L)
-                        .build()
-        );
-        List<Car> expected2 = List.of(
+    private List<Car> getAllCarsByEmployeeIdData() {
+        return List.of(
                 Car.builder()
                         .id(10L)
                         .manufacturer("Nissan")
@@ -247,6 +239,22 @@ public class CarControllerTest {
                         .employeeId(6L)
                         .build()
         );
+    }
+
+    @Test
+    @Order(3)
+    void getCarsByEmployeeId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() throws Exception {
+        List<Car> expected1 = List.of(
+                Car.builder()
+                        .id(9L)
+                        .manufacturer("Honda")
+                        .model("Coupe")
+                        .vinNumber("4T3ZK3BB7BU042861")
+                        .color(Color.BLACK)
+                        .employeeId(5L)
+                        .build()
+        );
+        List<Car> expected2 = getAllCarsByEmployeeIdData();
 
         mockMvc.perform(get("/employees/5/cars"))
                 .andExpect(status().isOk())

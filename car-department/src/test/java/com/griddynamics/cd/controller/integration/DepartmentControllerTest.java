@@ -111,10 +111,8 @@ public class DepartmentControllerTest {
         departmentRepository.deleteAll();
     }
 
-    @Test
-    @Order(1)
-    void getAllDepartments_whenSaveToDepartmentRepository_thenReturnValidList() throws Exception {
-        List<Department> expected = List.of(
+    private List<Department> getAllDepartmentsData() {
+        return List.of(
                 Department.builder()
                         .id(1L)
                         .name("department 1")
@@ -144,7 +142,12 @@ public class DepartmentControllerTest {
                         .departmentType(DepartmentType.SUPPORT)
                         .build()
         );
+    }
 
+    @Test
+    @Order(1)
+    void getAllDepartments_whenSaveToDepartmentRepository_thenReturnValidList() throws Exception {
+        List<Department> expected = getAllDepartmentsData();
 
         mockMvc.perform(get("/departments"))
                 .andExpect(status().isOk())

@@ -114,10 +114,8 @@ public class CarServiceTest {
         employeeRepository.deleteAll();
     }
 
-    @Test
-    @Order(1)
-    void getAllCars_whenSaveToCarRepository_thenReturnValidList() {
-        List<Car> expected = List.of(
+    private List<Car> getAllCarsTestData() {
+        return  List.of(
                 Car.builder()
                         .id(1L)
                         .manufacturer("Honda")
@@ -150,6 +148,12 @@ public class CarServiceTest {
                         .employeeId(2L)
                         .build()
         );
+    }
+
+    @Test
+    @Order(1)
+    void getAllCars_whenSaveToCarRepository_thenReturnValidList() {
+        List<Car> expected = getAllCarsTestData();
 
         assertEquals(expected, carService.getAllCars());
     }
@@ -186,20 +190,8 @@ public class CarServiceTest {
         assertEquals("Car with 123 id was not found", thrown.getMessage());
     }
 
-    @Test
-    @Order(3)
-    void getCarsByEmployeeId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() {
-        List<Car> expected1 = List.of(
-                Car.builder()
-                .id(9L)
-                .manufacturer("Honda")
-                .model("Coupe")
-                .vinNumber("4T3ZK3BB7BU042861")
-                .color(Color.BLACK)
-                .employeeId(5L)
-                .build()
-        );
-        List<Car> expected2 = List.of(
+    private List<Car> getAllCarsByEmployeeIdData() {
+        return List.of(
                 Car.builder()
                         .id(10L)
                         .manufacturer("Nissan")
@@ -224,6 +216,22 @@ public class CarServiceTest {
                         .employeeId(6L)
                         .build()
         );
+    }
+
+    @Test
+    @Order(3)
+    void getCarsByEmployeeId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() {
+        List<Car> expected1 = List.of(
+                Car.builder()
+                .id(9L)
+                .manufacturer("Honda")
+                .model("Coupe")
+                .vinNumber("4T3ZK3BB7BU042861")
+                .color(Color.BLACK)
+                .employeeId(5L)
+                .build()
+        );
+        List<Car> expected2 = getAllCarsByEmployeeIdData();
 
         assertEquals(expected1, carService.getCarsByEmployeeId(5L));
         assertEquals(expected2, carService.getCarsByEmployeeId(6L));
