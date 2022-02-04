@@ -17,6 +17,7 @@ import com.griddynamics.cd.repository.EmployeeRepository;
 import com.griddynamics.cd.service.DepartmentService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -43,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@AutoConfigureMockMvc
 public class DepartmentControllerTest {
 
     @Container
@@ -51,28 +53,14 @@ public class DepartmentControllerTest {
             .withUsername("admin")
             .withPassword("password");
 
-    private final MockMvc mockMvc;
-    private final DepartmentRepository departmentRepository;
-    private final EmployeeRepository employeeRepository;
-    private final ObjectMapper objectMapper;
-
     @Autowired
-    public DepartmentControllerTest(DepartmentRepository departmentRepository,
-                                    EmployeeRepository employeeRepository,
-                                    DepartmentMapper departmentMapper,
-                                    ExceptionAdviser exceptionAdviser) {
-        this.departmentRepository = departmentRepository;
-        this.employeeRepository = employeeRepository;
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(new DepartmentController(
-                        new DepartmentService(departmentRepository,
-                                employeeRepository,
-                                departmentMapper)
-                ))
-                .setControllerAdvice(exceptionAdviser)
-                .build();
-        this.objectMapper = new ObjectMapper();
-    }
+    private DepartmentRepository departmentRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {

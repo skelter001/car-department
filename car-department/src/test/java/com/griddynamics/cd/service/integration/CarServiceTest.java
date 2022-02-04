@@ -38,18 +38,12 @@ public class CarServiceTest {
             .withUsername("admin")
             .withPassword("password");
 
-    private final CarRepository carRepository;
-    private final EmployeeRepository employeeRepository;
-    private final CarService carService;
-
     @Autowired
-    public CarServiceTest(CarRepository carRepository,
-                          EmployeeRepository employeeRepository,
-                          CarMapper carMapper) {
-        this.carRepository = carRepository;
-        this.employeeRepository = employeeRepository;
-        carService = new CarService(carRepository, employeeRepository, carMapper);
-    }
+    private CarRepository carRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private CarService carService;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {

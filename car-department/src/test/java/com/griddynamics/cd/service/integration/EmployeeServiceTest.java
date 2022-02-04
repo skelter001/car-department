@@ -42,21 +42,14 @@ public class EmployeeServiceTest {
             .withUsername("admin")
             .withPassword("password");
 
-    private final EmployeeService employeeService;
-    private final EmployeeRepository employeeRepository;
-    private final DepartmentRepository departmentRepository;
-    private final CarRepository carRepository;
-
     @Autowired
-    public EmployeeServiceTest(EmployeeRepository employeeRepository,
-                               DepartmentRepository departmentRepository,
-                               CarRepository carRepository,
-                               EmployeeMapper employeeMapper) {
-        this.employeeRepository = employeeRepository;
-        this.departmentRepository = departmentRepository;
-        this.carRepository = carRepository;
-        this.employeeService = new EmployeeService(employeeRepository, departmentRepository, carRepository, employeeMapper);
-    }
+    private DepartmentRepository departmentRepository;
+    @Autowired
+    private CarRepository carRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private EmployeeService employeeService;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {

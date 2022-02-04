@@ -38,18 +38,12 @@ class DepartmentServiceTest {
             .withUsername("admin")
             .withPassword("password");
 
-    private final DepartmentService departmentService;
-    private final DepartmentRepository departmentRepository;
-    private final EmployeeRepository employeeRepository;
-
     @Autowired
-    public DepartmentServiceTest(DepartmentRepository departmentRepository,
-                                 EmployeeRepository employeeRepository,
-                                 DepartmentMapper departmentMapper) {
-        this.departmentRepository = departmentRepository;
-        this.employeeRepository = employeeRepository;
-        this.departmentService = new DepartmentService(departmentRepository, employeeRepository, departmentMapper);
-    }
+    private DepartmentRepository departmentRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private DepartmentService departmentService;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {

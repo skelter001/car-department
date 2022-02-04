@@ -21,6 +21,7 @@ import com.griddynamics.cd.repository.EmployeeRepository;
 import com.griddynamics.cd.service.EmployeeService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -48,6 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@AutoConfigureMockMvc
 public class EmployeeControllerTest {
 
     @Container
@@ -56,33 +58,16 @@ public class EmployeeControllerTest {
             .withUsername("admin")
             .withPassword("password");
 
-    private final MockMvc mockMvc;
-    private final EmployeeRepository employeeRepository;
-    private final DepartmentRepository departmentRepository;
-    private final CarRepository carRepository;
-    private final ObjectMapper objectMapper;
-
     @Autowired
-    public EmployeeControllerTest(EmployeeRepository employeeRepository,
-                                  DepartmentRepository departmentRepository,
-                                  CarRepository carRepository,
-                                  EmployeeMapper employeeMapper,
-                                  ExceptionAdviser exceptionAdviser) {
-        this.employeeRepository = employeeRepository;
-        this.departmentRepository = departmentRepository;
-        this.carRepository = carRepository;
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(new EmployeeController(
-                        new EmployeeService(
-                                employeeRepository,
-                                departmentRepository,
-                                carRepository,
-                                employeeMapper)
-                ))
-                .setControllerAdvice(exceptionAdviser)
-                .build();
-        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-    }
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private DepartmentRepository departmentRepository;
+    @Autowired
+    private CarRepository carRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {

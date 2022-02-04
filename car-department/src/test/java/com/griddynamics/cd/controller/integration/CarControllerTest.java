@@ -2,27 +2,25 @@ package com.griddynamics.cd.controller.integration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.griddynamics.cd.controller.CarController;
 import com.griddynamics.cd.entity.CarEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
-import com.griddynamics.cd.exception.ExceptionAdviser;
-import com.griddynamics.cd.mapper.CarMapper;
 import com.griddynamics.cd.model.Car;
 import com.griddynamics.cd.model.Color;
 import com.griddynamics.cd.model.create.CreateCarRequest;
 import com.griddynamics.cd.model.update.UpdateCarRequest;
 import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
-import com.griddynamics.cd.service.CarService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -42,6 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@EnableWebMvc
+@AutoConfigureMockMvc
 public class CarControllerTest {
 
     @Container
@@ -50,29 +50,14 @@ public class CarControllerTest {
             .withUsername("admin")
             .withPassword("password");
 
-    private final MockMvc mockMvc;
-    private final CarRepository carRepository;
-    private final EmployeeRepository employeeRepository;
-    private final ObjectMapper objectMapper;
-
     @Autowired
-    public CarControllerTest(CarRepository carRepository,
-                             EmployeeRepository employeeRepository,
-                             CarMapper carMapper,
-                             ExceptionAdviser exceptionAdviser) {
-        this.carRepository = carRepository;
-        this.employeeRepository = employeeRepository;
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(new CarController(
-                        new CarService(
-                                carRepository,
-                                employeeRepository,
-                                carMapper)
-                ))
-                .setControllerAdvice(exceptionAdviser)
-                .build();
-        this.objectMapper = new ObjectMapper();
-    }
+    private CarRepository carRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
