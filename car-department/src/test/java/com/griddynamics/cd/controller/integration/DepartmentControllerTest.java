@@ -102,7 +102,7 @@ public class DepartmentControllerTest {
     }
 
     @AfterEach
-    void tearDownEach() {
+    void cleanUp() {
         employeeRepository.deleteAll();
         departmentRepository.deleteAll();
     }

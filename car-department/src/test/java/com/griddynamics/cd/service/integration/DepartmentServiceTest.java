@@ -88,7 +88,7 @@ class DepartmentServiceTest {
     }
 
     @AfterEach
-    void tearDownEach() {
+    void cleanUp() {
         employeeRepository.deleteAll();
         departmentRepository.deleteAll();
     }

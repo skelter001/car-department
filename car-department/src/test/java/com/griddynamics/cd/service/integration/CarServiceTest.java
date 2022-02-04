@@ -107,7 +107,7 @@ public class CarServiceTest {
     }
 
     @AfterEach
-    void tearDownEach() {
+    void cleanUp() {
         carRepository.deleteAll();
         employeeRepository.deleteAll();
     }
