@@ -1,14 +1,9 @@
 package com.griddynamics.cd.controller.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.griddynamics.cd.controller.EmployeeController;
 import com.griddynamics.cd.entity.CarEntity;
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
-import com.griddynamics.cd.exception.EntityDeleteException;
-import com.griddynamics.cd.exception.ExceptionAdviser;
-import com.griddynamics.cd.mapper.EmployeeMapper;
 import com.griddynamics.cd.model.Color;
 import com.griddynamics.cd.model.DepartmentType;
 import com.griddynamics.cd.model.Employee;
@@ -18,7 +13,6 @@ import com.griddynamics.cd.model.update.UpdateEmployeeRequest;
 import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
-import com.griddynamics.cd.service.EmployeeService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,17 +22,14 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -232,8 +223,8 @@ public class EmployeeControllerTest {
         MvcResult result = mockMvc.perform(get("/employees/123"))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Employee with 123 id was not found", ex.getMessage()));
+        assertEquals("Employee with 123 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     private List<Employee> getEmployeesByDepartmentIdData() {
@@ -338,8 +329,8 @@ public class EmployeeControllerTest {
                         .content(objectMapper.writeValueAsString(createEmployeeRequest)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        Optional<EntityExistsException> thrown = Optional.ofNullable((EntityExistsException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Employee with 7630894488 phone number already exist", ex.getMessage()));
+        assertEquals("Employee with 7630894488 phone number already exist",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -355,8 +346,8 @@ public class EmployeeControllerTest {
                         .content(objectMapper.writeValueAsString(employeeRequest)))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Department with 111 id was not found", ex.getMessage()));
+        assertEquals("Department with 111 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -396,8 +387,8 @@ public class EmployeeControllerTest {
                         .content(objectMapper.writeValueAsString(new UpdateCarRequest())))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Employee with 123 id was not found", ex.getMessage()));
+        assertEquals("Employee with 123 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -412,8 +403,8 @@ public class EmployeeControllerTest {
                         .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        Optional<EntityExistsException> thrown = Optional.ofNullable((EntityExistsException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Employee with 7630894488 phone number already exist", ex.getMessage()));
+        assertEquals("Employee with 7630894488 phone number already exist",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -428,8 +419,8 @@ public class EmployeeControllerTest {
                         .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Department with 111 id was not found", ex.getMessage()));
+        assertEquals("Department with 111 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -446,8 +437,8 @@ public class EmployeeControllerTest {
         MvcResult result = mockMvc.perform(delete("/employees/114"))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Employee with 114 id was not found", ex.getMessage()));
+        assertEquals("Employee with 114 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -467,7 +458,7 @@ public class EmployeeControllerTest {
         MvcResult result = mockMvc.perform(delete("/employees/34"))
                 .andExpect(status().isConflict())
                 .andReturn();
-        Optional<EntityDeleteException> thrown = Optional.ofNullable((EntityDeleteException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Unable to delete employee with id 34", ex.getMessage()));
+        assertEquals("Unable to delete employee with id 34",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 }

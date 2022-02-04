@@ -2,7 +2,6 @@ package com.griddynamics.cd.service.integration;
 
 import com.griddynamics.cd.entity.CarEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
-import com.griddynamics.cd.mapper.CarMapper;
 import com.griddynamics.cd.model.Car;
 import com.griddynamics.cd.model.Color;
 import com.griddynamics.cd.model.create.CreateCarRequest;
@@ -12,7 +11,6 @@ import com.griddynamics.cd.repository.EmployeeRepository;
 import com.griddynamics.cd.service.CarService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;

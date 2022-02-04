@@ -3,7 +3,6 @@ package com.griddynamics.cd.service.integration;
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.exception.EntityDeleteException;
-import com.griddynamics.cd.mapper.DepartmentMapper;
 import com.griddynamics.cd.model.Department;
 import com.griddynamics.cd.model.DepartmentType;
 import com.griddynamics.cd.model.create.CreateDepartmentRequest;

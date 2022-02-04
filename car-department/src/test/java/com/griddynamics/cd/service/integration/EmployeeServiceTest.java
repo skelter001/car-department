@@ -4,7 +4,6 @@ import com.griddynamics.cd.entity.CarEntity;
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.exception.EntityDeleteException;
-import com.griddynamics.cd.mapper.EmployeeMapper;
 import com.griddynamics.cd.model.Color;
 import com.griddynamics.cd.model.DepartmentType;
 import com.griddynamics.cd.model.Employee;

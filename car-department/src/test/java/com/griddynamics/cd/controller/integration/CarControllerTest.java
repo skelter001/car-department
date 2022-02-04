@@ -14,7 +14,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -26,10 +25,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -209,8 +207,8 @@ public class CarControllerTest {
         MvcResult result = mockMvc.perform(get("/cars/123"))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Car with 123 id was not found", ex.getMessage()));
+        assertEquals("Car with 123 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     private List<Car> getAllCarsByEmployeeIdData() {
@@ -303,8 +301,8 @@ public class CarControllerTest {
                         .content(objectMapper.writeValueAsString(createCarRequest)))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Employee with 123 id was not found", ex.getMessage()));
+        assertEquals("Employee with 123 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -342,8 +340,8 @@ public class CarControllerTest {
                         .content(objectMapper.writeValueAsString(new UpdateCarRequest())))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Car with 123 id was not found", ex.getMessage()));
+        assertEquals("Car with 123 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -356,8 +354,8 @@ public class CarControllerTest {
                                 .build())))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Employee with 54 id was not found", ex.getMessage()));
+        assertEquals("Employee with 54 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -375,7 +373,7 @@ public class CarControllerTest {
         MvcResult result = mockMvc.perform(delete("/cars/12"))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Car with 12 id was not found", ex.getMessage()));
+        assertEquals("Car with 12 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 }

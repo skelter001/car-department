@@ -1,12 +1,9 @@
 package com.griddynamics.cd.controller.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.griddynamics.cd.controller.DepartmentController;
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.exception.EntityDeleteException;
-import com.griddynamics.cd.exception.ExceptionAdviser;
-import com.griddynamics.cd.mapper.DepartmentMapper;
 import com.griddynamics.cd.model.Department;
 import com.griddynamics.cd.model.DepartmentType;
 import com.griddynamics.cd.model.create.CreateDepartmentRequest;
@@ -14,7 +11,6 @@ import com.griddynamics.cd.model.update.UpdateCarRequest;
 import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
-import com.griddynamics.cd.service.DepartmentService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,7 +20,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -33,6 +28,7 @@ import org.testcontainers.utility.DockerImageName;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.notNullValue;
@@ -189,8 +185,8 @@ public class DepartmentControllerTest {
         MvcResult result = mockMvc.perform(get("/departments/100"))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Department with 100 id was not found", ex.getMessage()));
+        assertEquals("Department with 100 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -234,8 +230,8 @@ public class DepartmentControllerTest {
                         .content(objectMapper.writeValueAsString(createDepartmentRequest)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        Optional<EntityExistsException> thrown = Optional.ofNullable((EntityExistsException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Department with test1@test email already exist", ex.getMessage()));
+        assertEquals("Department with test1@test email already exist",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -271,8 +267,8 @@ public class DepartmentControllerTest {
                         .content(objectMapper.writeValueAsString(new UpdateCarRequest())))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Department with 123 id was not found", ex.getMessage()));
+        assertEquals("Department with 123 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -290,8 +286,8 @@ public class DepartmentControllerTest {
                         .content(objectMapper.writeValueAsString(updateDepartmentRequest)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        Optional<EntityExistsException> thrown = Optional.ofNullable((EntityExistsException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Department with test1@test email already exist", ex.getMessage()));
+        assertEquals("Department with test1@test email already exist",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -308,8 +304,8 @@ public class DepartmentControllerTest {
         MvcResult result = mockMvc.perform(delete("/departments/114"))
                 .andExpect(status().isNotFound())
                 .andReturn();
-        Optional<EntityNotFoundException> thrown = Optional.ofNullable((EntityNotFoundException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Department with 114 id was not found", ex.getMessage()));
+        assertEquals("Department with 114 id was not found",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
     @Test
@@ -325,7 +321,7 @@ public class DepartmentControllerTest {
         MvcResult result = mockMvc.perform(delete("/departments/26"))
                 .andExpect(status().isConflict())
                 .andReturn();
-        Optional<EntityDeleteException> thrown = Optional.ofNullable((EntityDeleteException) result.getResolvedException());
-        thrown.ifPresent(ex -> assertEquals("Unable to delete department with id 26", ex.getMessage()));
+        assertEquals("Unable to delete department with id 26",
+                Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 }
