@@ -1,5 +1,6 @@
 package com.griddynamics.cd.service.integration;
 
+import com.griddynamics.cd.BaseIntegrationTest;
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.exception.EntityDeleteException;
@@ -10,32 +11,21 @@ import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import com.griddynamics.cd.service.DepartmentService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Testcontainers
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class DepartmentServiceTest {
-
-    @Container
-    private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:14"))
-            .withDatabaseName("car_department_database")
-            .withUsername("admin")
-            .withPassword("password");
+class DepartmentServiceTest extends BaseIntegrationTest {
 
     @Autowired
     private DepartmentRepository departmentRepository;
@@ -43,19 +33,37 @@ class DepartmentServiceTest {
     private EmployeeRepository employeeRepository;
     @Autowired
     private DepartmentService departmentService;
+    List<Department> departments = List.of(
+            Department.builder()
+                    .id(1L)
+                    .name("department 1")
+                    .email("test1@test")
+                    .description("some desc.")
+                    .departmentType(DepartmentType.SALE)
+                    .build(),
+            Department.builder()
+                    .id(2L)
+                    .name("department 2")
+                    .email("test2@test")
+                    .description("some desc.")
+                    .departmentType(DepartmentType.SUPPORT)
+                    .build(),
+            Department.builder()
+                    .id(3L)
+                    .name("department 3")
+                    .email("test3@test")
+                    .description("some desc.")
+                    .departmentType(DepartmentType.PROVIDER)
+                    .build(),
+            Department.builder()
+                    .id(4L)
+                    .name("department 4")
+                    .email("test4@test")
+                    .description("some desc.")
+                    .departmentType(DepartmentType.SUPPORT)
+                    .build()
 
-    @DynamicPropertySource
-    static void properties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.password", container::getPassword);
-        registry.add("spring.datasource.username", container::getUsername);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
-    }
-
-    @AfterAll
-    static void tearDown() {
-        container.stop();
-    }
+    );
 
     @BeforeEach
     void setUp() {
@@ -88,54 +96,21 @@ class DepartmentServiceTest {
     }
 
     @AfterEach
-    void cleanUp() {
-        employeeRepository.deleteAll();
-        departmentRepository.deleteAll();
-    }
+    void cleanUp() throws SQLException {
+        Statement st = connection.createStatement();
 
-    private List<Department> getAllDepartmentsData() {
-        return List.of(
-                Department.builder()
-                        .id(1L)
-                        .name("department 1")
-                        .email("test1@test")
-                        .description("some desc.")
-                        .departmentType(DepartmentType.SALE)
-                        .build(),
-                Department.builder()
-                        .id(2L)
-                        .name("department 2")
-                        .email("test2@test")
-                        .description("some desc.")
-                        .departmentType(DepartmentType.SUPPORT)
-                        .build(),
-                Department.builder()
-                        .id(3L)
-                        .name("department 3")
-                        .email("test3@test")
-                        .description("some desc.")
-                        .departmentType(DepartmentType.PROVIDER)
-                        .build(),
-                Department.builder()
-                        .id(4L)
-                        .name("department 4")
-                        .email("test4@test")
-                        .description("some desc.")
-                        .departmentType(DepartmentType.SUPPORT)
-                        .build()
-        );
+        st.execute("TRUNCATE TABLE department RESTART IDENTITY CASCADE ;");
+        st.execute("TRUNCATE TABLE employee RESTART IDENTITY CASCADE;");
+        st.execute("TRUNCATE TABLE car RESTART IDENTITY ;");
+        st.close();
     }
 
     @Test
-    @Order(1)
     void getAllDepartments_whenSaveToDepartmentRepository_thenReturnValidList() {
-        List<Department> expected = getAllDepartmentsData();
-
-        assertEquals(expected, departmentService.getAllDepartments());
+        assertEquals(departments, departmentService.getAllDepartments());
     }
 
     @Test
-    @Order(2)
     void getDepartmentById_whenPassValidIdTwoTimes_thenReturnValidModel() {
         Department expected1 = Department.builder()
                 .id(6L)
@@ -152,8 +127,8 @@ class DepartmentServiceTest {
                 .departmentType(DepartmentType.SUPPORT)
                 .build();
 
-        assertEquals(expected1, departmentService.getDepartmentById(6L));
-        assertEquals(expected2, departmentService.getDepartmentById(8L));
+        assertEquals(departments.get(1), departmentService.getDepartmentById(2L));
+        assertEquals(departments.get(3), departmentService.getDepartmentById(4L));
     }
 
     @Test
@@ -166,7 +141,6 @@ class DepartmentServiceTest {
     }
 
     @Test
-    @Order(3)
     void saveDepartment_whenPassValidCreateDepartmentRequest_thenReturnValidModel() {
         CreateDepartmentRequest createDepartmentRequest = CreateDepartmentRequest.builder()
                 .name("department")
@@ -176,7 +150,7 @@ class DepartmentServiceTest {
                 .build();
 
         Department expected = Department.builder()
-                .id(13L)
+                .id(5L)
                 .name("department")
                 .email("dep@dep")
                 .description("smth")
@@ -204,7 +178,6 @@ class DepartmentServiceTest {
     }
 
     @Test
-    @Order(4)
     void updateDepartment_whenPassValidUpdateDepartmentRequest_thenReturnValidModel() {
         UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder()
                 .name("new name")
@@ -214,14 +187,14 @@ class DepartmentServiceTest {
                 .build();
 
         Department expected = Department.builder()
-                .id(14L)
+                .id(2L)
                 .name("new name")
                 .email("new@mail")
                 .description("new desc")
                 .departmentType(DepartmentType.SUPPORT)
                 .build();
 
-        assertEquals(expected, departmentService.updateDepartment(updateDepartmentRequest, 14L));
+        assertEquals(expected, departmentService.updateDepartment(updateDepartmentRequest, 2L));
     }
 
     @Test
@@ -246,7 +219,7 @@ class DepartmentServiceTest {
 
         EntityExistsException thrown = assertThrows(
                 EntityExistsException.class,
-                () -> departmentService.updateDepartment(updateDepartmentRequest, 19L)
+                () -> departmentService.updateDepartment(updateDepartmentRequest, 3L)
         );
 
         assertEquals("Department with test1@test email already exist", thrown.getMessage());
@@ -255,8 +228,8 @@ class DepartmentServiceTest {
     @Test
     @Order(6)
     void deleteDepartment_whenPassValidDepartmentId_thenCheckIfEntityActuallyDeleted() {
-        departmentService.deleteDepartment(23L);
-        assertFalse(departmentRepository.existsById(23L));
+        departmentService.deleteDepartment(4L);
+        assertFalse(departmentRepository.existsById(4L));
     }
 
     @Test
@@ -275,15 +248,15 @@ class DepartmentServiceTest {
         EmployeeEntity employeeEntity = EmployeeEntity.builder()
                 .firstName("Joe")
                 .lastName("Doe")
-                .department(departmentRepository.getById(26L))
+                .department(departmentRepository.getById(2L))
                 .build();
         employeeRepository.save(employeeEntity);
 
         EntityDeleteException thrown = assertThrows(
                 EntityDeleteException.class,
-                () -> departmentService.deleteDepartment(26L)
+                () -> departmentService.deleteDepartment(2L)
         );
 
-        assertEquals("Unable to delete department with id 26", thrown.getMessage());
+        assertEquals("Unable to delete department with id 2", thrown.getMessage());
     }
 }

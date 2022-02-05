@@ -2,6 +2,7 @@ package com.griddynamics.cd.controller.integration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.griddynamics.cd.BaseIntegrationTest;
 import com.griddynamics.cd.entity.CarEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
 import com.griddynamics.cd.model.Car;
@@ -10,21 +11,19 @@ import com.griddynamics.cd.model.create.CreateCarRequest;
 import com.griddynamics.cd.model.update.UpdateCarRequest;
 import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -35,18 +34,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@Testcontainers
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@EnableWebMvc
 @AutoConfigureMockMvc
-public class CarControllerTest {
-
-    @Container
-    private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:14"))
-            .withDatabaseName("car_department_database")
-            .withUsername("admin")
-            .withPassword("password");
+public class CarControllerTest extends BaseIntegrationTest {
 
     @Autowired
     private CarRepository carRepository;
@@ -56,18 +45,42 @@ public class CarControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
+    private final Connection connection = DriverManager.getConnection(container.getJdbcUrl(), container.getUsername(), container.getPassword());
+    private final List<Car> cars = List.of(
+            Car.builder()
+                    .id(1L)
+                    .manufacturer("Honda")
+                    .model("Coupe")
+                    .vinNumber("4T3ZK3BB7BU042861")
+                    .color(Color.BLACK)
+                    .employeeId(1L)
+                    .build(),
+            Car.builder()
+                    .id(2L)
+                    .manufacturer("Nissan")
+                    .model("Silvia S13")
+                    .color(Color.GREY)
+                    .employeeId(2L)
+                    .build(),
+            Car.builder()
+                    .id(3L)
+                    .manufacturer("Toyota")
+                    .model("Chaser")
+                    .vinNumber("1HGCG2254WA015540")
+                    .color(Color.WHITE)
+                    .employeeId(2L)
+                    .build(),
+            Car.builder()
+                    .id(4L)
+                    .manufacturer("Toyota")
+                    .model("Mark 2")
+                    .vinNumber("4T3ZK3BB7BU042861")
+                    .color(Color.BLACK)
+                    .employeeId(2L)
+                    .build()
+    );
 
-    @DynamicPropertySource
-    static void properties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.username", container::getUsername);
-        registry.add("spring.datasource.password", container::getPassword);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
-    }
-
-    @AfterAll
-    static void tearDown() {
-        container.stop();
+    public CarControllerTest() throws SQLException {
     }
 
     @BeforeEach
@@ -121,85 +134,32 @@ public class CarControllerTest {
     }
 
     @AfterEach
-    void cleanUp() {
-        carRepository.deleteAll();
-        employeeRepository.deleteAll();
-    }
+    void cleanUp() throws SQLException {
+        Statement st = connection.createStatement();
 
-    private List<Car> getAllCarsTestData() {
-        return  List.of(
-                Car.builder()
-                        .id(1L)
-                        .manufacturer("Honda")
-                        .model("Coupe")
-                        .vinNumber("4T3ZK3BB7BU042861")
-                        .color(Color.BLACK)
-                        .employeeId(1L)
-                        .build(),
-                Car.builder()
-                        .id(2L)
-                        .manufacturer("Nissan")
-                        .model("Silvia S13")
-                        .color(Color.GREY)
-                        .employeeId(2L)
-                        .build(),
-                Car.builder()
-                        .id(3L)
-                        .manufacturer("Toyota")
-                        .model("Chaser")
-                        .vinNumber("1HGCG2254WA015540")
-                        .color(Color.WHITE)
-                        .employeeId(2L)
-                        .build(),
-                Car.builder()
-                        .id(4L)
-                        .manufacturer("Toyota")
-                        .model("Mark 2")
-                        .vinNumber("4T3ZK3BB7BU042861")
-                        .color(Color.BLACK)
-                        .employeeId(2L)
-                        .build()
-        );
+        st.execute("TRUNCATE TABLE car RESTART IDENTITY;");
+        st.execute("TRUNCATE TABLE employee RESTART IDENTITY CASCADE;");
+        st.close();
     }
 
     @Test
-    @Order(1)
     void getAllCars_whenSaveToCarRepository_thenReturnValidList() throws Exception {
-        List<Car> expected = getAllCarsTestData();
-
         mockMvc.perform(get("/cars"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(expected)));
+                .andExpect(content().string(objectMapper.writeValueAsString(cars)));
     }
 
     @Test
-    @Order(2)
     void getCarById_whenPassValidIdTwoTimes_thenReturnValidModel() throws Exception {
-        Car expected1 = Car.builder()
-                .id(6L)
-                .manufacturer("Nissan")
-                .model("Silvia S13")
-                .color(Color.GREY)
-                .employeeId(4L)
-                .build();
-        Car expected2 = Car.builder()
-                .id(8L)
-                .manufacturer("Toyota")
-                .model("Mark 2")
-                .vinNumber("4T3ZK3BB7BU042861")
-                .color(Color.BLACK)
-                .employeeId(4L)
-                .build();
-
-        mockMvc.perform(get("/cars/6"))
+        mockMvc.perform(get("/cars/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(expected1)));
-        mockMvc.perform(get("/cars/8"))
+                .andExpect(content().string(objectMapper.writeValueAsString(cars.get(0))));
+        mockMvc.perform(get("/cars/3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(expected2)));
+                .andExpect(content().string(objectMapper.writeValueAsString(cars.get(2))));
     }
 
     @Test
@@ -211,73 +171,31 @@ public class CarControllerTest {
                 Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
-    private List<Car> getAllCarsByEmployeeIdData() {
-        return List.of(
-                Car.builder()
-                        .id(10L)
-                        .manufacturer("Nissan")
-                        .model("Silvia S13")
-                        .color(Color.GREY)
-                        .employeeId(6L)
-                        .build(),
-                Car.builder()
-                        .id(11L)
-                        .manufacturer("Toyota")
-                        .model("Chaser")
-                        .vinNumber("1HGCG2254WA015540")
-                        .color(Color.WHITE)
-                        .employeeId(6L)
-                        .build(),
-                Car.builder()
-                        .id(12L)
-                        .manufacturer("Toyota")
-                        .model("Mark 2")
-                        .vinNumber("4T3ZK3BB7BU042861")
-                        .color(Color.BLACK)
-                        .employeeId(6L)
-                        .build()
-        );
-    }
-
     @Test
-    @Order(3)
     void getCarsByEmployeeId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() throws Exception {
-        List<Car> expected1 = List.of(
-                Car.builder()
-                        .id(9L)
-                        .manufacturer("Honda")
-                        .model("Coupe")
-                        .vinNumber("4T3ZK3BB7BU042861")
-                        .color(Color.BLACK)
-                        .employeeId(5L)
-                        .build()
-        );
-        List<Car> expected2 = getAllCarsByEmployeeIdData();
-
-        mockMvc.perform(get("/employees/5/cars"))
+        mockMvc.perform(get("/employees/1/cars"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(expected1)));
-        mockMvc.perform(get("/employees/6/cars"))
+                .andExpect(content().string(objectMapper.writeValueAsString(List.of(cars.get(0)))));
+        mockMvc.perform(get("/employees/2/cars"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(expected2)));
+                .andExpect(content().string(objectMapper.writeValueAsString(List.of(cars.get(1), cars.get(2), cars.get(3)))));
     }
 
     @Test
-    @Order(4)
     void saveCar_whenPassValidCreateCarRequest_thenReturnValidModel() throws Exception {
         CreateCarRequest createCarRequest = CreateCarRequest.builder()
                 .manufacturer("Nissan")
                 .model("Silvia S13")
-                .employeeId(7L)
+                .employeeId(1L)
                 .color(Color.GREY)
                 .build();
         Car expected = Car.builder()
-                .id(17L)
+                .id(5L)
                 .manufacturer("Nissan")
                 .model("Silvia S13")
-                .employeeId(7L)
+                .employeeId(1L)
                 .color(Color.GREY)
                 .build();
 
@@ -306,26 +224,25 @@ public class CarControllerTest {
     }
 
     @Test
-    @Order(5)
     void updateCar_whenPassValidUpdateCarRequest_thenReturnValidModel() throws Exception {
         UpdateCarRequest updateCarRequest = UpdateCarRequest.builder()
                 .manufacturer("Audi")
                 .model("A2")
                 .vinNumber("JH4KA8271NC000480")
-                .employeeId(9L)
+                .employeeId(2L)
                 .color(Color.WHITE)
                 .build();
 
         Car expected = Car.builder()
-                .id(19L)
+                .id(1L)
                 .manufacturer("Audi")
                 .model("A2")
                 .vinNumber("JH4KA8271NC000480")
-                .employeeId(9L)
+                .employeeId(2L)
                 .color(Color.WHITE)
                 .build();
 
-        mockMvc.perform(put("/cars/19")
+        mockMvc.perform(put("/cars/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateCarRequest)))
                 .andExpect(status().isOk())
@@ -345,9 +262,8 @@ public class CarControllerTest {
     }
 
     @Test
-    @Order(6)
     void updateCar_whenPassUpdateCarRequestWithInvalidEmployeeId_thenThrowEntityNotFoundException() throws Exception {
-        MvcResult result = mockMvc.perform(put("/cars/22")
+        MvcResult result = mockMvc.perform(put("/cars/2")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(UpdateCarRequest.builder()
                                 .employeeId(54L)
@@ -359,13 +275,12 @@ public class CarControllerTest {
     }
 
     @Test
-    @Order(7)
     void deleteCarById_whenPassValidCarId_thenCheckIfEntityActuallyDeleted() throws Exception {
-        mockMvc.perform(delete("/cars/27"))
+        mockMvc.perform(delete("/cars/3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").doesNotExist());
 
-        assertFalse(carRepository.existsById(27L));
+        assertFalse(carRepository.existsById(3L));
     }
 
     @Test

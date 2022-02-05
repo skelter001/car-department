@@ -1,6 +1,7 @@
 package com.griddynamics.cd.controller.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.griddynamics.cd.BaseIntegrationTest;
 import com.griddynamics.cd.entity.CarEntity;
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
@@ -13,20 +14,18 @@ import com.griddynamics.cd.model.update.UpdateEmployeeRequest;
 import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -37,17 +36,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@Testcontainers
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@AutoConfigureMockMvc
-public class EmployeeControllerTest {
 
-    @Container
-    private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:14"))
-            .withDatabaseName("car_department_database")
-            .withUsername("admin")
-            .withPassword("password");
+@AutoConfigureMockMvc
+public class EmployeeControllerTest extends BaseIntegrationTest {
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -59,19 +50,44 @@ public class EmployeeControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
-
-    @DynamicPropertySource
-    static void properties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.username", container::getUsername);
-        registry.add("spring.datasource.password", container::getPassword);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
-    }
-
-    @AfterAll
-    static void tearDown() {
-        container.stop();
-    }
+    private final List<Employee> employees = List.of(
+            Employee.builder()
+                    .id(1L)
+                    .firstName("Alfred")
+                    .lastName("Miles")
+                    .address("Atlanta, Georgia US.")
+                    .birthday(LocalDate.of(1995, 6, 21))
+                    .phoneNumber("4539832543")
+                    .departmentId(1L)
+                    .build(),
+            Employee.builder()
+                    .id(2L)
+                    .firstName("Darius")
+                    .lastName("Epps")
+                    .address("Abuja, Nigeria")
+                    .birthday(LocalDate.of(1993, 8, 2))
+                    .phoneNumber("5738310041")
+                    .departmentId(2L)
+                    .build(),
+            Employee.builder()
+                    .id(3L)
+                    .firstName("Earnest")
+                    .lastName("Marks")
+                    .address("Atlanta, Georgia US.")
+                    .birthday(LocalDate.of(1995, 12, 19))
+                    .phoneNumber("7630894488")
+                    .departmentId(2L)
+                    .build(),
+            Employee.builder()
+                    .id(4L)
+                    .firstName("Khris")
+                    .lastName("Tracy")
+                    .address("Augusta, Georgia US.")
+                    .birthday(LocalDate.of(1991, 4, 8))
+                    .phoneNumber("6649329842")
+                    .departmentId(2L)
+                    .build()
+    );
 
     @BeforeEach
     void setUp() {
@@ -127,95 +143,34 @@ public class EmployeeControllerTest {
     }
 
     @AfterEach
-    void cleanUp() {
-        carRepository.deleteAll();
-        employeeRepository.deleteAll();
-        departmentRepository.deleteAll();
-    }
+    void cleanUp() throws SQLException {
+        Statement st = connection.createStatement();
 
-    private List<Employee> getAllEmployeesData() {
-        return List.of(
-                Employee.builder()
-                        .id(1L)
-                        .firstName("Alfred")
-                        .lastName("Miles")
-                        .address("Atlanta, Georgia US.")
-                        .birthday(LocalDate.of(1995, 6, 21))
-                        .phoneNumber("4539832543")
-                        .departmentId(1L)
-                        .build(),
-                Employee.builder()
-                        .id(2L)
-                        .firstName("Darius")
-                        .lastName("Epps")
-                        .address("Abuja, Nigeria")
-                        .birthday(LocalDate.of(1993, 8, 2))
-                        .phoneNumber("5738310041")
-                        .departmentId(2L)
-                        .build(),
-                Employee.builder()
-                        .id(3L)
-                        .firstName("Earnest")
-                        .lastName("Marks")
-                        .address("Atlanta, Georgia US.")
-                        .birthday(LocalDate.of(1995, 12, 19))
-                        .phoneNumber("7630894488")
-                        .departmentId(2L)
-                        .build(),
-                Employee.builder()
-                        .id(4L)
-                        .firstName("Khris")
-                        .lastName("Tracy")
-                        .address("Augusta, Georgia US.")
-                        .birthday(LocalDate.of(1991, 4, 8))
-                        .phoneNumber("6649329842")
-                        .departmentId(2L)
-                        .build()
-        );
+        st.execute("TRUNCATE TABLE car RESTART IDENTITY;");
+        st.execute("TRUNCATE TABLE employee RESTART IDENTITY CASCADE;");
+        st.execute("TRUNCATE TABLE department RESTART IDENTITY CASCADE;");
+        st.close();
     }
 
     @Test
-    @Order(1)
     void getAllEmployees_whenSaveToEmployeeRepository_thenReturnValidList() throws Exception {
-        List<Employee> expected = getAllEmployeesData();
-
         mockMvc.perform(get("/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(expected)));
+                .andExpect(content().string(objectMapper.writeValueAsString(employees)));
     }
 
     @Test
-    @Order(2)
     void getDepartmentById_whenPassValidEmployeeIdTwoTimes_thenReturnValidModel() throws Exception {
-        Employee expected1 = Employee.builder()
-                .id(6L)
-                .firstName("Darius")
-                .lastName("Epps")
-                .address("Abuja, Nigeria")
-                .birthday(LocalDate.of(1993, 8, 2))
-                .phoneNumber("5738310041")
-                .departmentId(4L)
-                .build();
-        Employee expected2 = Employee.builder()
-                .id(8L)
-                .firstName("Khris")
-                .lastName("Tracy")
-                .address("Augusta, Georgia US.")
-                .birthday(LocalDate.of(1991, 4, 8))
-                .phoneNumber("6649329842")
-                .departmentId(4L)
-                .build();
-
-        mockMvc.perform(get("/employees/6"))
+        mockMvc.perform(get("/employees/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(expected1)));
+                .andExpect(content().string(objectMapper.writeValueAsString(employees.get(1))));
 
-        mockMvc.perform(get("/employees/8"))
+        mockMvc.perform(get("/employees/4"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(expected2)));
+                .andExpect(content().string(objectMapper.writeValueAsString(employees.get(3))));
     }
 
     @Test
@@ -227,68 +182,20 @@ public class EmployeeControllerTest {
                 Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 
-    private List<Employee> getEmployeesByDepartmentIdData() {
-        return List.of(
-                Employee.builder()
-                        .id(10L)
-                        .firstName("Darius")
-                        .lastName("Epps")
-                        .address("Abuja, Nigeria")
-                        .birthday(LocalDate.of(1993, 8, 2))
-                        .phoneNumber("5738310041")
-                        .departmentId(6L)
-                        .build(),
-                Employee.builder()
-                        .id(11L)
-                        .firstName("Earnest")
-                        .lastName("Marks")
-                        .address("Atlanta, Georgia US.")
-                        .birthday(LocalDate.of(1995, 12, 19))
-                        .phoneNumber("7630894488")
-                        .departmentId(6L)
-                        .build(),
-                Employee.builder()
-                        .id(12L)
-                        .firstName("Khris")
-                        .lastName("Tracy")
-                        .address("Augusta, Georgia US.")
-                        .birthday(LocalDate.of(1991, 4, 8))
-                        .phoneNumber("6649329842")
-                        .departmentId(6L)
-                        .build()
-        );
-    }
-
     @Test
-    @Order(3)
     void getEmployeesByDepartmentId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() throws Exception {
-        List<Employee> expected1 = List.of(
-                Employee.builder()
-                        .id(9L)
-                        .firstName("Alfred")
-                        .lastName("Miles")
-                        .address("Atlanta, Georgia US.")
-                        .birthday(LocalDate.of(1995, 6, 21))
-                        .phoneNumber("4539832543")
-                        .departmentId(5L)
-                        .build()
-        );
-        List<Employee> expected2 = getEmployeesByDepartmentIdData();
-
-
-        mockMvc.perform(get("/departments/5/employees"))
+        mockMvc.perform(get("/departments/1/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(expected1)));
+                .andExpect(content().string(objectMapper.writeValueAsString(List.of(employees.get(0)))));
 
-        mockMvc.perform(get("/departments/6/employees"))
+        mockMvc.perform(get("/departments/2/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(expected2)));
+                .andExpect(content().string(objectMapper.writeValueAsString(List.of(employees.get(1), employees.get(2), employees.get(3)))));
     }
 
     @Test
-    @Order(4)
     void saveDepartment_whenPassValidCreateDepartmentRequest_thenReturnValidModel() throws Exception {
         CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
                 .firstName("Vanessa")
@@ -296,16 +203,16 @@ public class EmployeeControllerTest {
                 .address("Atlanta, Georgia US.")
                 .birthday(LocalDate.of(1998, 12, 15))
                 .phoneNumber("8873431214")
-                .departmentId(7L)
+                .departmentId(1L)
                 .build();
         Employee expected = Employee.builder()
-                .id(17L)
+                .id(5L)
                 .firstName("Vanessa")
                 .lastName("Keefer")
                 .address("Atlanta, Georgia US.")
                 .birthday(LocalDate.of(1998, 12, 15))
                 .phoneNumber("8873431214")
-                .departmentId(7L)
+                .departmentId(1L)
                 .build();
 
         mockMvc.perform(post("/employees")
@@ -351,7 +258,6 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    @Order(5)
     void updateDepartment_whenPassValidUpdateDepartmentRequest_thenReturnValidModel() throws Exception {
         UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
                 .firstName("Vanessa")
@@ -359,20 +265,20 @@ public class EmployeeControllerTest {
                 .address("Atlanta, Georgia US.")
                 .birthday(LocalDate.of(1998, 12, 15))
                 .phoneNumber("8873431214")
-                .departmentId(9L)
+                .departmentId(2L)
                 .build();
 
         Employee expected = Employee.builder()
-                .id(20L)
+                .id(3L)
                 .firstName("Vanessa")
                 .lastName("Keefer")
                 .address("Atlanta, Georgia US.")
                 .birthday(LocalDate.of(1998, 12, 15))
                 .phoneNumber("8873431214")
-                .departmentId(9L)
+                .departmentId(2L)
                 .build();
 
-        mockMvc.perform(put("/employees/20")
+        mockMvc.perform(put("/employees/3")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
                 .andExpect(status().isOk())
@@ -392,13 +298,12 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    @Order(6)
     void updateEmployee_whenPassUpdateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() throws Exception {
         UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
                 .phoneNumber("7630894488")
                 .build();
 
-        MvcResult result = mockMvc.perform(put("/employees/25")
+        MvcResult result = mockMvc.perform(put("/employees/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
                 .andExpect(status().isBadRequest())
@@ -414,7 +319,7 @@ public class EmployeeControllerTest {
                 .departmentId(111L)
                 .build();
 
-        MvcResult result = mockMvc.perform(put("/employees/26")
+        MvcResult result = mockMvc.perform(put("/employees/2")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
                 .andExpect(status().isNotFound())
@@ -424,12 +329,11 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    @Order(8)
     void deleteDepartmentById_whenPassValidDepartmentId_thenCheckIfEntityActuallyDeleted() throws Exception {
-        mockMvc.perform(delete("/employees/30"))
+        mockMvc.perform(delete("/employees/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").doesNotExist());
-        assertFalse(employeeRepository.existsById(30L));
+        assertFalse(employeeRepository.existsById(2L));
     }
 
     @Test
@@ -442,9 +346,8 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    @Order(9)
     void deleteEmployeeById_whenPassEmployeeIdWithDependentCars_thenThrowEntityDeleteException() throws Exception {
-        EmployeeEntity employeeEntity = employeeRepository.getById(34L);
+        EmployeeEntity employeeEntity = employeeRepository.getById(2L);
 
         CarEntity carEntity = CarEntity.builder()
                 .manufacturer("Audi")
@@ -455,10 +358,10 @@ public class EmployeeControllerTest {
                 .build();
         carRepository.save(carEntity);
 
-        MvcResult result = mockMvc.perform(delete("/employees/34"))
+        MvcResult result = mockMvc.perform(delete("/employees/2"))
                 .andExpect(status().isConflict())
                 .andReturn();
-        assertEquals("Unable to delete employee with id 34",
+        assertEquals("Unable to delete employee with id 2",
                 Objects.requireNonNull(result.getResolvedException()).getMessage());
     }
 }

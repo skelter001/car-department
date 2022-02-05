@@ -1,5 +1,6 @@
 package com.griddynamics.cd.service.integration;
 
+import com.griddynamics.cd.BaseIntegrationTest;
 import com.griddynamics.cd.entity.CarEntity;
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
@@ -13,33 +14,23 @@ import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import com.griddynamics.cd.service.EmployeeService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Testcontainers
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class EmployeeServiceTest {
 
-    @Container
-    private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:14"))
-            .withDatabaseName("car_department_database")
-            .withUsername("admin")
-            .withPassword("password");
+public class EmployeeServiceTest extends BaseIntegrationTest {
 
     @Autowired
     private DepartmentRepository departmentRepository;
@@ -49,19 +40,45 @@ public class EmployeeServiceTest {
     private EmployeeRepository employeeRepository;
     @Autowired
     private EmployeeService employeeService;
+    private final List<Employee> employees = List.of(
+            Employee.builder()
+                    .id(1L)
+                    .firstName("Alfred")
+                    .lastName("Miles")
+                    .address("Atlanta, Georgia US.")
+                    .birthday(LocalDate.of(1995, 6, 21))
+                    .phoneNumber("4539832543")
+                    .departmentId(1L)
+                    .build(),
+            Employee.builder()
+                    .id(2L)
+                    .firstName("Darius")
+                    .lastName("Epps")
+                    .address("Abuja, Nigeria")
+                    .birthday(LocalDate.of(1993, 8, 2))
+                    .phoneNumber("5738310041")
+                    .departmentId(2L)
+                    .build(),
+            Employee.builder()
+                    .id(3L)
+                    .firstName("Earnest")
+                    .lastName("Marks")
+                    .address("Atlanta, Georgia US.")
+                    .birthday(LocalDate.of(1995, 12, 19))
+                    .phoneNumber("7630894488")
+                    .departmentId(2L)
+                    .build(),
+            Employee.builder()
+                    .id(4L)
+                    .firstName("Khris")
+                    .lastName("Tracy")
+                    .address("Augusta, Georgia US.")
+                    .birthday(LocalDate.of(1991, 4, 8))
+                    .phoneNumber("6649329842")
+                    .departmentId(2L)
+                    .build()
 
-    @DynamicPropertySource
-    static void properties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.password", container::getPassword);
-        registry.add("spring.datasource.username", container::getUsername);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
-    }
-
-    @AfterAll
-    static void tearDown() {
-        container.stop();
-    }
+    );
 
     @BeforeEach
     void setUp() {
@@ -117,85 +134,24 @@ public class EmployeeServiceTest {
     }
 
     @AfterEach
-    void cleanUp() {
-        carRepository.deleteAll();
-        employeeRepository.deleteAll();
-        departmentRepository.deleteAll();
-    }
+    void cleanUp() throws SQLException {
+        Statement st = connection.createStatement();
 
-    private List<Employee> getAllEmployeesData() {
-        return List.of(
-                Employee.builder()
-                        .id(1L)
-                        .firstName("Alfred")
-                        .lastName("Miles")
-                        .address("Atlanta, Georgia US.")
-                        .birthday(LocalDate.of(1995, 6, 21))
-                        .phoneNumber("4539832543")
-                        .departmentId(1L)
-                        .build(),
-                Employee.builder()
-                        .id(2L)
-                        .firstName("Darius")
-                        .lastName("Epps")
-                        .address("Abuja, Nigeria")
-                        .birthday(LocalDate.of(1993, 8, 2))
-                        .phoneNumber("5738310041")
-                        .departmentId(2L)
-                        .build(),
-                Employee.builder()
-                        .id(3L)
-                        .firstName("Earnest")
-                        .lastName("Marks")
-                        .address("Atlanta, Georgia US.")
-                        .birthday(LocalDate.of(1995, 12, 19))
-                        .phoneNumber("7630894488")
-                        .departmentId(2L)
-                        .build(),
-                Employee.builder()
-                        .id(4L)
-                        .firstName("Khris")
-                        .lastName("Tracy")
-                        .address("Augusta, Georgia US.")
-                        .birthday(LocalDate.of(1991, 4, 8))
-                        .phoneNumber("6649329842")
-                        .departmentId(2L)
-                        .build()
-        );
+        st.execute("TRUNCATE TABLE department RESTART IDENTITY CASCADE ;");
+        st.execute("TRUNCATE TABLE employee RESTART IDENTITY CASCADE;");
+        st.execute("TRUNCATE TABLE car RESTART IDENTITY ;");
+        st.close();
     }
 
     @Test
-    @Order(1)
     void getAllEmployees_whenSaveToEmployeeRepository_thenReturnValidList() {
-        List<Employee> expected = getAllEmployeesData();
-
-        assertEquals(expected, employeeService.getAllEmployees());
+        assertEquals(employees, employeeService.getAllEmployees());
     }
 
     @Test
-    @Order(2)
     void getDepartmentById_whenPassValidEmployeeIdTwoTimes_thenReturnValidModel() {
-        Employee expected1 = Employee.builder()
-                .id(6L)
-                .firstName("Darius")
-                .lastName("Epps")
-                .address("Abuja, Nigeria")
-                .birthday(LocalDate.of(1993, 8, 2))
-                .phoneNumber("5738310041")
-                .departmentId(4L)
-                .build();
-        Employee expected2 = Employee.builder()
-                .id(8L)
-                .firstName("Khris")
-                .lastName("Tracy")
-                .address("Augusta, Georgia US.")
-                .birthday(LocalDate.of(1991, 4, 8))
-                .phoneNumber("6649329842")
-                .departmentId(4L)
-                .build();
-
-        assertEquals(expected1, employeeService.getEmployeeById(6L));
-        assertEquals(expected2, employeeService.getEmployeeById(8L));
+        assertEquals(employees.get(1), employeeService.getEmployeeById(2L));
+        assertEquals(employees.get(3), employeeService.getEmployeeById(4L));
     }
 
     @Test
@@ -240,27 +196,12 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    @Order(3)
     void getEmployeesByDepartmentId_whenCallMethodTwoTimes_thenReturnValidListOfEmployeeModels() {
-        List<Employee> expected1 = List.of(
-                Employee.builder()
-                        .id(9L)
-                        .firstName("Alfred")
-                        .lastName("Miles")
-                        .address("Atlanta, Georgia US.")
-                        .birthday(LocalDate.of(1995, 6, 21))
-                        .phoneNumber("4539832543")
-                        .departmentId(5L)
-                        .build()
-        );
-        List<Employee> expected2 = getEmployeesByDepartmentIdData();
-
-        assertEquals(expected1, employeeService.getEmployeesByDepartmentId(5L));
-        assertEquals(expected2, employeeService.getEmployeesByDepartmentId(6L));
+        assertEquals(List.of(employees.get(0)), employeeService.getEmployeesByDepartmentId(1L));
+        assertEquals(List.of(employees.get(1), employees.get(2), employees.get(3)), employeeService.getEmployeesByDepartmentId(2L));
     }
 
     @Test
-    @Order(4)
     void saveDepartment_whenPassValidCreateDepartmentRequest_thenReturnValidModel() {
         CreateEmployeeRequest createEmployeeRequest = CreateEmployeeRequest.builder()
                 .firstName("Vanessa")
@@ -268,16 +209,16 @@ public class EmployeeServiceTest {
                 .address("Atlanta, Georgia US.")
                 .birthday(LocalDate.of(1998, 12, 15))
                 .phoneNumber("8873431214")
-                .departmentId(7L)
+                .departmentId(1L)
                 .build();
         Employee expected = Employee.builder()
-                .id(17L)
+                .id(5L)
                 .firstName("Vanessa")
                 .lastName("Keefer")
                 .address("Atlanta, Georgia US.")
                 .birthday(LocalDate.of(1998, 12, 15))
                 .phoneNumber("8873431214")
-                .departmentId(7L)
+                .departmentId(1L)
                 .build();
 
         assertEquals(expected, employeeService.saveEmployee(createEmployeeRequest));
@@ -316,7 +257,6 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    @Order(5)
     void updateDepartment_whenPassValidUpdateDepartmentRequest_thenReturnValidModel() {
         UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
                 .firstName("Vanessa")
@@ -324,20 +264,20 @@ public class EmployeeServiceTest {
                 .address("Atlanta, Georgia US.")
                 .birthday(LocalDate.of(1998, 12, 15))
                 .phoneNumber("8873431214")
-                .departmentId(9L)
+                .departmentId(2L)
                 .build();
 
         Employee expected = Employee.builder()
-                .id(20L)
+                .id(3L)
                 .firstName("Vanessa")
                 .lastName("Keefer")
                 .address("Atlanta, Georgia US.")
                 .birthday(LocalDate.of(1998, 12, 15))
                 .phoneNumber("8873431214")
-                .departmentId(9L)
+                .departmentId(2L)
                 .build();
 
-        assertEquals(expected, employeeService.updateEmployee(updateEmployeeRequest, 20L));
+        assertEquals(expected, employeeService.updateEmployee(updateEmployeeRequest, 3L));
     }
 
     @Test
@@ -350,7 +290,6 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    @Order(6)
     void updateEmployee_whenPassUpdateEmployeeRequestWithExistingPhoneNumber_thenThrowEntityExistsException() {
         UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
                 .phoneNumber("7630894488")
@@ -358,7 +297,7 @@ public class EmployeeServiceTest {
 
         EntityExistsException thrown = assertThrows(
                 EntityExistsException.class,
-                () -> employeeService.updateEmployee(updateEmployeeRequest, 25L)
+                () -> employeeService.updateEmployee(updateEmployeeRequest, 2L)
         );
         assertEquals("Employee with 7630894488 phone number already exist", thrown.getMessage());
     }
@@ -372,17 +311,16 @@ public class EmployeeServiceTest {
 
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
-                () -> employeeService.updateEmployee(updateEmployeeRequest, 26L)
+                () -> employeeService.updateEmployee(updateEmployeeRequest, 3L)
         );
 
         assertEquals("Department with 118 id was not found", thrown.getMessage());
     }
 
     @Test
-    @Order(8)
     void deleteDepartment_whenPassValidDepartmentId_thenCheckIfEntityActuallyDeleted() {
-        employeeService.deleteEmployee(30L);
-        assertFalse(employeeRepository.existsById(30L));
+        employeeService.deleteEmployee(3L);
+        assertFalse(employeeRepository.existsById(3L));
     }
 
     @Test
@@ -398,7 +336,7 @@ public class EmployeeServiceTest {
     @Test
     @Order(9)
     void deleteEmployee_whenPassEmployeeIdWithDependentCars_thenThrowEntityDeleteException() {
-        EmployeeEntity employeeEntity = employeeRepository.getById(34L);
+        EmployeeEntity employeeEntity = employeeRepository.getById(2L);
 
         CarEntity carEntity = CarEntity.builder()
                 .manufacturer("Audi")
@@ -411,9 +349,9 @@ public class EmployeeServiceTest {
 
         EntityDeleteException thrown = assertThrows(
                 EntityDeleteException.class,
-                () -> employeeService.deleteEmployee(34L)
+                () -> employeeService.deleteEmployee(2L)
         );
 
-        assertEquals("Unable to delete employee with id 34", thrown.getMessage());
+        assertEquals("Unable to delete employee with id 2", thrown.getMessage());
     }
 }
