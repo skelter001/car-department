@@ -13,7 +13,6 @@ import com.griddynamics.cd.repository.EmployeeRepository;
 import com.griddynamics.cd.service.DepartmentService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -206,7 +205,6 @@ class DepartmentServiceTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Order(5)
     void updateDepartment_whenPassUpdateDepartmentRequestWithExistingEmail_thenThrowEntityExistsException() {
         UpdateDepartmentRequest updateDepartmentRequest = UpdateDepartmentRequest.builder()
                 .name("new name")
@@ -224,7 +222,6 @@ class DepartmentServiceTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Order(6)
     void deleteDepartment_whenPassValidDepartmentId_thenCheckIfEntityActuallyDeleted() {
         departmentService.deleteDepartment(4L);
         assertFalse(departmentRepository.existsById(4L));
@@ -241,7 +238,6 @@ class DepartmentServiceTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Order(7)
     void deleteDepartment_whenPasDepartmentIdWithDependentEmployees_thenThrowEntityDeleteException() {
         EmployeeEntity employeeEntity = EmployeeEntity.builder()
                 .firstName("Joe")

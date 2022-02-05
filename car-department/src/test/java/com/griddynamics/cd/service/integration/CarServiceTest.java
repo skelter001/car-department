@@ -12,7 +12,6 @@ import com.griddynamics.cd.repository.EmployeeRepository;
 import com.griddynamics.cd.service.CarService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -227,7 +226,6 @@ public class CarServiceTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Order(7)
     void deleteCar_whenPassValidCarId_thenCheckIfEntityActuallyDeleted() {
         carService.deleteCar(1L);
         assertFalse(carRepository.existsById(27L));

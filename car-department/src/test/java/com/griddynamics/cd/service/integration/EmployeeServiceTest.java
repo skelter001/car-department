@@ -16,7 +16,6 @@ import com.griddynamics.cd.repository.EmployeeRepository;
 import com.griddynamics.cd.service.EmployeeService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -301,7 +300,6 @@ public class EmployeeServiceTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Order(7)
     void updateEmployee_whenPassUpdateEmployeeRequestWithInvalidDepartmentId_thenThrowEntityNotFoundException() {
         UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
                 .departmentId(118L)
@@ -332,7 +330,6 @@ public class EmployeeServiceTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Order(9)
     void deleteEmployee_whenPassEmployeeIdWithDependentCars_thenThrowEntityDeleteException() {
         EmployeeEntity employeeEntity = employeeRepository.getById(2L);
 

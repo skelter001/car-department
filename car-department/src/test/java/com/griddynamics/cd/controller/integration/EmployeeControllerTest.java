@@ -16,7 +16,6 @@ import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -311,7 +310,6 @@ public class EmployeeControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Order(7)
     void updateEmployee_whenPassUpdateEmployeeRequestWithInvalidDepartmentId_thenThrowEntityNotFoundException() throws Exception {
         UpdateEmployeeRequest updateEmployeeRequest = UpdateEmployeeRequest.builder()
                 .departmentId(111L)
