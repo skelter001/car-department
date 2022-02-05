@@ -123,7 +123,6 @@ public class CarServiceTest extends BaseIntegrationTest {
         Statement st = connection.createStatement();
 
         st.execute("TRUNCATE TABLE car, employee RESTART IDENTITY;");
-        //st.execute("TRUNCATE TABLE employee RESTART IDENTITY CASCADE;");
         st.close();
     }
 
