@@ -137,8 +137,7 @@ public class CarControllerTest extends BaseIntegrationTest {
     void cleanUp() throws SQLException {
         Statement st = connection.createStatement();
 
-        st.execute("TRUNCATE TABLE car RESTART IDENTITY;");
-        st.execute("TRUNCATE TABLE employee RESTART IDENTITY CASCADE;");
+        st.execute("TRUNCATE TABLE car, employee RESTART IDENTITY;");
         st.close();
     }
 
