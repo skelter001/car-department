@@ -66,7 +66,6 @@ public class CarServiceTest extends BaseIntegrationTest {
 
     );
 
-
     @BeforeEach
     void setUp() {
         EmployeeEntity employeeEntity1 = EmployeeEntity.builder()

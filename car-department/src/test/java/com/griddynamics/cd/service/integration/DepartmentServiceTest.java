@@ -94,6 +94,7 @@ class DepartmentServiceTest extends BaseIntegrationTest {
         departmentRepository.saveAll(List.of(departmentEntity1, departmentEntity2, departmentEntity3, departmentEntity4));
     }
 
+
     @AfterEach
     void cleanUp() throws SQLException {
         Statement st = connection.createStatement();
