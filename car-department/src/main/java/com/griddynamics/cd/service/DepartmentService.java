@@ -9,10 +9,17 @@ import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +34,25 @@ public class DepartmentService {
     public List<Department> getAllDepartments() {
         return departmentRepository.findAll().stream()
                 .map(departmentMapper::toDepartmentModel)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    public ResponseEntity<?> getDepartmentPage(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Department> page = new PageImpl<>(
+                departmentRepository.findAll(pageable).stream()
+                        .map(departmentMapper::toDepartmentModel)
+                        .toList()
+        );
+
+        HashMap<String, Object> values = new HashMap<>();
+        values.put("pageNumber", page.getNumber());
+        values.put("pageSize", page.getSize());
+        values.put("totalPages", page.getTotalPages());
+        values.put("totalObjects", page.getTotalElements());
+        values.put("cars", page.getContent());
+
+        return new ResponseEntity<>(values, HttpStatus.OK);
     }
 
     public Department getDepartmentById(Long departmentId) {

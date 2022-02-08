@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,7 +20,7 @@ public class CarController {
 
     private final CarService carService;
 
-    @GetMapping("/cars")
+    @GetMapping("/cars/all")
     @Operation(
             summary = "Get all cars",
             responses = {
@@ -30,6 +31,20 @@ public class CarController {
     )
     public List<Car> getAllCars() {
         return carService.getAllCars();
+    }
+
+    @GetMapping("/cars")
+    @Operation(
+            summary = "Get all cars",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            }
+    )
+    public ResponseEntity<?> getCarPage(@RequestParam(defaultValue = "0") int pageNumber,
+                                              @RequestParam(defaultValue = "3") int pageSize) {
+        return carService.getCarsWithPages(pageNumber, pageSize);
     }
 
     @GetMapping("/cars/{carId}")

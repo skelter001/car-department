@@ -9,9 +9,16 @@ import com.griddynamics.cd.model.update.UpdateCarRequest;
 import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +33,25 @@ public class CarService {
     public List<Car> getAllCars() {
         return carRepository.findAll().stream()
                 .map(carMapper::toCarModel)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    public ResponseEntity<?> getCarsWithPages(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Car> page = new PageImpl<>(
+                carRepository.findAll(pageable).stream()
+                .map(carMapper::toCarModel)
+                .toList()
+        );
+
+        HashMap<String, Object> values = new HashMap<>();
+        values.put("pageNumber", page.getNumber());
+        values.put("pageSize", page.getSize());
+        values.put("totalPages", page.getTotalPages());
+        values.put("totalObjects", page.getTotalElements());
+        values.put("cars", page.getContent());
+
+        return new ResponseEntity<>(values, HttpStatus.OK);
     }
 
     public Car getCarById(Long carId) {

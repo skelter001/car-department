@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,7 +20,7 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @GetMapping("/employees")
+    @GetMapping("/employees/all")
     @Operation(
             summary = "Get all employees",
             responses = {
@@ -30,6 +31,20 @@ public class EmployeeController {
     )
     public List<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
+    }
+
+    @GetMapping("/employees")
+    @Operation(
+            summary = "Get all employees",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            }
+    )
+    public ResponseEntity<?> getEmployeePage(@RequestParam(defaultValue = "0") int pageNumber,
+                                             @RequestParam(defaultValue = "3") int pageSize) {
+        return employeeService.getEmployeePage(pageNumber, pageSize);
     }
 
     @GetMapping("/employees/{employeeId}")

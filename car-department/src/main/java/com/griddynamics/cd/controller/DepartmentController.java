@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,7 +21,7 @@ public class DepartmentController {
 
     private final DepartmentService departmentService;
 
-    @GetMapping
+    @GetMapping("/all")
     @Operation(
             summary = "Get all departments",
             responses = {
@@ -31,6 +32,20 @@ public class DepartmentController {
     )
     public List<Department> getAllDepartments() {
         return departmentService.getAllDepartments();
+    }
+
+    @GetMapping
+    @Operation(
+            summary = "Get all departments",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            }
+    )
+    public ResponseEntity<?> getDepartmentPage(@RequestParam(defaultValue = "0") int pageNumber,
+                                               @RequestParam(defaultValue = "3") int pageSize) {
+        return departmentService.getDepartmentPage(pageNumber, pageSize);
     }
 
     @GetMapping("/{departmentId}")
