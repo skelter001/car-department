@@ -27,6 +27,7 @@ ext {
 }
 
 dependencies {
+    implementation group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.14.0'
     implementation (
             "org.springframework.boot:spring-boot-starter-web:$springBootVersion",
             "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion",
