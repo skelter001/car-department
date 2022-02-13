@@ -1,6 +1,7 @@
 package com.griddynamics.cd.controller;
 
 import com.griddynamics.cd.model.Department;
+import com.griddynamics.cd.model.DepartmentType;
 import com.griddynamics.cd.model.create.CreateDepartmentRequest;
 import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import com.griddynamics.cd.service.DepartmentService;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,31 +23,25 @@ public class DepartmentController {
 
     private final DepartmentService departmentService;
 
-    @GetMapping("/all")
-    @Operation(
-            summary = "Get all departments",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
-                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
-            }
-    )
-    public List<Department> getAllDepartments() {
-        return departmentService.getAllDepartments();
-    }
-
     @GetMapping
     @Operation(
-            summary = "Get all departments",
+            summary = "Get all departments with paging and optional filtering",
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "204", description = "No content"),
                     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public ResponseEntity<?> getDepartmentPage(@RequestParam(defaultValue = "0") int pageNumber,
-                                               @RequestParam(defaultValue = "3") int pageSize) {
-        return departmentService.getDepartmentPage(pageNumber, pageSize);
+    public ResponseEntity<?> getAllDepartments(@RequestParam(required = false) List<String> names,
+                                               @RequestParam(required = false) List<String> emails,
+                                               @RequestParam(required = false) List<String> descriptions,
+                                               @RequestParam(required = false) List<DepartmentType> departmentTypes,
+                                               @RequestParam(defaultValue = "0") int pageNumber,
+                                               @RequestParam(defaultValue = "3") int pageSize,
+                                               @RequestParam(defaultValue = "id") String sortBy,
+                                               @RequestParam(defaultValue = "ASC") Sort.Direction order) {
+        return departmentService.getDepartmentsWithSortingAndFiltering(names, emails, descriptions, departmentTypes, pageNumber, pageSize, sortBy, order);
     }
 
     @GetMapping("/{departmentId}")

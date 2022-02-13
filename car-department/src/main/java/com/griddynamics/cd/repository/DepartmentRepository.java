@@ -2,6 +2,8 @@ package com.griddynamics.cd.repository;
 
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.model.DepartmentType;
+import org.hibernate.jpa.TypedParameterValue;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,19 +17,27 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Lo
 
     boolean existsByEmailAndIdIsNot(String email, Long id);
 
-    @Query(value =
-            "SELECT * " +
-            "FROM department AS d " +
-            "WHERE " +
-            "(:name IS NULL OR d.name = cast(:name AS TEXT)) " +
-            "AND " + "(:email IS NULL OR d.email = cast(:email AS TEXT)) " +
-            "AND " + "(:description IS NULL OR d.description = cast(:description AS TEXT)) " +
-            "AND " + "(:departmentType IS NULL OR d.department_Type = cast(:#{#departmentType?.name()} AS TEXT)) " +
-            " /*#sort*/",
+    @Query(value = """
+            SELECT CASE WHEN COUNT(is_c) > 0 THEN TRUE ELSE FALSE END 
+            FROM information_schema.columns AS is_c
+            WHERE table_name='department' AND column_name=:columnName
+            """,
             nativeQuery = true)
-    List<DepartmentEntity> findAllByFilterParamsAndSort(@Param(value = "name") String name,
-                                                        @Param(value = "email") String email,
-                                                        @Param(value = "description") String description,
-                                                        @Param(value = "departmentType") DepartmentType departmentType,
-                                                        Sort sort);
+    boolean existsByColumnName(@Param("columnName") String columnName);
+
+    @Query(value = """
+            SELECT * 
+            FROM department AS d 
+            WHERE 
+            (CAST((:names) AS VARCHAR) IS NULL OR d.name = ANY(:names)) 
+            AND (CAST((:emails) AS VARCHAR) IS NULL OR d.email = ANY(:emails))
+            AND (CAST((:descriptions) AS VARCHAR) IS NULL OR d.description = ANY(:descriptions))
+            AND (CAST((:departmentTypes) AS VARCHAR) IS NULL OR d.department_type = ANY(:departmentTypes))
+            /*pageable*/""",
+            nativeQuery = true)
+    List<DepartmentEntity> findAllByFilterParamsAndSortAndPaged(@Param(value = "names") TypedParameterValue names,
+                                                                @Param(value = "emails") TypedParameterValue emails,
+                                                                @Param(value = "descriptions") TypedParameterValue descriptions,
+                                                                @Param(value = "departmentTypes") TypedParameterValue departmentTypes,
+                                                                Pageable pageable);
 }

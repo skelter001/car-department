@@ -40,6 +40,14 @@ public class ExceptionAdviser extends ResponseEntityExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT, LocalDateTime.now(), null);
     }
 
+    @ExceptionHandler(ColumnNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleColumnNotFoundException(ColumnNotFoundException ex) {
+        log.error("Failed finding column {}", ex.getMessage());
+
+        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now(), null);
+    }
+
     @ExceptionHandler(EntityExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleEntityExistsException(EntityExistsException ex) {
