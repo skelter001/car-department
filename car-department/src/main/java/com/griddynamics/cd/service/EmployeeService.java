@@ -2,6 +2,7 @@ package com.griddynamics.cd.service;
 
 import com.griddynamics.cd.entity.DepartmentEntity;
 import com.griddynamics.cd.entity.EmployeeEntity;
+import com.griddynamics.cd.exception.ColumnNotFoundException;
 import com.griddynamics.cd.exception.EntityDeleteException;
 import com.griddynamics.cd.mapper.EmployeeMapper;
 import com.griddynamics.cd.model.Employee;
@@ -10,19 +11,23 @@ import com.griddynamics.cd.model.update.UpdateEmployeeRequest;
 import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
+import com.vladmihalcea.hibernate.type.array.DateArrayType;
+import com.vladmihalcea.hibernate.type.array.LongArrayType;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.hibernate.jpa.TypedParameterValue;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,21 +42,54 @@ public class EmployeeService {
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll().stream()
                 .map(employeeMapper::toEmployeeModel)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    public ResponseEntity<?> getEmployeePage(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<Employee> page = new PageImpl<>(employeeRepository.findAll(pageable).stream()
+    public ResponseEntity<?> getAllEmployees(List<String> firstNames,
+                                             List<String> lastNames,
+                                             List<LocalDate> birthdays,
+                                             List<String> addresses,
+                                             List<String> phoneNumbers,
+                                             List<Long> departmentIds,
+                                             int pageNumber,
+                                             int pageSize,
+                                             String orderBy,
+                                             Sort.Direction order) {
+        if (!employeeRepository.existsByColumnName(orderBy)) {
+            throw new ColumnNotFoundException(orderBy);
+        }
+
+        Page<Employee> page = new PageImpl<>(employeeRepository.findAllByFilterParamsAndSortAndPaged(
+                        new TypedParameterValue(StringArrayType.INSTANCE,
+                                Optional.ofNullable(firstNames).map(list -> list.toArray(String[]::new)).orElse(null)),
+                        new TypedParameterValue(StringArrayType.INSTANCE,
+                                Optional.ofNullable(lastNames).map(list -> list.toArray(String[]::new)).orElse(null)),
+                        new TypedParameterValue(DateArrayType.INSTANCE,
+                                Optional.ofNullable(birthdays).map(list -> list.stream()
+                                                .map(Date::valueOf)
+                                                .toArray(Date[]::new))
+                                        .orElse(null)),
+                        new TypedParameterValue(StringArrayType.INSTANCE,
+                                Optional.ofNullable(addresses).map(list -> list.toArray(String[]::new)).orElse(null)),
+                        new TypedParameterValue(StringArrayType.INSTANCE,
+                                Optional.ofNullable(phoneNumbers).map(list -> list.toArray(String[]::new)).orElse(null)),
+                        new TypedParameterValue(LongArrayType.INSTANCE,
+                                Optional.ofNullable(departmentIds).map(list -> list.toArray(Long[]::new)).orElse(null)),
+                        PageRequest.of(pageNumber, pageSize, Sort.by(order, orderBy))).stream()
                 .map(employeeMapper::toEmployeeModel)
-                .toList());
+                .toList()
+        );
+
+        if (page.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
 
         HashMap<String, Object> values = new HashMap<>();
         values.put("pageNumber", page.getNumber());
         values.put("pageSize", page.getSize());
         values.put("totalPages", page.getTotalPages());
         values.put("totalObjects", page.getTotalElements());
-        values.put("cars", page.getContent());
+        values.put("employees", page.getContent());
 
         return new ResponseEntity<>(values, HttpStatus.OK);
     }

@@ -1,11 +1,12 @@
 package com.griddynamics.cd.repository;
 
 import com.griddynamics.cd.entity.EmployeeEntity;
+import org.hibernate.jpa.TypedParameterValue;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> {
@@ -16,15 +17,32 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
 
     boolean existsByPhoneNumberAndIdIsNot(String phoneNumber, Long id);
 
-    @Query(value = "SELECT e FROM EmployeeEntity as e WHERE " +
-            "(:firstName is null or e.firstName like %:firstName% )" +
-            "and " + "(:lastName is null or e.lastName like %:lastName%) " +
-            "and " + "(:birthday is null or e.birthday=:birthday) " +
-            "and " + "(:address is null or e.address like %:address%) " +
-            "and " + "(:phoneNumber is null or e.phoneNumber like %:phoneNumber%)")
-    List<EmployeeEntity> findAllByFilterParams(@Param(value = "firstName") String firstName,
-                                               @Param(value = "lastName") String lastName,
-                                               @Param(value = "birthday") LocalDate birthday,
-                                               @Param(value = "address") String address,
-                                               @Param(value = "phoneNumber") String phoneNumber);
+    @Query(value = """
+            SELECT CASE WHEN COUNT(is_c) > 0 THEN TRUE ELSE FALSE END 
+            FROM information_schema.columns AS is_c
+            WHERE table_name='employee' AND column_name=:columnName
+            """,
+            nativeQuery = true)
+    boolean existsByColumnName(@Param("columnName") String columnName);
+
+    @Query(value = """
+            SELECT *
+            FROM employee as e 
+            WHERE
+            (CAST((:firstNames) AS VARCHAR) IS NULL OR e.first_name = ANY(:firstNames))
+            AND (CAST((:lastNames) AS VARCHAR) IS NULL OR e.last_name = ANY(:lastNames))
+            AND (CAST((:birthdays) AS VARCHAR) IS NULL OR e.birthday = ANY(:birthdays))
+            AND (CAST((:addresses) AS VARCHAR) IS NULL OR e.address = ANY(:addresses))
+            AND (CAST((:phoneNumbers) AS VARCHAR) IS NULL OR e.phone_number = ANY(:phoneNumbers))
+            AND (CAST((:departmentIds) AS VARCHAR) IS NULL OR e.department_id = ANY(:departmentIds))
+            /*pageable*/
+            """,
+            nativeQuery = true)
+    List<EmployeeEntity> findAllByFilterParamsAndSortAndPaged(@Param(value = "firstNames") TypedParameterValue firstNames,
+                                                              @Param(value = "lastNames") TypedParameterValue lastNames,
+                                                              @Param(value = "birthdays") TypedParameterValue birthdays,
+                                                              @Param(value = "addresses") TypedParameterValue addresses,
+                                                              @Param(value = "phoneNumbers") TypedParameterValue phoneNumbers,
+                                                              @Param(value = "departmentIds") TypedParameterValue departmentIds,
+                                                              Pageable pageable);
 }
