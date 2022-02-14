@@ -32,16 +32,17 @@ public class DepartmentService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentMapper departmentMapper;
 
-    public ResponseEntity<?> getDepartmentsWithSortingAndFiltering(List<String> names,
-                                                                   List<String> emails,
-                                                                   List<String> descriptions,
-                                                                   List<DepartmentType> departmentTypes,
-                                                                   int pageNumber,
-                                                                   int pageSize,
-                                                                   String orderBy,
-                                                                   Sort.Direction order) {
-        if (!departmentRepository.existsByColumnName(orderBy))
+    public ResponseEntity<?> getAllDepartments(List<String> names,
+                                               List<String> emails,
+                                               List<String> descriptions,
+                                               List<DepartmentType> departmentTypes,
+                                               int pageNumber,
+                                               int pageSize,
+                                               String orderBy,
+                                               Sort.Direction order) {
+        if (!departmentRepository.existsByColumnName(orderBy)) {
             throw new ColumnNotFoundException(orderBy);
+        }
 
         Page<Department> page = new PageImpl<>(departmentRepository.findAllByFilterParamsAndSortAndPaged(
                         new TypedParameterValue(StringArrayType.INSTANCE,

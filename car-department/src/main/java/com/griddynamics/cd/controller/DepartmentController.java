@@ -39,9 +39,9 @@ public class DepartmentController {
                                                @RequestParam(required = false) List<DepartmentType> departmentTypes,
                                                @RequestParam(defaultValue = "0") int pageNumber,
                                                @RequestParam(defaultValue = "3") int pageSize,
-                                               @RequestParam(defaultValue = "id") String sortBy,
+                                               @RequestParam(defaultValue = "id") String orderBy,
                                                @RequestParam(defaultValue = "ASC") Sort.Direction order) {
-        return departmentService.getDepartmentsWithSortingAndFiltering(names, emails, descriptions, departmentTypes, pageNumber, pageSize, sortBy, order);
+        return departmentService.getAllDepartments(names, emails, descriptions, departmentTypes, pageNumber, pageSize, orderBy, order);
     }
 
     @GetMapping("/{departmentId}")
