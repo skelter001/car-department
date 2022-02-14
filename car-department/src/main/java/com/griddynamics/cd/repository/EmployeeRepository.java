@@ -35,7 +35,6 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
             AND (CAST((:addresses) AS VARCHAR) IS NULL OR e.address = ANY(:addresses))
             AND (CAST((:phoneNumbers) AS VARCHAR) IS NULL OR e.phone_number = ANY(:phoneNumbers))
             AND (CAST((:departmentIds) AS VARCHAR) IS NULL OR e.department_id = ANY(:departmentIds))
-            /*pageable*/
             """,
             nativeQuery = true)
     List<EmployeeEntity> findAllByFilterParamsAndSortAndPaged(@Param(value = "firstNames") TypedParameterValue firstNames,

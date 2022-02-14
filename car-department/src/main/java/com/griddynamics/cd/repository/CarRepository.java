@@ -30,7 +30,6 @@ public interface CarRepository extends JpaRepository<CarEntity, Long> {
             AND (CAST((:vinNumbers) AS VARCHAR) IS NULL OR c.vin_number = ANY(:vinNumbers))
             AND (CAST((:employeeIds) AS VARCHAR) IS NULL OR c.employee_id = ANY(:employeeIds))
             AND (CAST((:colors) AS VARCHAR) IS NULL OR c.color = ANY(:colors))
-            /*pageable*/
             """,
             nativeQuery = true)
     List<CarEntity> findAllByFilterParamsAndSortAndPaged(@Param(value = "manufacturers") TypedParameterValue manufacturers,

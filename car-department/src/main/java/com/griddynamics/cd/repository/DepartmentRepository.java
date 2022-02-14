@@ -33,7 +33,6 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Lo
             AND (CAST((:emails) AS VARCHAR) IS NULL OR d.email = ANY(:emails))
             AND (CAST((:descriptions) AS VARCHAR) IS NULL OR d.description = ANY(:descriptions))
             AND (CAST((:departmentTypes) AS VARCHAR) IS NULL OR d.department_type = ANY(:departmentTypes))
-            /*pageable*/
             """,
             nativeQuery = true)
     List<DepartmentEntity> findAllByFilterParamsAndSortAndPaged(@Param(value = "names") TypedParameterValue names,
