@@ -1,7 +1,6 @@
 package com.griddynamics.cd.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +15,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -38,6 +40,21 @@ public class ExceptionAdviser extends ResponseEntityExceptionHandler {
         log.error("Failed delete entity");
 
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT, LocalDateTime.now(), null);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> handle(ConstraintViolationException constraintViolationException) {
+        Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
+        String errorMessage;
+        if (!violations.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            violations.forEach(violation -> builder.append(" ").append(violation.getMessage()));
+            errorMessage = builder.toString();
+        } else {
+            errorMessage = "ConstraintViolationException occurred.";
+        }
+        return buildErrorResponse(errorMessage, HttpStatus.BAD_REQUEST, LocalDateTime.now(), null);
     }
 
     @ExceptionHandler(ColumnNotFoundException.class)
