@@ -1,5 +1,6 @@
 package com.griddynamics.cd.controller;
 
+import com.griddynamics.cd.annotation.NotEmptyOrNull;
 import com.griddynamics.cd.model.Car;
 import com.griddynamics.cd.model.Color;
 import com.griddynamics.cd.model.create.CreateCarRequest;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,6 +20,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@Validated
 public class CarController {
 
     private final CarService carService;
@@ -32,11 +35,16 @@ public class CarController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public ResponseEntity<?> getAllCars(@RequestParam(value = "manufacturer", required = false) List<String> manufacturers,
-                                        @RequestParam(value = "model", required = false) List<String> models,
-                                        @RequestParam(value = "vinNumber", required = false) List<String> vinNumbers,
-                                        @RequestParam(value = "employeeIds", required = false) List<Long> employeeIds,
-                                        @RequestParam(value = "color", required = false) List<Color> colors,
+    public ResponseEntity<?> getAllCars(@NotEmptyOrNull(message = "Manufacturer list should be null or not empty")
+                                        @RequestParam(required = false) List<String> manufacturers,
+                                        @NotEmptyOrNull(message = "Model list should be null or not empty")
+                                        @RequestParam(required = false) List<String> models,
+                                        @NotEmptyOrNull(message = "Vin number list should be null or not empty")
+                                        @RequestParam(required = false) List<String> vinNumbers,
+                                        @NotEmptyOrNull(message = "Employee id list should be null or not empty")
+                                        @RequestParam(required = false) List<Long> employeeIds,
+                                        @NotEmptyOrNull(message = "Color list should be null or not empty")
+                                        @RequestParam(required = false) List<Color> colors,
                                         @RequestParam(defaultValue = "0") int pageNumber,
                                         @RequestParam(defaultValue = "3") int pageSize,
                                         @RequestParam(defaultValue = "id") String orderBy,
