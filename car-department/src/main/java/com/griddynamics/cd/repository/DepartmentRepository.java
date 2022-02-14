@@ -1,10 +1,8 @@
 package com.griddynamics.cd.repository;
 
 import com.griddynamics.cd.entity.DepartmentEntity;
-import com.griddynamics.cd.model.DepartmentType;
 import org.hibernate.jpa.TypedParameterValue;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
