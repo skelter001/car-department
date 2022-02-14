@@ -1,6 +1,7 @@
 package com.griddynamics.cd.controller;
 
 import com.griddynamics.cd.model.Car;
+import com.griddynamics.cd.model.Color;
 import com.griddynamics.cd.model.create.CreateCarRequest;
 import com.griddynamics.cd.model.update.UpdateCarRequest;
 import com.griddynamics.cd.service.CarService;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,31 +22,26 @@ public class CarController {
 
     private final CarService carService;
 
-    @GetMapping("/cars/all")
+    @GetMapping(value = "/cars")
     @Operation(
-            summary = "Get all cars",
+            summary = "Get all cars with paging and optional filtering",
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "204", description = "No content"),
                     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public List<Car> getAllCars() {
-        return carService.getAllCars();
-    }
-
-    @GetMapping("/cars")
-    @Operation(
-            summary = "Get all cars",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content()),
-                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
-            }
-    )
-    public ResponseEntity<?> getCarPage(@RequestParam(defaultValue = "0") int pageNumber,
-                                              @RequestParam(defaultValue = "3") int pageSize) {
-        return carService.getCarsWithPages(pageNumber, pageSize);
+    public ResponseEntity<?> getAllCars(@RequestParam(value = "manufacturer", required = false) List<String> manufacturers,
+                                        @RequestParam(value = "model", required = false) List<String> models,
+                                        @RequestParam(value = "vinNumber", required = false) List<String> vinNumbers,
+                                        @RequestParam(value = "employeeIds", required = false) List<Long> employeeIds,
+                                        @RequestParam(value = "color", required = false) List<Color> colors,
+                                        @RequestParam(defaultValue = "0") int pageNumber,
+                                        @RequestParam(defaultValue = "3") int pageSize,
+                                        @RequestParam(defaultValue = "id") String orderBy,
+                                        @RequestParam(defaultValue = "ASC") Sort.Direction order) {
+        return carService.getCarsWithFiltering(manufacturers, models, vinNumbers, employeeIds, colors, pageNumber, pageSize, orderBy, order);
     }
 
     @GetMapping("/cars/{carId}")
