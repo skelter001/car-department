@@ -1,5 +1,6 @@
 package com.griddynamics.cd.controller;
 
+import com.griddynamics.cd.annotation.NotEmptyOrNull;
 import com.griddynamics.cd.model.Employee;
 import com.griddynamics.cd.model.create.CreateEmployeeRequest;
 import com.griddynamics.cd.model.update.UpdateEmployeeRequest;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@Validated
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -33,18 +36,24 @@ public class EmployeeController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public ResponseEntity<?> getAllEmployees(@RequestParam(required = false) List<String> firstName,
-                                             @RequestParam(required = false) List<String> lastName,
+    public ResponseEntity<?> getAllEmployees(@NotEmptyOrNull(message = "First name list should be null or not empty")
+                                             @RequestParam(required = false) List<String> firstNames,
+                                             @NotEmptyOrNull(message = "Last name list should be null or not empty")
+                                             @RequestParam(required = false) List<String> lastNames,
+                                             @NotEmptyOrNull(message = "Birthday list should be null or not empty")
                                              @RequestParam(required = false)
-                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) List<LocalDate> birthday,
-                                             @RequestParam(required = false) List<String> address,
-                                             @RequestParam(required = false) List<String> phoneNumber,
+                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) List<LocalDate> birthdays,
+                                             @NotEmptyOrNull(message = "Address list should be null or not empty")
+                                             @RequestParam(required = false) List<String> addresses,
+                                             @NotEmptyOrNull(message = "Phone number list should be null or not empty")
+                                             @RequestParam(required = false) List<String> phoneNumbers,
+                                             @NotEmptyOrNull(message = "Department id list should be null or not empty")
                                              @RequestParam(required = false) List<Long> departmentIds,
                                              @RequestParam(defaultValue = "0") int pageNumber,
                                              @RequestParam(defaultValue = "3") int pageSize,
                                              @RequestParam(defaultValue = "id") String orderBy,
                                              @RequestParam(defaultValue = "ASC") Sort.Direction order) {
-        return employeeService.getAllEmployees(firstName, lastName, birthday, address, phoneNumber, departmentIds, pageNumber, pageSize, orderBy, order);
+        return employeeService.getAllEmployees(firstNames, lastNames, birthdays, addresses, phoneNumbers, departmentIds, pageNumber, pageSize, orderBy, order);
     }
 
     @GetMapping("/employees/{employeeId}")
