@@ -1,5 +1,6 @@
 package com.griddynamics.cd.controller;
 
+import com.griddynamics.cd.annotation.NotEmptyOrNull;
 import com.griddynamics.cd.model.Department;
 import com.griddynamics.cd.model.DepartmentType;
 import com.griddynamics.cd.model.create.CreateDepartmentRequest;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/departments")
 @AllArgsConstructor
+@Validated
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -33,9 +36,13 @@ public class DepartmentController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public ResponseEntity<?> getAllDepartments(@RequestParam(required = false) List<String> names,
+    public ResponseEntity<?> getAllDepartments(@NotEmptyOrNull(message = "Name list should be null or not empty")
+                                               @RequestParam(required = false) List<String> names,
+                                               @NotEmptyOrNull(message = "Email list should be null or not empty")
                                                @RequestParam(required = false) List<String> emails,
+                                               @NotEmptyOrNull(message = "Description list should be null or not empty")
                                                @RequestParam(required = false) List<String> descriptions,
+                                               @NotEmptyOrNull(message = "Department type list should be null or not empty")
                                                @RequestParam(required = false) List<DepartmentType> departmentTypes,
                                                @RequestParam(defaultValue = "0") int pageNumber,
                                                @RequestParam(defaultValue = "3") int pageSize,
