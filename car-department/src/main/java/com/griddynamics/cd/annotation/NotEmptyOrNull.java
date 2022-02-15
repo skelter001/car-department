@@ -9,7 +9,10 @@ import java.lang.annotation.*;
 @Documented
 @Constraint(validatedBy = NotEmptyOrNullValidator.class)
 public @interface NotEmptyOrNull {
+
     String message() default "{javax.validation.constraints.NullOrNotBlank.message}";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }
