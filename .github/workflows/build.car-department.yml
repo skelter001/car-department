@@ -11,7 +11,7 @@ on:
     branches:
       - main
     paths:
-    - car-department
+      - car-department
 
 jobs:
   build:
@@ -21,7 +21,9 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           java-version: '17'
-          distribution: 'zulu'
-      - uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
-        with:
-          arguments: build
+      - name: Grant execution permission for gradlew
+        run: chmod +x ./car-department/gradlew
+      - name: Build with Gradle
+        run: ./car-department/gradlew build
+      - name: Test service
+        run: ./car-department/gradlew -p car-department test
