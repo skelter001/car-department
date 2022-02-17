@@ -27,6 +27,6 @@ jobs:
       - name: Grant execution permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: gradlew build
+        run: ./gradlew build
       - name: Test service
         run: gradlew -p car-department test
