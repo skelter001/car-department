@@ -2,16 +2,15 @@ name: Build car department
 
 on:
   push:
-    branches:
-      - main
-      - spring-app
+    branches: [ main, spring-app ]
     paths:
-      - car-department
+      - car-department/**
+      - .github/workflows/build.car-department.yml
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
     paths:
-      - car-department
+      - car-department/**
+      - .github/workflows/build.car-department.yml
 
 jobs:
   build:
