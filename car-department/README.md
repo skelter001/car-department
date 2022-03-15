@@ -3,13 +3,14 @@
 ## Table of content
 
 1. [Download](#Download)
-2. [Set up](#Set up)
+2. [Set up](#setup)
 3. [Features](#Features)
 
 ## Download
 
 * ```git clone https://github.com/griddynamics/internship-tasks.git```
 
+<a name="setup"></a>
 ## Set up
 
 * Enter in terminal ```docker build -f Dockerfile .``` from the project root directory.
