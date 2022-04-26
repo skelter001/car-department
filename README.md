@@ -4,7 +4,6 @@
 
 1. [Download](#Download)
 2. [Set up](#setup)
-3. [Features](#Features)
 
 ## Download
 
@@ -23,5 +22,3 @@
       should be created.
 * ```docker-compose down -v``` to remove containers. V flag actually matter, because without it database won't be
   removed and with the next creating container the same database will be used
-
-## Features
