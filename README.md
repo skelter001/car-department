@@ -7,7 +7,7 @@
 
 ## Download
 
-* ```git clone https://github.com/griddynamics/internship-tasks.git```
+* ```git clone https://github.com/xaghoul/car-department.git```
 
 <a name="setup"></a>
 ## Set up
