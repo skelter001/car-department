@@ -22,3 +22,13 @@
       should be created.
 * ```docker-compose down -v``` to remove containers. V flag actually matter, because without it database won't be
   removed and with the next creating container the same database will be used
+
+Tech. stack:
+- Java 17
+- Spring Boot 2.5
+- PostgreSQL
+- Docker
+- Liquibase
+- Swagger
+- Mapstruct
+- Test stack: JUnit 5, Mockito, Testcontainers
