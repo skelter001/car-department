@@ -16,6 +16,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -49,11 +51,13 @@ public class EmployeeController {
                                              @RequestParam(required = false) List<String> phoneNumbers,
                                              @NotEmptyOrNull(message = "Department id list should be null or not empty")
                                              @RequestParam(required = false) List<Long> departmentIds,
-                                             @RequestParam(defaultValue = "0") int pageNumber,
-                                             @RequestParam(defaultValue = "3") int pageSize,
+                                             @RequestParam(defaultValue = "0")
+                                             @PositiveOrZero(message = "Page number should be positive or 0") int pageNumber,
+                                             @RequestParam(defaultValue = "3")
+                                             @Positive(message = "Page size should be positive") int pageSize,
                                              @RequestParam(defaultValue = "id") String orderBy,
                                              @RequestParam(defaultValue = "ASC") Sort.Direction order) {
-        return employeeService.getAllEmployees(firstNames, lastNames, birthdays, addresses, phoneNumbers, departmentIds, pageNumber, pageSize, orderBy, order);
+        return employeeService.getEmployeesWithFiltering(firstNames, lastNames, birthdays, addresses, phoneNumbers, departmentIds, pageNumber, pageSize, orderBy, order);
     }
 
     @GetMapping("/employees/{employeeId}")

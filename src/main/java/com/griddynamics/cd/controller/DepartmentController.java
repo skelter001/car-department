@@ -16,6 +16,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -44,11 +46,13 @@ public class DepartmentController {
                                                @RequestParam(required = false) List<String> descriptions,
                                                @NotEmptyOrNull(message = "Department type list should be null or not empty")
                                                @RequestParam(required = false) List<DepartmentType> departmentTypes,
-                                               @RequestParam(defaultValue = "0") int pageNumber,
-                                               @RequestParam(defaultValue = "3") int pageSize,
+                                               @RequestParam(defaultValue = "0")
+                                               @PositiveOrZero(message = "Page number should be positive or 0") int pageNumber,
+                                               @RequestParam(defaultValue = "3")
+                                               @Positive(message = "Page size should be positive") int pageSize,
                                                @RequestParam(defaultValue = "id") String orderBy,
                                                @RequestParam(defaultValue = "ASC") Sort.Direction order) {
-        return departmentService.getAllDepartments(names, emails, descriptions, departmentTypes, pageNumber, pageSize, orderBy, order);
+        return departmentService.getDepartmentsWithFiltering(names, emails, descriptions, departmentTypes, pageNumber, pageSize, orderBy, order);
     }
 
     @GetMapping("/{departmentId}")

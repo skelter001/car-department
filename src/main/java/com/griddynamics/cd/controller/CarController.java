@@ -16,7 +16,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -35,20 +38,22 @@ public class CarController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             }
     )
-    public ResponseEntity<?> getAllCars(@NotEmptyOrNull(message = "Manufacturer list should be null or not empty")
-                                        @RequestParam(required = false) List<String> manufacturers,
-                                        @NotEmptyOrNull(message = "Model list should be null or not empty")
-                                        @RequestParam(required = false) List<String> models,
-                                        @NotEmptyOrNull(message = "Vin number list should be null or not empty")
-                                        @RequestParam(required = false) List<String> vinNumbers,
-                                        @NotEmptyOrNull(message = "Employee id list should be null or not empty")
-                                        @RequestParam(required = false) List<Long> employeeIds,
-                                        @NotEmptyOrNull(message = "Color list should be null or not empty")
-                                        @RequestParam(required = false) List<Color> colors,
-                                        @RequestParam(defaultValue = "0") int pageNumber,
-                                        @RequestParam(defaultValue = "3") int pageSize,
-                                        @RequestParam(defaultValue = "id") String orderBy,
-                                        @RequestParam(defaultValue = "ASC") Sort.Direction order) {
+    public ResponseEntity<Map<String, Object>> getAllCars(@NotEmptyOrNull(message = "Manufacturer list should be null or not empty")
+                                                          @RequestParam(required = false) List<String> manufacturers,
+                                                          @NotEmptyOrNull(message = "Model list should be null or not empty")
+                                                          @RequestParam(required = false) List<String> models,
+                                                          @NotEmptyOrNull(message = "Vin number list should be null or not empty")
+                                                          @RequestParam(required = false) List<String> vinNumbers,
+                                                          @NotEmptyOrNull(message = "Employee id list should be null or not empty")
+                                                          @RequestParam(required = false) List<Long> employeeIds,
+                                                          @NotEmptyOrNull(message = "Color list should be null or not empty")
+                                                          @RequestParam(required = false) List<Color> colors,
+                                                          @RequestParam(defaultValue = "0")
+                                                          @PositiveOrZero(message = "Page number should be positive or 0") int pageNumber,
+                                                          @RequestParam(defaultValue = "3")
+                                                          @Positive(message = "Page size should be positive") int pageSize,
+                                                          @RequestParam(defaultValue = "id") String orderBy,
+                                                          @RequestParam(defaultValue = "ASC") Sort.Direction order) {
         return carService.getCarsWithFiltering(manufacturers, models, vinNumbers, employeeIds, colors, pageNumber, pageSize, orderBy, order);
     }
 
