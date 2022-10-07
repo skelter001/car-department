@@ -28,7 +28,7 @@ ext {
 
 dependencies {
     implementation group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.14.0'
-    implementation (
+    implementation(
             "org.springframework.boot:spring-boot-starter-web:$springBootVersion",
             "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion",
             "org.springframework.boot:spring-boot-starter-validation:$springBootVersion",
@@ -38,7 +38,7 @@ dependencies {
             "org.postgresql:postgresql:$postgresqlVersion",
             "org.hibernate:hibernate-core:$hibernateVersion",
     )
-    compileOnly (
+    compileOnly(
             "javax.persistence:javax.persistence-api:$javaxVersion",
             "org.projectlombok:lombok:$lombokVersion",
             "org.mapstruct:mapstruct:$mapstructVersion"
@@ -46,11 +46,11 @@ dependencies {
     runtimeOnly(
             "org.liquibase:liquibase-core:$liquibaseVersion"
     )
-    annotationProcessor (
+    annotationProcessor(
             "org.projectlombok:lombok:$lombokVersion",
             "org.mapstruct:mapstruct-processor:$mapstructVersion"
     )
-    testImplementation (
+    testImplementation(
             "org.springframework.boot:spring-boot-starter-test:$springBootVersion",
             "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion",
             "org.mockito:mockito-core:$mockitoVersion",
@@ -58,7 +58,7 @@ dependencies {
             "org.testcontainers:junit-jupiter:$testcontainersVersion",
             "org.testcontainers:postgresql:$testcontainersVersion"
     )
-    testRuntimeOnly (
+    testRuntimeOnly(
             "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
     )
 }

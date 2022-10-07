@@ -10,6 +10,7 @@
 * ```git clone https://github.com/xaghoul/car-department.git```
 
 <a name="setup"></a>
+
 ## Set up
 
 * Enter in terminal ```docker build -f Dockerfile .``` from the project root directory.
@@ -24,6 +25,7 @@
   removed and with the next creating container the same database will be used
 
 Tech. stack:
+
 - Java 17
 - Spring Boot 2.5
 - PostgreSQL
