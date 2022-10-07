@@ -22,7 +22,9 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.hamcrest.Matchers.notNullValue;
@@ -113,10 +115,17 @@ public class DepartmentControllerTest extends BaseIntegrationTest {
 
     @Test
     void getAllDepartments_whenSaveToDepartmentRepository_thenReturnValidList() throws Exception {
-        mockMvc.perform(get("/departments"))
+        Map<String, Object> expected = new HashMap<>();
+        expected.put("pageNumber", 0);
+        expected.put("pageSize", 2);
+        expected.put("totalPages", 1);
+        expected.put("totalObjects", 2L);
+        expected.put("departments", List.of(departments.get(0), departments.get(1)));
+
+        mockMvc.perform(get("/departments?pageSize=2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(departments)));
+                .andExpect(content().string(objectMapper.writeValueAsString(expected)));
     }
 
     @Test

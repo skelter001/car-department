@@ -25,6 +25,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -143,10 +144,19 @@ public class CarControllerTest extends BaseIntegrationTest {
 
     @Test
     void getAllCars_whenSaveToCarRepository_thenReturnValidList() throws Exception {
-        mockMvc.perform(get("/cars"))
+        HashMap<String, Object> expected = new HashMap<>();
+        expected.put("pageNumber", 0);
+        expected.put("pageSize", 2);
+        expected.put("totalPages", 1);
+        expected.put("totalObjects", 2);
+        expected.put("cars", List.of(cars.get(3), cars.get(0)));
+
+        mockMvc.perform(get("/cars")
+                        .param("colors", "BLACK")
+                        .param("order", "DESC"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(cars)));
+                .andExpect(content().string(objectMapper.writeValueAsString(expected)));
     }
 
     @Test

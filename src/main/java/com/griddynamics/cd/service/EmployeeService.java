@@ -30,6 +30,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,22 +43,17 @@ public class EmployeeService {
     private final CarRepository carRepository;
     private final EmployeeMapper employeeMapper;
 
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll().stream()
-                .map(employeeMapper::toEmployeeModel)
-                .toList();
-    }
 
-    public ResponseEntity<?> getAllEmployees(List<String> firstNames,
-                                             List<String> lastNames,
-                                             List<LocalDate> birthdays,
-                                             List<String> addresses,
-                                             List<String> phoneNumbers,
-                                             List<Long> departmentIds,
-                                             int pageNumber,
-                                             int pageSize,
-                                             String orderBy,
-                                             Sort.Direction order) {
+    public ResponseEntity<Map<String, Object>> getEmployeesWithFiltering(List<String> firstNames,
+                                                                         List<String> lastNames,
+                                                                         List<LocalDate> birthdays,
+                                                                         List<String> addresses,
+                                                                         List<String> phoneNumbers,
+                                                                         List<Long> departmentIds,
+                                                                         int pageNumber,
+                                                                         int pageSize,
+                                                                         String orderBy,
+                                                                         Sort.Direction order) {
         if (!employeeRepository.existsByColumnName(orderBy)) {
             throw new ColumnNotFoundException(orderBy);
         }
@@ -93,7 +89,6 @@ public class EmployeeService {
         values.put("totalPages", page.getTotalPages());
         values.put("totalObjects", page.getTotalElements());
         values.put("employees", page.getContent());
-
         return new ResponseEntity<>(values, HttpStatus.OK);
     }
 

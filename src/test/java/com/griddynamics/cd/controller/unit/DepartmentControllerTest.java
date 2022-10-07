@@ -8,11 +8,13 @@ import com.griddynamics.cd.model.create.CreateDepartmentRequest;
 import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import com.griddynamics.cd.service.DepartmentService;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.*;
@@ -29,12 +31,21 @@ public class DepartmentControllerTest {
 
     @Test
     void getAllDepartments_whenCallMethod_thenReturnOk() throws Exception {
-        when(departmentService.getAllDepartments())
-                .thenReturn(List.of(new Department()));
+        when(departmentService.getDepartmentsWithFiltering(
+                anyList(),
+                anyList(),
+                anyList(),
+                anyList(),
+                anyInt(),
+                anyInt(),
+                anyString(),
+                any(Sort.Direction.class)
+        ))
+                .thenReturn(ResponseEntity.of(Optional.empty()));
 
         mockMvc.perform(get("/departments"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", notNullValue()));
+                .andExpect(jsonPath("$.keyToNull").doesNotExist());
     }
 
     @Test

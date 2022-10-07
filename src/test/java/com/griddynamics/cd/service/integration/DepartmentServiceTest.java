@@ -15,12 +15,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -105,26 +109,23 @@ class DepartmentServiceTest extends BaseIntegrationTest {
 
     @Test
     void getAllDepartments_whenSaveToDepartmentRepository_thenReturnValidList() {
-        assertEquals(departments, departmentService.getAllDepartments());
+
+        Map<String, Object> values = new HashMap<>();
+        values.put("pageNumber", 0);
+        values.put("pageSize", 3);
+        values.put("totalPages", 1);
+        values.put("totalObjects", 3L);
+        values.put("departments", List.of(departments.get(0), departments.get(1), departments.get(2)));
+
+        ResponseEntity<Map<String, Object>> expected = ResponseEntity.ok(values);
+        ResponseEntity<Map<String, Object>> actual = departmentService.getDepartmentsWithFiltering(null, null, null, null,
+                0, 3, "name", Sort.Direction.ASC);
+
+        assertEquals(expected, actual);
     }
 
     @Test
     void getDepartmentById_whenPassValidIdTwoTimes_thenReturnValidModel() {
-        Department expected1 = Department.builder()
-                .id(6L)
-                .name("department 2")
-                .email("test2@test")
-                .description("some desc.")
-                .departmentType(DepartmentType.SUPPORT)
-                .build();
-        Department expected2 = Department.builder()
-                .id(8L)
-                .name("department 4")
-                .email("test4@test")
-                .description("some desc.")
-                .departmentType(DepartmentType.SUPPORT)
-                .build();
-
         assertEquals(departments.get(1), departmentService.getDepartmentById(2L));
         assertEquals(departments.get(3), departmentService.getDepartmentById(4L));
     }

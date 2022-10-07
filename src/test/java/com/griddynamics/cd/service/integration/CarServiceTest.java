@@ -14,12 +14,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 
 import javax.persistence.EntityNotFoundException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -126,7 +130,19 @@ public class CarServiceTest extends BaseIntegrationTest {
 
     @Test
     void getAllCars_whenSaveToCarRepository_thenReturnValidList() {
-        assertEquals(cars, carService.getAllCars());
+        Map<String, Object> values = new HashMap<>();
+        values.put("pageNumber", 0);
+        values.put("pageSize", 3);
+        values.put("totalPages", 1);
+        values.put("totalObjects", 3L);
+        values.put("cars", List.of(cars.get(2), cars.get(0), cars.get(3)));
+
+        ResponseEntity<Map<String, Object>> expected = ResponseEntity.ok(values);
+        ResponseEntity<Map<String, Object>> actual = carService.getCarsWithFiltering(
+                null, null, null, null, null,
+                0, 3, "model", Sort.Direction.ASC);
+
+        assertEquals(expected, actual);
     }
 
     @Test

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,21 +37,16 @@ public class CarService {
     private final EmployeeRepository employeeRepository;
     private final CarMapper carMapper;
 
-    public List<Car> getAllCars() {
-        return carRepository.findAll().stream()
-                .map(carMapper::toCarModel)
-                .toList();
-    }
 
-    public ResponseEntity<?> getCarsWithFiltering(List<String> manufacturers,
-                                                  List<String> models,
-                                                  List<String> vinNumbers,
-                                                  List<Long> employeeIds,
-                                                  List<Color> colors,
-                                                  int pageNumber,
-                                                  int pageSize,
-                                                  String orderBy,
-                                                  Sort.Direction order) {
+    public ResponseEntity<Map<String, Object>> getCarsWithFiltering(List<String> manufacturers,
+                                                                    List<String> models,
+                                                                    List<String> vinNumbers,
+                                                                    List<Long> employeeIds,
+                                                                    List<Color> colors,
+                                                                    int pageNumber,
+                                                                    int pageSize,
+                                                                    String orderBy,
+                                                                    Sort.Direction order) {
         if (!carRepository.existsByColumnName(orderBy)) {
             throw new ColumnNotFoundException(orderBy);
         }

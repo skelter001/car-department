@@ -12,9 +12,12 @@ import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import com.griddynamics.cd.service.EmployeeService;
+import org.hibernate.jpa.TypedParameterValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -65,13 +68,35 @@ class EmployeeServiceTest {
 
     @Test
     void getAllEmployees_whenCallMethod_thenValidMethodCallsNumber() {
-        when(employeeRepository.findAll())
-                .thenReturn(List.of(new EmployeeEntity(), new EmployeeEntity()));
+        when(employeeRepository.findAllByFilterParamsAndSortAndPaged(
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(Pageable.class)
+        ))
+                .thenReturn(List.of(new EmployeeEntity(), new EmployeeEntity(), new EmployeeEntity()));
 
-        employeeService.getAllEmployees();
+        when(employeeRepository.existsByColumnName(eq("first_name")))
+                .thenReturn(true);
 
-        verify(employeeRepository, times(1)).findAll();
-        verify(employeeMapper, times(2)).toEmployeeModel(any(EmployeeEntity.class));
+        employeeService.getEmployeesWithFiltering(null, null, null, null,
+                null, null, 0, 4,
+                "first_name", Sort.Direction.ASC);
+
+        verify(employeeRepository, times(1)).findAllByFilterParamsAndSortAndPaged(
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(Pageable.class)
+        );
+        verify(employeeRepository, times(1)).existsByColumnName(eq("first_name"));
+        verify(employeeMapper, times(3)).toEmployeeModel(any(EmployeeEntity.class));
     }
 
     @Test

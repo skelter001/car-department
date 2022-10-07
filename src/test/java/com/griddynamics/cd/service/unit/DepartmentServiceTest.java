@@ -10,9 +10,12 @@ import com.griddynamics.cd.model.update.UpdateDepartmentRequest;
 import com.griddynamics.cd.repository.DepartmentRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import com.griddynamics.cd.service.DepartmentService;
+import org.hibernate.jpa.TypedParameterValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -60,12 +63,29 @@ class DepartmentServiceTest {
 
     @Test
     void getAllDepartments_whenCallMethod_thenValidMethodCallsNumber() {
-        when(departmentRepository.findAll())
+        when(departmentRepository.findAllByFilterParamsAndSortAndPaged(
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(Pageable.class)
+        ))
                 .thenReturn(List.of(new DepartmentEntity(), new DepartmentEntity(), new DepartmentEntity()));
 
-        departmentService.getAllDepartments();
+        when(departmentRepository.existsByColumnName(eq("name")))
+                .thenReturn(true);
 
-        verify(departmentRepository, times(1)).findAll();
+        departmentService.getDepartmentsWithFiltering(null, null, null, null,
+                0, 4, "name", Sort.Direction.ASC);
+
+        verify(departmentRepository, times(1)).findAllByFilterParamsAndSortAndPaged(
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(Pageable.class)
+        );
+        verify(departmentRepository, times(1)).existsByColumnName(eq("name"));
         verify(departmentMapper, times(3)).toDepartmentModel(any(DepartmentEntity.class));
     }
 

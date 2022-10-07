@@ -18,13 +18,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -142,7 +146,19 @@ public class EmployeeServiceTest extends BaseIntegrationTest {
 
     @Test
     void getAllEmployees_whenSaveToEmployeeRepository_thenReturnValidList() {
-        assertEquals(employees, employeeService.getAllEmployees());
+        Map<String, Object> values = new HashMap<>();
+        values.put("pageNumber", 0);
+        values.put("pageSize", 3);
+        values.put("totalPages", 1);
+        values.put("totalObjects", 3L);
+        values.put("employees", List.of(employees.get(0), employees.get(1), employees.get(2)));
+
+        ResponseEntity<Map<String, Object>> expected = ResponseEntity.ok(values);
+        ResponseEntity<Map<String, Object>> actual = employeeService.getEmployeesWithFiltering(
+                null, null, null, null, null, null,
+                0, 3, "first_name", Sort.Direction.ASC);
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -158,38 +174,6 @@ public class EmployeeServiceTest extends BaseIntegrationTest {
                 () -> employeeService.getEmployeeById(123L)
         );
         assertEquals("Employee with 123 id was not found", thrown.getMessage());
-    }
-
-    private List<Employee> getEmployeesByDepartmentIdData() {
-        return List.of(
-                Employee.builder()
-                        .id(10L)
-                        .firstName("Darius")
-                        .lastName("Epps")
-                        .address("Abuja, Nigeria")
-                        .birthday(LocalDate.of(1993, 8, 2))
-                        .phoneNumber("5738310041")
-                        .departmentId(6L)
-                        .build(),
-                Employee.builder()
-                        .id(11L)
-                        .firstName("Earnest")
-                        .lastName("Marks")
-                        .address("Atlanta, Georgia US.")
-                        .birthday(LocalDate.of(1995, 12, 19))
-                        .phoneNumber("7630894488")
-                        .departmentId(6L)
-                        .build(),
-                Employee.builder()
-                        .id(12L)
-                        .firstName("Khris")
-                        .lastName("Tracy")
-                        .address("Augusta, Georgia US.")
-                        .birthday(LocalDate.of(1991, 4, 8))
-                        .phoneNumber("6649329842")
-                        .departmentId(6L)
-                        .build()
-        );
     }
 
     @Test

@@ -25,6 +25,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -35,14 +36,14 @@ public class DepartmentService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentMapper departmentMapper;
 
-    public ResponseEntity<?> getAllDepartments(List<String> names,
-                                               List<String> emails,
-                                               List<String> descriptions,
-                                               List<DepartmentType> departmentTypes,
-                                               int pageNumber,
-                                               int pageSize,
-                                               String orderBy,
-                                               Sort.Direction order) {
+    public ResponseEntity<Map<String, Object>> getDepartmentsWithFiltering(List<String> names,
+                                                                           List<String> emails,
+                                                                           List<String> descriptions,
+                                                                           List<DepartmentType> departmentTypes,
+                                                                           int pageNumber,
+                                                                           int pageSize,
+                                                                           String orderBy,
+                                                                           Sort.Direction order) {
         if (!departmentRepository.existsByColumnName(orderBy)) {
             throw new ColumnNotFoundException(orderBy);
         }
@@ -68,7 +69,7 @@ public class DepartmentService {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        HashMap<String, Object> values = new HashMap<>();
+        Map<String, Object> values = new HashMap<>();
         values.put("pageNumber", page.getNumber());
         values.put("pageSize", page.getSize());
         values.put("totalPages", page.getTotalPages());

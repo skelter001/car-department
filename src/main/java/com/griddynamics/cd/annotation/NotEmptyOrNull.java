@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = NotEmptyOrNullValidator.class)
 public @interface NotEmptyOrNull {
 
-    String message() default "{javax.validation.constraints.NullOrNotBlank.message}";
+    String message() default "{com.griddynamics.cd.annotation.NotEmptyOrNull.message}";
 
     Class<?>[] groups() default {};
 

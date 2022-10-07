@@ -9,9 +9,12 @@ import com.griddynamics.cd.model.update.UpdateCarRequest;
 import com.griddynamics.cd.repository.CarRepository;
 import com.griddynamics.cd.repository.EmployeeRepository;
 import com.griddynamics.cd.service.CarService;
+import org.hibernate.jpa.TypedParameterValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -59,13 +62,34 @@ class CarServiceTest {
 
     @Test
     void getAllCars_whenCallMethod_thenValidMethodCallsNumber() {
-        when(carRepository.findAll())
-                .thenReturn(List.of(new CarEntity(), new CarEntity()));
 
-        carService.getAllCars();
+        when(carRepository.findAllByFilterParamsAndSortAndPaged(
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(Pageable.class)
+        ))
+                .thenReturn(List.of(new CarEntity(), new CarEntity(), new CarEntity()));
 
-        verify(carRepository, times(1)).findAll();
-        verify(carMapper, times(2)).toCarModel(any(CarEntity.class));
+        when(carRepository.existsByColumnName(eq("model")))
+                .thenReturn(true);
+
+        carService.getCarsWithFiltering(null, null, null,
+                null, null, 0, 4,
+                "model", Sort.Direction.ASC);
+
+        verify(carRepository, times(1)).findAllByFilterParamsAndSortAndPaged(
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(TypedParameterValue.class),
+                any(Pageable.class)
+        );
+        verify(carRepository, times(1)).existsByColumnName(eq("model"));
+        verify(carMapper, times(3)).toCarModel(any(CarEntity.class));
     }
 
     @Test

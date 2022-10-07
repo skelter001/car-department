@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -151,10 +152,19 @@ public class EmployeeControllerTest extends BaseIntegrationTest {
 
     @Test
     void getAllEmployees_whenSaveToEmployeeRepository_thenReturnValidList() throws Exception {
-        mockMvc.perform(get("/employees"))
+        HashMap<String, Object> expected = new HashMap<>();
+        expected.put("pageNumber", 0);
+        expected.put("pageSize", 3);
+        expected.put("totalPages", 1);
+        expected.put("totalObjects", 3);
+        expected.put("employees", List.of(employees.get(3), employees.get(2), employees.get(1)));
+
+        mockMvc.perform(get("/employees")
+                        .param("orderBy", "first_name")
+                        .param("order", "DESC"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(content().string(objectMapper.writeValueAsString(employees)));
+                .andExpect(content().string(objectMapper.writeValueAsString(expected)));
     }
 
     @Test
