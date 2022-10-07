@@ -11,6 +11,8 @@ on:
     paths:
       - car-department/**
       - .github/workflows/build.car-department.yml
+  workflow_dispatch:
+
 
 jobs:
   build:
